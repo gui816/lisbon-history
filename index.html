@@ -358,7 +358,7 @@ function addPombaline3DLayer(){
  map.addSource('pombaline-blocks',{type:'geojson',data:pombalineBlocksFeature(selectedYear)});
  map.addLayer({id:'pombaline-blocks-3d',type:'fill-extrusion',source:'pombaline-blocks',minzoom:12.2,layout:{visibility:'none'},paint:{'fill-extrusion-color':['get','color'],'fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','base'],'fill-extrusion-opacity':.88}});
  map.addSource('pombaline-area-mask',{type:'geojson',data:pombalineAreaMaskFeature()});
- map.addLayer({id:'pombaline-area-mask-fill',type:'fill',source:'pombaline-area-mask',layout:{visibility:'none'},paint:{'fill-pattern':'desert-texture','fill-opacity':.99}});
+ map.addLayer({id:'pombaline-area-mask-fill',type:'fill',source:'pombaline-area-mask',layout:{visibility:'none'},paint:{'fill-color':'#07121a','fill-opacity':1}});
  map.addSource('pombaline-bounds',{type:'geojson',data:pombalineBoundsFeature()});
  map.addLayer({id:'pombaline-bounds-line',type:'line',source:'pombaline-bounds',layout:{visibility:'none'},paint:{'line-color':'#f5bd65','line-width':3,'line-opacity':1,'line-dasharray':[2,1]}});
 }
@@ -367,12 +367,12 @@ function updatePombalineAreaMask(active){
  if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData(pombalineBlocksFeature(selectedYear));
  if(map.getSource('pombaline-area-mask'))map.getSource('pombaline-area-mask').setData(pombalineAreaMaskFeature());
  for(const id of ['pombaline-area-mask-fill','pombaline-bounds-line'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',visible?'visible':'none');
- // The general-purpose basemap extrusion is intentionally disabled in historical study mode.
- if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',active?'none':((selectedYear>=2020||currentMapView==='satellite')?'visible':'none'));
+ // In study mode, suppress ordinary 3D buildings and cover every basemap layer outside the study area.
+ if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',visible?'none':((selectedYear>=2020||currentMapView==='satellite')?'visible':'none'));
  if(visible){
-  // Keep the mask above all map labels/buildings, while HTML place markers are filtered separately.
-  map.moveLayer('pombaline-area-mask-fill');
-  map.moveLayer('pombaline-bounds-line');
+  // Opaque mask sits above raster imagery, cartographic labels and all other map layers.
+  if(map.getLayer('pombaline-area-mask-fill'))map.moveLayer('pombaline-area-mask-fill');
+  if(map.getLayer('pombaline-bounds-line'))map.moveLayer('pombaline-bounds-line');
  }
 }
 function historical3DStageLabel(year){
@@ -527,6 +527,8 @@ bindHistoricalLayerControls();
 const map = new maplibregl.Map({container:'map',style:'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',center:[-9.157,38.726],zoom:11.65,pitch:38,bearing:-10,antialias:true,attributionControl:true,cooperativeGestures:true});
 map.addControl(new maplibregl.NavigationControl({showCompass:true,showZoom:false,visualizePitch:true}),'bottom-right');
 map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
+map.on('moveend',()=>{if(mapReady&&isPombalineStudyActive())updatePombalineAreaMask(true)});
+map.on('resize',()=>{if(mapReady&&isPombalineStudyActive())updatePombalineAreaMask(true)});
 map.on('load',()=>{
  mapReady=true;
  // Keep optional visual layers isolated: one unsupported layer must not block the whole app.
