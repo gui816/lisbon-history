@@ -24,7 +24,7 @@
 .historical-layer-panel.open{display:block}.layer-panel-title{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--gold);font-weight:700;margin-bottom:8px}
 .layer-option{display:flex;gap:8px;align-items:flex-start;font-size:10px;line-height:1.35;color:#d3dfe2;margin:9px 0;cursor:pointer}.layer-option input{accent-color:var(--mint);margin:1px 0 0}.layer-option small{display:block;font-size:8px;color:#9eafb8;margin-top:2px}.history-source-note{font-size:9px;line-height:1.5;color:#a6b7bf;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
 .history-source-note a{color:var(--mint);text-decoration:none}.history-map-opacity{display:flex;align-items:center;gap:8px;font-size:9px;color:#c3d0d5;margin:8px 0}.history-map-opacity input{width:100%;accent-color:var(--mint)}
-.journey-box{padding:11px 12px;gap:8px}.journey-title{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);font-weight:700}.journey-select,.place-search{width:100%;box-sizing:border-box;background:#122630;color:#e4edf0;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font:inherit;font-size:10px;outline:none}.journey-select:focus,.place-search:focus{border-color:var(--mint)}.journey-actions{display:flex;gap:5px}.journey-btn{flex:1;border:1px solid var(--line);background:#1b303a;color:#dbe6e8;border-radius:8px;padding:7px 5px;font-size:9px;cursor:pointer}.journey-btn.primary{background:rgba(120,219,195,.12);border-color:rgba(120,219,195,.5);color:var(--mint)}.journey-status{font-size:9px;line-height:1.45;color:#b6c6cc;min-height:14px}.places-search{margin:0 0 8px}
+.journey-box{padding:11px 12px;gap:8px}.journey-title{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);font-weight:700}.journey-select,.place-search{width:100%;box-sizing:border-box;background:#122630;color:#e4edf0;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font:inherit;font-size:10px;outline:none}.journey-select:focus,.place-search:focus{border-color:var(--mint)}.journey-actions{display:flex;gap:5px}.journey-btn{flex:1;border:1px solid var(--line);background:#1b303a;color:#dbe6e8;border-radius:8px;padding:7px 5px;font-size:9px;cursor:pointer}.journey-btn.primary{background:rgba(120,219,195,.12);border-color:rgba(120,219,195,.5);color:var(--mint)}.journey-status{font-size:9px;line-height:1.45;color:#b6c6cc;min-height:14px;white-space:pre-line}.places-search{margin:0 0 8px}
 @media(max-width:720px){.historical-layer-panel{width:210px}.layer-option{font-size:9px}.history-source-note{font-size:8px}}
 
 
@@ -180,9 +180,9 @@ function applyLanguage(lang){language=translations[lang]?lang:'pt';document.docu
 const $=id=>document.getElementById(id);
 
 const journeys={
- medieval:{steps:[{year:1147,id:'castle'},{year:1200,id:'alfama'},{year:1500,id:'se'}]},
- quake:{steps:[{year:1754,id:'commerce'},{year:1755,id:'carmo'},{year:1756,id:'commerce'}]},
- pombaline:{steps:[{year:1756,id:'commerce'},{year:1775,id:'rossio'},{year:1785,id:'casa-bicos'}]}
+ medieval:{steps:[{year:1147,id:'castle',note:'A tomada do castelo em 1147 marcou a conquista cristã de Lisboa.'},{year:1200,id:'alfama',note:'Alfama preserva a memória de bairros antigos e de uma longa continuidade urbana.'},{year:1500,id:'se',note:'A Sé tornou-se um dos marcos religiosos da cidade após a conquista.'}]},
+ quake:{steps:[{year:1754,id:'commerce',note:'O Terreiro do Paço e o Paço Real ocupavam a margem do Tejo.'},{year:1755,id:'carmo',note:'As ruínas do Carmo recordam a destruição provocada pelo terramoto.'},{year:1756,id:'commerce',note:'A reconstrução abriu caminho a uma nova praça e à malha pombalina.'}]},
+ pombaline:{steps:[{year:1756,id:'commerce',note:'O novo plano propôs uma malha regular e uma relação diferente com o rio.'},{year:1775,id:'rossio',note:'O Rossio integrou-se na reorganização do centro urbano reconstruído.'},{year:1785,id:'casa-bicos',note:'A Casa dos Bicos ajuda a contrastar vestígios de épocas anteriores com a cidade reconstruída.'}]}
 };
 let activeJourney=null,journeyStep=0;
 function journeyLabels(){return {
@@ -192,8 +192,8 @@ function journeyLabels(){return {
  fr:{title:'Parcours guidés',start:'Commencer',exit:'Terminer',prev:'← Précédent',next:'Suivant →',idle:'Explorez une histoire à travers plusieurs lieux.',step:(n,total,name,year)=>'Étape '+n+' sur '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Parcours terminé. Continuez à explorer librement.',search:'Rechercher des lieux historiques…',opacity:'Opacité',map1650:'Plan de Tinoco · 1650',map1756:'Plan de Mardel · 1756'}
 }[language]}
 function updateJourneyLanguage(){if(!$('journeyTitle'))return;const t=journeyLabels();$('journeyTitle').textContent=t.title;$('journeyStart').textContent=t.start;$('journeyExit').textContent=t.exit;$('journeyPrev').textContent=t.prev;$('journeyNext').textContent=t.next;$('placeSearch').placeholder=t.search;$('mapOpacityLabel').textContent=t.opacity;$('map1650Label').innerHTML=t.map1650+' <small>Cartografia CML georreferenciada</small>';$('map1756Label').innerHTML=t.map1756+' <small>Cartografia CML georreferenciada</small>';if(!activeJourney)$('journeyStatus').textContent=t.idle}
-function bindJourneyControls(){$('journeyStart').addEventListener('click',()=>{activeJourney=$('journeySelect').value;journeyStep=0;$('journeyExit').hidden=false;$('journeyNav').hidden=false;showJourneyStep()});$('journeyNext').addEventListener('click',()=>{if(!activeJourney)return;if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep()}else{$('journeyStatus').textContent=journeyLabels().finished;$('journeyNav').hidden=true;$('journeyExit').hidden=true;activeJourney=null}});$('journeyPrev').addEventListener('click',()=>{if(!activeJourney)return;journeyStep=Math.max(0,journeyStep-1);showJourneyStep()});$('journeyExit').addEventListener('click',()=>{activeJourney=null;$('journeyNav').hidden=true;$('journeyExit').hidden=true;$('journeyStatus').textContent=journeyLabels().idle})}
-function showJourneyStep(){const journey=journeys[activeJourney],step=journey.steps[journeyStep],p=places.find(x=>x.id===step.id);if(!p){$('journeyStatus').textContent='';return}currentEra='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.era==='all'));$('placeSearch').value='';setHistoricalYear(step.year);$('journeyStatus').textContent=journeyLabels().step(journeyStep+1,journey.steps.length,placeNameAtDate(p),step.year);$('journeyNext').textContent=journeyStep===journey.steps.length-1?journeyLabels().exit:journeyLabels().next;focusPlace(p.id)}
+function bindJourneyControls(){$('journeyStart').addEventListener('click',()=>{activeJourney=$('journeySelect').value;journeyStep=0;$('journeyExit').hidden=false;$('journeyNav').hidden=false;showJourneyStep()});$('journeyNext').addEventListener('click',()=>{if(!activeJourney)return;if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep()}else{$('journeyStatus').textContent=journeyLabels().finished;$('journeyNav').hidden=true;$('journeyExit').hidden=true;activeJourney=null;clearJourneyRoute()}});$('journeyPrev').addEventListener('click',()=>{if(!activeJourney)return;journeyStep=Math.max(0,journeyStep-1);showJourneyStep()});$('journeyExit').addEventListener('click',()=>{activeJourney=null;$('journeyNav').hidden=true;$('journeyExit').hidden=true;$('journeyStatus').textContent=journeyLabels().idle;clearJourneyRoute()})}
+function showJourneyStep(){const journey=journeys[activeJourney],step=journey.steps[journeyStep],p=places.find(x=>x.id===step.id);if(!p){$('journeyStatus').textContent='';return}currentEra='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.era==='all'));$('placeSearch').value='';setHistoricalYear(step.year);$('journeyStatus').textContent=journeyLabels().step(journeyStep+1,journey.steps.length,placeNameAtDate(p),step.year)+'\n'+step.note;updateJourneyRoute();$('journeyNext').textContent=journeyStep===journey.steps.length-1?journeyLabels().exit:journeyLabels().next;focusPlace(p.id)}
 
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2800)}
 
@@ -361,6 +361,13 @@ function bindHistoricalLayerControls(){
  $('toggleMap1756').addEventListener('change',()=>{if($('toggleMap1756').checked){$('toggleMap1650').checked=false;setHistoricalYear(1756)}updateHistoricalLayers()});
  $('historicalMapOpacity').addEventListener('input',()=>{const opacity=Number($('historicalMapOpacity').value);for(const id of ['historical-map-1650','historical-map-1756'])if(map.getLayer(id))map.setPaintProperty(id,'raster-opacity',opacity)});
 }
+function addJourneyRouteLayer(){
+ map.addSource('journey-route-source',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+ const beforeId=(map.getStyle().layers||[]).find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
+ map.addLayer({id:'journey-route-line',type:'line',source:'journey-route-source',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#78dbc3','line-width':3,'line-opacity':0.92,'line-dasharray':[2,1]}},beforeId);
+}
+function updateJourneyRoute(){const source=map.getSource('journey-route-source');if(!source||!activeJourney)return;const coords=journeys[activeJourney].steps.map(step=>places.find(p=>p.id===step.id)?.coords).filter(Boolean);source.setData({type:'FeatureCollection',features:coords.length>1?[{type:'Feature',properties:{journey:activeJourney},geometry:{type:'LineString',coordinates:coords}}]:[]})}
+function clearJourneyRoute(){const source=map.getSource('journey-route-source');if(source)source.setData({type:'FeatureCollection',features:[]})}
 function addHistoricalMapLayers(){
  const attribution='Cartografia Histórica de Lisboa · Câmara Municipal de Lisboa (2017) · Lisboa Aberta';
  map.addSource('historical-map-1650-source',{type:'raster',tiles:['https://tiles.arcgis.com/tiles/1dSrzEWVQn5kHHyK/arcgis/rest/services/web_tiles_t1/MapServer/tile/{z}/{y}/{x}'],tileSize:256,minzoom:0,maxzoom:19,attribution});
@@ -458,6 +465,7 @@ map.on('load',()=>{
  try{add1755ReconstructionLayer()}catch(e){console.warn('1755 reconstruction overlay unavailable',e)}
  try{addHistoricalContextLayers()}catch(e){console.warn('Historical context layers unavailable',e)}
  try{addHistoricalMapLayers()}catch(e){console.warn('Historical map tiles unavailable',e)}
+ try{addJourneyRouteLayer()}catch(e){console.warn('Journey route unavailable',e)}
  try{addPombaline3DLayer()}catch(e){console.warn('Pombaline 3D reconstruction unavailable',e)}
  try{
   const layers=map.getStyle().layers||[];
