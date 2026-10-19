@@ -104,6 +104,53 @@ button,input,select{touch-action:manipulation}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+
+/* Mobile-first layout correction: keep the map visible and prevent the timeline/control collisions. */
+@media(max-width:720px){
+  .topbar{height:64px;padding:9px 12px;align-items:center}
+  .brand{gap:8px;min-width:0}.brand-mark{width:34px;height:34px;border-radius:11px;font-size:18px}
+  .brand-name{font-size:12px;letter-spacing:-.2px}.brand-sub{font-size:7px;letter-spacing:1.15px}
+  .top-actions{gap:6px}.language-select{height:35px;min-width:48px;font-size:11px}.top-actions .icon-btn{width:35px;height:35px}
+  .left-panel{left:10px;right:10px;top:124px;bottom:326px;width:auto;max-height:none;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;gap:8px;padding:0 0 8px;display:flex}
+  .left-panel::-webkit-scrollbar{display:none}
+  .intro{padding:12px 13px;border-radius:15px}.eyebrow{font-size:8px;letter-spacing:1.7px}
+  .intro h1{font-size:clamp(23px,6vw,29px);line-height:1.03;letter-spacing:-1px;margin:8px 0}
+  .intro p{font-size:11px;line-height:1.45;max-width:none}.intro-meta{margin-top:9px;gap:6px}
+  .intro-stat{font-size:9px;padding:6px 8px}.intro-stat strong{font-size:12px}
+  .filter-box{padding:10px 11px;border-radius:14px}.section-label{font-size:9px;letter-spacing:1.35px;margin-bottom:8px}
+  .filters{gap:5px}.filter{font-size:10px;padding:7px 9px;border-radius:9px}
+  .journey-box{padding:10px 11px;gap:7px;border-radius:14px}.journey-title{font-size:9px}
+  .journey-select{font-size:11px;padding:10px}.journey-actions{gap:6px}
+  .journey-btn{font-size:10px;padding:9px 7px;min-height:36px}.journey-status{font-size:10px;line-height:1.35}
+  .places{min-height:120px;max-height:220px;padding:10px}.place-search{font-size:12px;padding:10px}
+  .place{padding:8px}.place-title{font-size:11px}.place-meta{font-size:9px}
+  .bottom-right{top:74px;right:10px;bottom:auto;left:auto;align-items:flex-end;gap:5px}
+  .view-switch{position:fixed;z-index:7;top:72px;right:10px;margin:0;padding:3px;gap:2px}
+  .view-switch button{font-size:9px;padding:7px 9px}
+  .bottom-right .map-tools{position:fixed;z-index:6;top:111px;right:10px;display:flex;flex-direction:row;gap:4px}
+  .map-tool{width:32px;height:32px;border-radius:10px;font-size:15px}
+  .bottom-right .historical-layer-panel{position:fixed;z-index:8;top:150px;right:10px;margin:0;max-height:calc(100% - 490px);overflow:auto}
+  .bottom-right .location-tag{display:none}
+  .bottom-left{left:10px;right:10px;bottom:calc(302px + env(safe-area-inset-bottom));flex-direction:row;align-items:center;gap:6px}
+  .small-note{font-size:9px;padding:7px 9px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.coverage-key{display:none}
+  .timebar{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));width:auto;min-width:0;padding:10px 11px 9px;border-radius:15px}
+  .timebar-top{margin-bottom:8px}.timebar-date{font-size:23px}.timebar-era{font-size:10px;max-width:54%;line-height:1.25}
+  .timebar-kicker{font-size:8px;letter-spacing:1.5px}.timebar-controls{gap:6px}
+  .time-control{width:36px;height:36px;border-radius:10px;font-size:15px}.year-slider{min-width:0}
+  .timebar-bottom{margin-top:7px}.timebar-hint{font-size:9px}.time-events{margin-top:8px;gap:5px}
+  .time-event{font-size:9px;padding:6px 8px}.history-note{font-size:9px;line-height:1.35;margin-top:7px}
+  .detail{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));top:auto;width:auto;max-height:62%;border-radius:17px;transform:translateY(calc(100% + 24px))}
+  .detail.open{transform:translateY(0)}.detail-image{height:115px}.detail-content{padding:14px}.detail h2{font-size:22px}
+  .reconstruction-panel{top:154px;right:10px;width:min(270px,calc(100% - 20px));max-height:calc(100% - 490px);overflow:auto}
+  .maplibregl-ctrl-bottom-right{bottom:calc(300px + env(safe-area-inset-bottom))!important;right:10px!important}.maplibregl-ctrl-bottom-left{display:none}
+}
+@media(max-width:380px){
+  .brand-sub{display:none}.brand-name{font-size:11px}.intro h1{font-size:23px}.intro-stat{font-size:8px}
+  .view-switch button{padding:6px 7px;font-size:8px}.timebar{padding:9px}.time-control{width:32px;height:34px}.timebar-era{font-size:9px}
+}
+@media(max-height:760px) and (max-width:720px){
+  .left-panel{bottom:292px;top:118px}.intro p{font-size:10px}.timebar{padding:8px 10px}.history-note{display:none}.time-events{margin-top:6px}
+}
 </style>
 </head>
 <body>
