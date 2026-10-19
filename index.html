@@ -658,7 +658,7 @@ function updatePombalineAreaMask(active){
  if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData({type:'FeatureCollection',features:[]});
  if(map.getSource('pombaline-area-mask'))map.getSource('pombaline-area-mask').setData(pombalineAreaMaskFeature());
  if(map.getLayer('pombaline-area-mask-fill'))map.setLayoutProperty('pombaline-area-mask-fill','visibility','none');
- if(map.getLayer('pombaline-bounds-line'))map.setLayoutProperty('pombaline-bounds-line','visibility',visible?'visible':'none');
+ if(map.getLayer('pombaline-bounds-line'))map.setLayoutProperty('pombaline-bounds-line','visibility','none');
  // Use a screen-space SVG mask so labels, satellite tiles, raster overlays and 3D are hidden reliably outside the study polygon.
  if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',visible?'none':((selectedYear>=2020||currentMapView==='satellite')?'visible':'none'));
  if(visible&&map.getLayer('pombaline-bounds-line'))map.moveLayer('pombaline-bounds-line');
