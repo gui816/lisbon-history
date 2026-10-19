@@ -370,6 +370,44 @@ button,input,select{touch-action:manipulation}
  .left-panel.journey-mode .journey-box{max-height:100%;overflow-y:auto}
 }
 
+
+/* Mobile guided-tour composition: compact navigation, readable place sheet, gesture affordances. */
+@media(max-width:720px){
+ .left-panel.journey-mode{z-index:8;bottom:auto!important;max-height:none!important}
+ .left-panel.journey-mode>.journey-box{gap:7px!important}
+ .left-panel.journey-mode .journey-title{padding-right:68px}
+ .left-panel.journey-mode .journey-select{min-height:40px!important}
+ .left-panel.journey-mode .journey-status{padding:8px 10px!important;font-size:10px!important;line-height:1.4!important}
+ .left-panel.journey-mode #journeyNav{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:8px}
+ .left-panel.journey-mode #journeyNav .journey-btn{min-height:46px;font-size:12px;border-radius:12px}
+ .left-panel.journey-mode #journeyExit{min-height:34px!important;font-size:10px!important}
+ .detail{left:10px!important;right:10px!important;top:auto!important;bottom:calc(154px + env(safe-area-inset-bottom))!important;width:auto!important;max-height:42vh!important;max-height:min(42vh,360px)!important;transform:translateY(calc(100% + 24px))!important;border-radius:18px!important;overflow:auto!important;overscroll-behavior:contain}
+ .detail.open{transform:translateY(0)!important}
+ .detail-image{height:clamp(76px,13vh,112px)!important;background-position:center 45%!important}
+ .detail-close{top:8px!important;right:8px!important;width:36px!important;height:36px!important}
+ .detail-content{padding:12px 14px 18px!important}
+ .detail-date{font-size:10px!important}
+ .detail h2{font-size:21px!important;line-height:1.12!important;margin:6px 0!important;letter-spacing:-.5px!important}
+ .detail-location{font-size:10px!important;margin-bottom:10px!important}
+ .detail p{font-size:12px!important;line-height:1.55!important;margin-bottom:10px!important}
+ .detail h3{margin:14px 0 8px!important}
+ .detail-swipe-hint{display:block!important}
+ .app.mobile-explore-closed .detail{bottom:calc(90px + env(safe-area-inset-bottom))!important;max-height:52vh!important}
+}
+.detail-swipe-hint{display:none;font-size:9px;color:#8fa7af;letter-spacing:.4px;text-align:center;padding:7px 10px 0}
+@media(max-width:390px){
+ .detail{left:7px!important;right:7px!important;max-height:39vh!important}
+ .detail-content{padding:10px 12px 15px!important}
+ .detail h2{font-size:19px!important}
+ .left-panel.journey-mode .journey-status{font-size:9px!important}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .detail{left:auto!important;right:8px!important;top:108px!important;bottom:145px!important;width:min(340px,46vw)!important;max-height:none!important;transform:translateX(calc(100% + 20px))!important}
+ .detail.open{transform:translateX(0)!important}
+ .detail-image{height:90px!important}
+ .left-panel.journey-mode{width:min(340px,46vw)!important}
+}
+
 </style>
 </head>
 <body>
@@ -421,7 +459,7 @@ button,input,select{touch-action:manipulation}
   <div class="time-events" id="timeEvents"></div>
   <div class="history-note" id="historyNote">A área urbana histórica é esquemática; os pontos surgem a partir da data aproximada de construção.</div></div>
  </section>
- <section class="detail" id="detail" aria-live="polite"><div class="detail-image" id="detailImage"><button class="detail-close" id="closeDetail" aria-label="Fechar">✕</button></div><div class="detail-content" id="detailContent"></div></section>
+ <section class="detail" id="detail" aria-live="polite"><div class="detail-image" id="detailImage"><button class="detail-close" id="closeDetail" aria-label="Fechar">✕</button></div><div class="detail-swipe-hint" id="detailSwipeHint">← Desliza para navegar · Swipe to navigate →</div><div class="detail-content" id="detailContent"></div></section>
  <div class="toast" id="toast"></div>
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
@@ -915,6 +953,17 @@ async function updatePlacePhoto(place,requestId){
 }
 function focusPlace(id){const p=places.find(x=>x.id===id);if(!p)return;if(isPombalineStudyActive()&&!isWithinPombalineBounds(p)){toast(({pt:'Este local fica fora da zona de estudo 3D.',en:'This place is outside the 3D study area.',es:'Este lugar está fuera de la zona de estudio 3D.',fr:'Ce lieu se trouve hors de la zone d’étude 3D.'})[language]);return}selectedId=id;const photoRequest=++activePhotoRequest;renderPlaces();renderMarkers();map.flyTo({center:p.coords,zoom:p.zoom,pitch:currentMapView==='satellite'?Math.max(p.pitch,66):p.pitch,bearing:currentMapView==='satellite'?(p.id==='belem'?-24:-16):(p.id==='belem'?-17:p.id==='jeronimos'?-12:0),duration:1800,essential:true});$('coords').textContent=p.coords[1].toFixed(4)+'° N, '+Math.abs(p.coords[0]).toFixed(4)+'° W';$('detailImage').style.setProperty('--cover',p.cover?'url("'+p.cover.replace(/["\\]/g,'')+'")':'none');setPlacePhotoStatus(!!p.cover);renderDetailContent(p);$('detail').classList.add('open');if(!p.coverSource)updatePlacePhoto(p,photoRequest)}
 function hideDetail(){$('detail').classList.remove('open');selectedId=null;renderPlaces();renderMarkers()}
+(function bindJourneyGestures(){
+ const detail=$('detail');let startX=0,startY=0,tracking=false;
+ detail.addEventListener('touchstart',e=>{if(!activeJourney||!e.touches||e.touches.length!==1)return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;tracking=true},{passive:true});
+ detail.addEventListener('touchend',e=>{
+  if(!tracking||!activeJourney||!e.changedTouches||!e.changedTouches.length){tracking=false;return}
+  const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;tracking=false;
+  if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.25)return;
+  if(dx<0){if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep()}else toast(journeyLabels().finished)}
+  else if(journeyStep>0){journeyStep--;showJourneyStep()}
+ },{passive:true});
+})();
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{currentEra=b.dataset.era;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderPlaces();renderMarkers();if(selectedId&&!places.some(p=>p.id===selectedId&&(currentEra==='all'||p.era===currentEra)))hideDetail()});
 $('closeDetail').onclick=hideDetail;
 bindHistoricalLayerControls();
