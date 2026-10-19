@@ -281,9 +281,40 @@ function pombalineBlocksFeature(){
  }
  return{type:'FeatureCollection',features};
 }
+// Deliberately bounded study area: the schematic Baixa model must never spill into
+// neighbouring areas. Coordinates are approximate and should later be georeferenced.
+const pombalineBounds=[[-9.152,38.702],[-9.130,38.721]];
+function pombalineAreaMaskFeature(){
+ const b=map.getBounds(),sw=b.getSouthWest(),ne=b.getNorthEast();
+ const padLng=Math.max(ne.lng-sw.lng,.08),padLat=Math.max(ne.lat-sw.lat,.06);
+ const outer=[[sw.lng-padLng,sw.lat-padLat],[ne.lng+padLng,sw.lat-padLat],[ne.lng+padLng,ne.lat+padLat],[sw.lng-padLng,ne.lat+padLat],[sw.lng-padLng,sw.lat-padLat]];
+ const [[west,south],[east,north]]=pombalineBounds;
+ const hole=[[west,south],[west,north],[east,north],[east,south],[west,south]];
+ return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[outer,hole]}};
+}
+function pombalineBoundsFeature(){
+ const [[west,south],[east,north]]=pombalineBounds;
+ return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[[west,south],[east,south],[east,north],[west,north],[west,south]]]}};
+}
 function addPombaline3DLayer(){
  map.addSource('pombaline-blocks',{type:'geojson',data:pombalineBlocksFeature()});
  map.addLayer({id:'pombaline-blocks-3d',type:'fill-extrusion',source:'pombaline-blocks',minzoom:12.2,layout:{visibility:'none'},paint:{'fill-extrusion-color':['interpolate',['linear'],['get','height'],10,'#d8b98b',18,'#b9855d',22,'#8e654d'],'fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','base'],'fill-extrusion-opacity':.82}});
+ map.addSource('pombaline-area-mask',{type:'geojson',data:pombalineAreaMaskFeature()});
+ map.addLayer({id:'pombaline-area-mask-fill',type:'fill',source:'pombaline-area-mask',layout:{visibility:'none'},paint:{'fill-pattern':'desert-texture','fill-opacity':.99}});
+ map.addSource('pombaline-bounds',{type:'geojson',data:pombalineBoundsFeature()});
+ map.addLayer({id:'pombaline-bounds-line',type:'line',source:'pombaline-bounds',layout:{visibility:'none'},paint:{'line-color':'#f5bd65','line-width':3,'line-opacity':1,'line-dasharray':[2,1]}});
+}
+function updatePombalineAreaMask(active){
+ const visible=!!active&&selectedYear>=1775;
+ if(map.getSource('pombaline-area-mask'))map.getSource('pombaline-area-mask').setData(pombalineAreaMaskFeature());
+ for(const id of ['pombaline-area-mask-fill','pombaline-bounds-line'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',visible?'visible':'none');
+ // The general-purpose basemap extrusion is intentionally disabled in historical study mode.
+ if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',visible?'none':(selectedYear>=2020?'visible':'none'));
+ if(visible){
+  // Keep the mask above all map labels/buildings, while HTML place markers are filtered separately.
+  map.moveLayer('pombaline-area-mask-fill');
+  map.moveLayer('pombaline-bounds-line');
+ }
 }
 function updateHistoricalLayers(){
  const year=selectedYear,wallsOn=$('toggleWalls')?.checked,shoreOn=$('toggleWaterfront')?.checked,extentOn=$('toggleUrbanExtent')?.checked!==false,blocksOn=$('togglePombaline3D')?.checked;
@@ -294,6 +325,7 @@ function updateHistoricalLayers(){
  for(const id of ['historic-walls-old','historic-walls-fernandina'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',wallVisible?'visible':'none');
  if(map.getLayer('historic-waterfront-before'))map.setLayoutProperty('historic-waterfront-before','visibility',shoreOn&&year<=1754?'visible':'none');
  if(map.getLayer('historic-waterfront-after'))map.setLayoutProperty('historic-waterfront-after','visibility',shoreOn&&year>=1755?'visible':'none');
+ updatePombalineAreaMask(blocksOn);
 }
 function bindHistoricalLayerControls(){
  $('historicalLayersToggle').addEventListener('click',()=>{const panel=$('historicalLayerPanel'),open=!panel.classList.contains('open');panel.classList.toggle('open',open);$('historicalLayersToggle').setAttribute('aria-expanded',String(open))});
@@ -318,7 +350,7 @@ function placeNameAtDate(p){const s=historicalState(p);return s?s.name:p.name}
 function placeShortAtDate(p){const s=historicalState(p);if(!s)return p.short;return s.name.length>23?s.name.slice(0,21)+'…':s.name}
 
 function renderPlaces(){const list=places.filter(p=>(currentEra==='all'||p.era===currentEra)&&isVisibleInYear(p));$('placeCount').textContent=String(list.length).padStart(2,'0');$('placeList').innerHTML=list.map(p=>'<button class="place '+(p.id===selectedId?'selected':'')+'" data-id="'+p.id+'"><span class="place-icon" style="color:'+p.color+'">'+p.icon+'</span><span class="place-copy"><span class="place-title">'+placeNameAtDate(p)+'</span><span class="place-meta">'+p.year+' · '+p.category+'</span></span><span class="place-arrow">↗</span></button>').join('');document.querySelectorAll('.place').forEach(b=>b.addEventListener('click',()=>focusPlace(b.dataset.id)))}
-function renderMarkers(){labelMarkers.forEach(m=>m.remove());labelMarkers=[];places.filter(p=>(currentEra==='all'||p.era===currentEra)&&isVisibleInYear(p)).forEach(p=>{const el=document.createElement('button');el.className='map-label'+(p.id===selectedId?' active':'');el.textContent=placeShortAtDate(p);el.type='button';el.onclick=()=>focusPlace(p.id);const marker=new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat(p.coords).addTo(map);labelMarkers.push(marker)})}
+function renderMarkers(){labelMarkers.forEach(m=>m.remove());labelMarkers=[];const bounded3D=$('togglePombaline3D')?.checked&&selectedYear>=1775;places.filter(p=>(currentEra==='all'||p.era===currentEra)&&isVisibleInYear(p)&&(!bounded3D||(p.coords[0]>=pombalineBounds[0][0]&&p.coords[0]<=pombalineBounds[1][0]&&p.coords[1]>=pombalineBounds[0][1]&&p.coords[1]<=pombalineBounds[1][1]))).forEach(p=>{const el=document.createElement('button');el.className='map-label'+(p.id===selectedId?' active':'');el.textContent=placeShortAtDate(p);el.type='button';el.onclick=()=>focusPlace(p.id);const marker=new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat(p.coords).addTo(map);labelMarkers.push(marker)})}
 function renderDetailContent(p){const state=historicalState(p);const shownName=state?state.name:p.name;const shownDate=state?state.date:p.year;const shownDescription=state?state.description:p.description;const shownTimeline=state?state.timeline:p.timeline;$('detailContent').innerHTML='<div class="detail-date">✦ '+shownDate+'</div><h2>'+shownName+'</h2><div class="detail-location">⌖ Lisboa, Portugal · '+p.category+'</div><div class="story-tag">'+tr('detailTag')+'</div>'+(language==='pt'?'':'<div class="sources" style="margin:0 0 12px;color:#e0bd83">'+tr('contentNote')+'</div>')+'<div class="confidence-tag">◈ '+(language==='pt'?'Cronologia indicativa · localização atual do ponto':language==='en'?'Indicative chronology · current point location':language==='es'?'Cronología orientativa · ubicación actual del punto':'Chronologie indicative · position actuelle du point')+'</div><p>'+shownDescription+'</p><h3>'+tr('timeline')+'</h3><div class="timeline">'+shownTimeline.map(t=>'<div class="timeline-item"><strong style="color:#f5bd65">'+t[0]+'</strong><br>'+t[1]+'</div>').join('')+'</div><h3>'+tr('explore')+'</h3><div class="sources">'+tr('source')+'<br><a class="source-link" href="'+p.source+'" target="_blank" rel="noopener noreferrer">'+tr('sourceLink')+'</a></div>'}
 function focusPlace(id){const p=places.find(x=>x.id===id);if(!p)return;selectedId=id;renderPlaces();renderMarkers();map.flyTo({center:p.coords,zoom:p.zoom,pitch:p.pitch,bearing:p.id==='belem'?-17:p.id==='jeronimos'?-12:0,duration:1800,essential:true});$('coords').textContent=p.coords[1].toFixed(4)+'° N, '+Math.abs(p.coords[0]).toFixed(4)+'° W';$('detailImage').style.setProperty('--cover','url("'+p.cover+'")');renderDetailContent(p);$('detail').classList.add('open')}
 function hideDetail(){$('detail').classList.remove('open');selectedId=null;renderPlaces();renderMarkers()}
@@ -355,7 +387,7 @@ map.on('error',e=>{
 });
 // Failsafe for blocked or very slow third-party map styles.
 setTimeout(()=>{if(!$('loading').classList.contains('hide')){$('loading').classList.add('hide');$('loaderText').textContent='A cidade está a demorar a carregar';$('loaderSub').textContent='Podes explorar os controlos; verifica a ligação se o mapa não aparecer.'}},12000);
-map.on('moveend',()=>{updateDesertMask();const c=map.getCenter();if(!selectedId)$('coords').textContent=c.lat.toFixed(4)+'° N, '+Math.abs(c.lng).toFixed(4)+'° W'});
+map.on('moveend',()=>{updateDesertMask();if($('togglePombaline3D')?.checked&&selectedYear>=1775)updatePombalineAreaMask(true);const c=map.getCenter();if(!selectedId)$('coords').textContent=c.lat.toFixed(4)+'° N, '+Math.abs(c.lng).toFixed(4)+'° W'});
 $('zoomIn').onclick=()=>map.zoomTo(map.getZoom()+1,{duration:450});
 $('zoomOut').onclick=()=>map.zoomTo(map.getZoom()-1,{duration:450});
 $('tilt').onclick=()=>{currentPitch=currentPitch>30?15:60;map.easeTo({pitch:currentPitch,duration:650})};
