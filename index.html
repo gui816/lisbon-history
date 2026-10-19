@@ -272,6 +272,58 @@ button,input,select{touch-action:manipulation}
  .mobile-map-toggle{top:68px;left:8px}
 }
 
+
+/* Final responsive pass: mobile opens map-first; timeline details are progressive disclosure. */
+.timebar-expand{display:none}
+.timebar-details{min-width:0}
+@media(min-width:721px){
+ .timebar-expand{display:none!important}
+}
+@media(max-width:720px){
+ .timebar{width:auto;min-width:0;left:8px;right:8px;transform:none;bottom:calc(6px + env(safe-area-inset-bottom));padding:8px 10px!important}
+ .timebar-top{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) 30px;align-items:center;gap:8px;margin-bottom:6px!important}
+ .timebar-era{max-width:none!important;text-align:right;font-size:9px!important}
+ .timebar-expand{display:grid;place-items:center;width:29px;height:29px;border:1px solid var(--line);border-radius:9px;background:#1a303b;color:var(--gold);font-size:17px;line-height:1}
+ .timebar-controls{gap:6px!important}
+ .time-control{width:32px!important;height:33px!important}
+ .timebar-details{display:block}
+ .timebar:not(.timeline-expanded) .timebar-details{display:none}
+ .timebar:not(.timeline-expanded) .timebar-top{margin-bottom:0!important}
+ .timebar:not(.timeline-expanded) .timebar-date{font-size:20px!important}
+ .timebar:not(.timeline-expanded) .timebar-expand{transform:rotate(180deg)}
+ .timebar.timeline-expanded .timebar-details{padding-top:7px}
+ .app.mobile-explore-closed .timebar{z-index:7}
+ .app.mobile-explore-closed .mobile-map-toggle{top:76px}
+ .app.mobile-explore-closed .bottom-left{display:none}
+ .app.mobile-explore-closed .bottom-right{top:74px}
+ .app.mobile-explore-closed .bottom-right .map-tools{top:114px}
+ .app.mobile-explore-closed .maplibregl-ctrl-bottom-right{bottom:12px!important}
+}
+@media(max-width:720px) and (max-height:900px){
+ .timebar.timeline-expanded .timebar-details{max-height:36vh;overflow-y:auto}
+ .left-panel{bottom:250px!important}
+}
+@media(max-width:390px){
+ .timebar-top{grid-template-columns:auto minmax(0,1fr) 28px;gap:5px}
+ .timebar-era{font-size:8px!important}
+ .timebar-expand{width:27px;height:27px}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .left-panel{top:108px!important;bottom:150px!important;width:min(340px,48vw)!important}
+ .timebar{left:auto;right:8px;bottom:8px;width:min(54vw,520px);transform:none}
+ .timebar.timeline-expanded .timebar-details{max-height:35vh;overflow-y:auto}
+}
+@media(min-width:721px) and (max-width:1100px){
+ .left-panel{left:14px;width:270px}
+ .timebar{left:300px;right:14px;width:auto;min-width:0;transform:none}
+ .detail{right:14px;width:310px}
+ .bottom-left{left:14px}
+ .bottom-right{right:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .timebar,.timebar-expand{transition:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -316,11 +368,11 @@ button,input,select{touch-action:manipulation}
  </div><div class="map-tools"><button class="map-tool" id="historicalLayersToggle" title="Camadas históricas" aria-label="Camadas históricas" aria-expanded="false">▤</button><button class="map-tool" id="coverageToggle" title="Mostrar cobertura" aria-pressed="true">◌</button><button class="map-tool" id="zoomIn" title="Aproximar">＋</button><button class="map-tool" id="zoomOut" title="Afastar">－</button><button class="map-tool" id="tilt" title="Alternar inclinação">◢</button><button class="map-tool" id="locate" title="Centro de Lisboa">⌖</button></div><div class="location-tag">◈ EXPLORAÇÃO 3D · LISBOA</div></div>
 
  <section class="timebar" id="timebar" aria-label="Linha temporal histórica">
-  <div class="timebar-top"><div><div class="timebar-kicker" id="timeKicker">VIAJA NO TEMPO</div><div class="timebar-date" id="timeYear">2026</div></div><div class="timebar-era" id="timeEra">Lisboa contemporânea</div></div>
+  <div class="timebar-top"><div><div class="timebar-kicker" id="timeKicker">VIAJA NO TEMPO</div><div class="timebar-date" id="timeYear">2026</div></div><div class="timebar-era" id="timeEra">Lisboa contemporânea</div><button class="timebar-expand" id="timebarExpand" type="button" aria-expanded="false" aria-controls="timebarDetails" aria-label="Expandir linha temporal">⌃</button></div>
   <div class="timebar-controls"><button class="time-control" id="timeBack" aria-label="Recuar no tempo" title="Recuar">‹</button><input class="year-slider" id="yearSlider" type="range" min="-100" max="2026" step="1" value="2026" aria-label="Selecionar ano histórico"><button class="time-control" id="timeForward" aria-label="Avançar no tempo" title="Avançar">›</button><button class="time-control" id="timeNow" aria-label="Voltar ao presente" title="Hoje">↺</button></div>
-  <div class="timebar-bottom"><span class="timebar-hint" id="timeStart">100 a.C.</span><span class="timebar-hint" id="timeHint">Arrasta para mudar a cidade</span><span class="timebar-hint" id="timeEnd">Hoje</span></div>
+  <div class="timebar-details" id="timebarDetails"><div class="timebar-bottom"><span class="timebar-hint" id="timeStart">100 a.C.</span><span class="timebar-hint" id="timeHint">Arrasta para mudar a cidade</span><span class="timebar-hint" id="timeEnd">Hoje</span></div>
   <div class="time-events" id="timeEvents"></div>
-  <div class="history-note" id="historyNote">A área urbana histórica é esquemática; os pontos surgem a partir da data aproximada de construção.</div>
+  <div class="history-note" id="historyNote">A área urbana histórica é esquemática; os pontos surgem a partir da data aproximada de construção.</div></div>
  </section>
  <section class="detail" id="detail" aria-live="polite"><div class="detail-image" id="detailImage"><button class="detail-close" id="closeDetail" aria-label="Fechar">✕</button></div><div class="detail-content" id="detailContent"></div></section>
  <div class="toast" id="toast"></div>
@@ -841,19 +893,33 @@ $('placeSearch').addEventListener('input',()=>{renderPlaces();renderMarkers()});
 bindJourneyControls();
 const mobileExploreToggle=$('mobileExploreToggle');
 if(mobileExploreToggle){
+ const appRoot=document.querySelector('.app');
+ let wasMobile=window.matchMedia('(max-width:720px)').matches;
+ if(wasMobile){appRoot.classList.add('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','false');mobileExploreToggle.innerHTML='☰ Explorar';}
  const syncMobileExplore=()=>{
   const mobile=window.matchMedia('(max-width:720px)').matches;
   mobileExploreToggle.style.display=mobile?'flex':'none';
-  if(!mobile){document.querySelector('.app').classList.remove('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','true');}
+  if(!mobile){appRoot.classList.remove('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','true');mobileExploreToggle.innerHTML='✕ Fechar';}
+  else if(!wasMobile){appRoot.classList.add('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','false');mobileExploreToggle.innerHTML='☰ Explorar';}
+  wasMobile=mobile;
  };
  mobileExploreToggle.addEventListener('click',()=>{
-  const app=document.querySelector('.app');
-  const closed=app.classList.toggle('mobile-explore-closed');
+  const closed=appRoot.classList.toggle('mobile-explore-closed');
   mobileExploreToggle.setAttribute('aria-expanded',String(!closed));
   mobileExploreToggle.innerHTML=closed?'☰ Explorar':'✕ Fechar';
  });
  syncMobileExplore();
  window.addEventListener('resize',syncMobileExplore,{passive:true});
+}
+const timelineToggle=$('timebarExpand');
+if(timelineToggle){
+ const timebar=$('timebar');
+ timelineToggle.addEventListener('click',()=>{
+  const expanded=timebar.classList.toggle('timeline-expanded');
+  timelineToggle.setAttribute('aria-expanded',String(expanded));
+  timelineToggle.setAttribute('aria-label',expanded?'Recolher linha temporal':'Expandir linha temporal');
+  timelineToggle.textContent=expanded?'⌄':'⌃';
+ });
 }
 $('languageSelect').addEventListener('change',e=>{applyLanguage(e.target.value);updateMapViewLabels()});
 $('viewHistorical').addEventListener('click',()=>setMapView('historical'));
