@@ -152,7 +152,8 @@ map.addControl(new maplibregl.NavigationControl({showCompass:true,showZoom:false
 map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
 map.on('load',()=>{
  mapReady=true;
- addCoverageLayer();\n addHistoricalExtent();
+ addCoverageLayer();
+ addHistoricalExtent();
  const layers=map.getStyle().layers||[];let labelLayerId;for(const layer of layers){if(layer.type==='symbol'&&layer.layout&&layer.layout['text-field']){labelLayerId=layer.id;break}}
  try{map.addSource('openmaptiles',{url:'https://demotiles.maplibre.org/tiles/tiles.json',type:'vector'});if(labelLayerId){/* Keep basemap labels native. */}}catch(e){}
  // Extrude building polygons when the basemap provides building geometry.
