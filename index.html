@@ -20,6 +20,11 @@
 .reconstruction-panel{position:absolute;z-index:5;top:102px;right:24px;width:286px;padding:14px;background:rgba(10,22,31,.94);border:1px solid rgba(245,189,101,.34);border-radius:15px;box-shadow:0 16px 48px #0005;backdrop-filter:blur(20px);display:none}
 .reconstruction-panel.visible{display:block}.recon-kicker{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700}.recon-title{font:600 17px/1.15 'Space Grotesk';margin:7px 0 8px}.recon-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:10px 0}.recon-tab{padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.035);font-size:10px;color:#cbd7db}.recon-tab.active{border-color:rgba(245,189,101,.7);background:rgba(245,189,101,.15);color:#ffd18a}.recon-copy{font-size:10px;line-height:1.55;color:#c3d0d5}.recon-status{display:inline-block;margin-top:8px;border:1px solid rgba(120,219,195,.32);color:var(--mint);padding:5px 7px;border-radius:7px;font-size:9px}.recon-sources{font-size:9px;line-height:1.6;margin-top:9px;color:#9eafb8}.recon-sources a{color:var(--mint);text-decoration:none}
 @media(max-width:720px){.reconstruction-panel{top:78px;right:10px;width:min(270px,calc(100% - 20px));padding:10px}.recon-title{font-size:15px}.recon-copy{font-size:9px}.recon-tabs{margin:7px 0}}
+.historical-layer-panel{display:none;width:236px;padding:12px;background:rgba(10,22,31,.96);border:1px solid rgba(245,189,101,.32);border-radius:13px;box-shadow:0 14px 42px #0006;backdrop-filter:blur(18px);margin-bottom:7px}
+.historical-layer-panel.open{display:block}.layer-panel-title{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--gold);font-weight:700;margin-bottom:8px}
+.layer-option{display:flex;gap:8px;align-items:flex-start;font-size:10px;line-height:1.35;color:#d3dfe2;margin:9px 0;cursor:pointer}.layer-option input{accent-color:var(--mint);margin:1px 0 0}.layer-option small{display:block;font-size:8px;color:#9eafb8;margin-top:2px}.history-source-note{font-size:9px;line-height:1.5;color:#a6b7bf;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+@media(max-width:720px){.historical-layer-panel{width:210px}.layer-option{font-size:9px}.history-source-note{font-size:8px}}
+
 
 @media(max-width:900px){.timebar{width:calc(100% - 330px);min-width:330px;bottom:12px}.bottom-left{bottom:105px}.bottom-right{bottom:105px}}
 @media(max-width:720px){.timebar{left:8px;right:8px;bottom:8px;transform:none;width:auto;min-width:0;padding:10px 11px;border-radius:14px}.timebar-date{font-size:22px}.timebar-era{font-size:10px;max-width:48%}.timebar-kicker{font-size:8px}.time-event{font-size:8px;padding:5px 6px}.history-note{font-size:8px;margin-top:6px}.left-panel{max-height:calc(100% - 310px)}.bottom-left{bottom:190px}.bottom-right{bottom:190px}.detail{bottom:175px;max-height:calc(100% - 260px)}}
@@ -53,7 +58,13 @@
   <div class="recon-sources" id="reconSources">Fontes: Museu de Lisboa · Arquivo Municipal de Lisboa</div>
  </section>
  <div class="bottom-left"><div class="small-note">⌖ <span id="coords">38.7223° N, 9.1393° W</span> · Lisboa, Portugal</div><div class="coverage-key" id="coverageKey"><span><i class="key-dot covered"></i><b id="coveredLabel">Com pontos históricos</b></span><span><i class="key-dot uncovered"></i><b id="uncoveredLabel">Sem pontos catalogados</b></span></div></div>
- <div class="bottom-right"><div class="map-tools"><button class="map-tool" id="coverageToggle" title="Mostrar cobertura" aria-pressed="true">◌</button><button class="map-tool" id="zoomIn" title="Aproximar">＋</button><button class="map-tool" id="zoomOut" title="Afastar">－</button><button class="map-tool" id="tilt" title="Alternar inclinação">◢</button><button class="map-tool" id="locate" title="Centro de Lisboa">⌖</button></div><div class="location-tag">◈ EXPLORAÇÃO 3D · LISBOA</div></div>
+ <div class="bottom-right"><div class="historical-layer-panel" id="historicalLayerPanel">
+  <div class="layer-panel-title" id="historicalLayerTitle">Camadas históricas</div>
+  <label class="layer-option"><input type="checkbox" id="toggleUrbanExtent" checked><span id="urbanExtentLabel">Extensão urbana <small>Limite indicativo por época</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="toggleWalls"><span id="wallsLabel">Muralhas históricas <small>Traçados esquemáticos das cercas</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="toggleWaterfront"><span id="waterfrontLabel">Frente ribeirinha <small>Margem indicativa antes/depois de 1755</small></span></label>
+  <div class="history-source-note" id="layerSources">Referências: Museu de Lisboa e Arquivo Municipal.</div>
+ </div><div class="map-tools"><button class="map-tool" id="historicalLayersToggle" title="Camadas históricas" aria-label="Camadas históricas" aria-expanded="false">▤</button><button class="map-tool" id="coverageToggle" title="Mostrar cobertura" aria-pressed="true">◌</button><button class="map-tool" id="zoomIn" title="Aproximar">＋</button><button class="map-tool" id="zoomOut" title="Afastar">－</button><button class="map-tool" id="tilt" title="Alternar inclinação">◢</button><button class="map-tool" id="locate" title="Centro de Lisboa">⌖</button></div><div class="location-tag">◈ EXPLORAÇÃO 3D · LISBOA</div></div>
 
  <section class="timebar" id="timebar" aria-label="Linha temporal histórica">
   <div class="timebar-top"><div><div class="timebar-kicker" id="timeKicker">VIAJA NO TEMPO</div><div class="timebar-date" id="timeYear">2026</div></div><div class="timebar-era" id="timeEra">Lisboa contemporânea</div></div>
@@ -172,7 +183,7 @@ function historicalEra(year){if(year<300)return tr('eraAncient');if(year<800)ret
 const eventYears=[100,1147,1500,1754,1755,1756,1800,1910,1974,1998,2026];
 function renderTimeEvents(){$('timeEvents').innerHTML=eventYears.map(y=>'<button class="time-event '+(selectedYear===y?'active':'')+'" data-year="'+y+'">'+tr('event'+y)+'</button>').join('');document.querySelectorAll('.time-event').forEach(b=>b.addEventListener('click',()=>setHistoricalYear(Number(b.dataset.year))))}
 function updateTimeLabels(){$('timeKicker').textContent=tr('timeKicker');$('timeYear').textContent=formatHistoricalYear(selectedYear);$('timeEra').textContent=historicalEra(selectedYear);$('timeHint').textContent=tr('timeHint');$('timeStart').textContent=tr('timeStart');$('timeEnd').textContent=tr('timeEnd');$('historyNote').innerHTML=selectedYear===1755?(language==='pt'?'A zona a laranja assinala uma área afetada pelo terramoto; os limites são esquemáticos.':language==='en'?'The orange area marks a zone affected by the earthquake; boundaries are schematic.':language==='es'?'La zona naranja indica un área afectada por el terremoto; los límites son esquemáticos.':'La zone orange indique une zone touchée par le séisme ; les limites sont schématiques.'):tr('historyNote');document.querySelectorAll('.time-event').forEach(b=>b.classList.toggle('active',Number(b.dataset.year)===selectedYear))}
-function setHistoricalYear(year){selectedYear=Math.max(-100,Math.min(2026,Math.round(year)));$('yearSlider').value=String(selectedYear);updateTimeLabels();update1755Reconstruction();if(map.getSource('historic-extent'))map.getSource('historic-extent').setData(historicalExtentFeature(selectedYear));updateDesertMask();if(map.getLayer('earthquake-zone-fill'))map.setPaintProperty('earthquake-zone-fill','fill-opacity',selectedYear===1755 ? 0.28 : (selectedYear>=1756&&selectedYear<=1760 ? 0.12 : 0));if(map.getLayer('earthquake-zone-line'))map.setPaintProperty('earthquake-zone-line','line-opacity',selectedYear>=1755&&selectedYear<=1760?0.9:0);if(selectedId&&!isVisibleInYear(places.find(p=>p.id===selectedId)||{id:''}))hideDetail();if(selectedId){const activePlace=places.find(p=>p.id===selectedId);if(activePlace)renderDetailContent(activePlace)}renderPlaces();renderMarkers()}
+function setHistoricalYear(year){selectedYear=Math.max(-100,Math.min(2026,Math.round(year)));$('yearSlider').value=String(selectedYear);updateTimeLabels();update1755Reconstruction();updateHistoricalLayers();if(map.getSource('historic-extent'))map.getSource('historic-extent').setData(historicalExtentFeature(selectedYear));updateDesertMask();if(map.getLayer('earthquake-zone-fill'))map.setPaintProperty('earthquake-zone-fill','fill-opacity',selectedYear===1755 ? 0.28 : (selectedYear>=1756&&selectedYear<=1760 ? 0.12 : 0));if(map.getLayer('earthquake-zone-line'))map.setPaintProperty('earthquake-zone-line','line-opacity',selectedYear>=1755&&selectedYear<=1760?0.9:0);if(selectedId&&!isVisibleInYear(places.find(p=>p.id===selectedId)||{id:''}))hideDetail();if(selectedId){const activePlace=places.find(p=>p.id===selectedId);if(activePlace)renderDetailContent(activePlace)}renderPlaces();renderMarkers()}
 function historicalExtentFeature(year){let coords;if(year<800){coords=[[-9.141,38.705],[-9.128,38.705],[-9.124,38.713],[-9.133,38.719],[-9.143,38.715],[-9.141,38.705]]}else if(year<1500){coords=[[-9.146,38.704],[-9.121,38.704],[-9.119,38.716],[-9.128,38.722],[-9.143,38.719],[-9.149,38.711],[-9.146,38.704]]}else if(year<=1755){coords=[[-9.163,38.699],[-9.121,38.701],[-9.116,38.714],[-9.128,38.724],[-9.149,38.722],[-9.164,38.711],[-9.163,38.699]]}else if(year<=1800){coords=[[-9.164,38.699],[-9.119,38.701],[-9.116,38.716],[-9.129,38.725],[-9.151,38.722],[-9.166,38.711],[-9.164,38.699]]}else if(year<1998){coords=[[-9.205,38.691],[-9.115,38.695],[-9.087,38.756],[-9.126,38.771],[-9.169,38.752],[-9.204,38.729],[-9.205,38.691]]}else{coords=[[-9.222,38.688],[-9.081,38.688],[-9.075,38.775],[-9.132,38.786],[-9.190,38.759],[-9.222,38.688]]}return{type:'Feature',properties:{year},geometry:{type:'Polygon',coordinates:[coords]}}}
 
 function createDesertTexture(){if(map.hasImage('desert-texture'))return;const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;const ctx=canvas.getContext('2d');ctx.fillStyle='#c6ad80';ctx.fillRect(0,0,128,128);for(let i=0;i<260;i++){const x=(i*47+13)%128,y=(i*83+29)%128;ctx.fillStyle=i%3===0?'rgba(105,79,43,.16)':'rgba(255,239,193,.20)';ctx.fillRect(x,y,i%4===0?2:1,i%5===0?2:1)}for(let i=0;i<3;i++){const y=24+i*43;ctx.beginPath();ctx.moveTo(-8,y+8);ctx.bezierCurveTo(22,y-15,45,y-11,70,y+2);ctx.bezierCurveTo(90,y+13,112,y+12,138,y-5);ctx.strokeStyle='rgba(117,88,48,.19)';ctx.lineWidth=1.4;ctx.stroke();ctx.beginPath();ctx.moveTo(-8,y+11);ctx.bezierCurveTo(22,y-12,45,y-8,70,y+5);ctx.bezierCurveTo(90,y+16,112,y+15,138,y-2);ctx.strokeStyle='rgba(255,237,188,.28)';ctx.lineWidth=1;ctx.stroke()}map.addImage('desert-texture',canvas,{pixelRatio:2})}
@@ -239,6 +250,37 @@ function update1755Reconstruction(){
 }
 
 
+function addHistoricalContextLayers(){
+ const features=[
+  {type:'Feature',properties:{wall:'old'},geometry:{type:'LineString',coordinates:[[-9.137,38.715],[-9.135,38.718],[-9.131,38.719],[-9.127,38.716],[-9.126,38.712],[-9.130,38.708],[-9.135,38.708],[-9.138,38.711],[-9.137,38.715]]}},
+  {type:'Feature',properties:{wall:'fernandina'},geometry:{type:'LineString',coordinates:[[-9.148,38.707],[-9.146,38.715],[-9.142,38.722],[-9.133,38.727],[-9.123,38.725],[-9.116,38.718],[-9.115,38.711],[-9.120,38.704],[-9.128,38.700]]}},
+  {type:'Feature',properties:{wall:'fernandina'},geometry:{type:'LineString',coordinates:[[-9.128,38.700],[-9.137,38.700],[-9.146,38.703],[-9.148,38.707]]}}
+ ];
+ map.addSource('historic-walls',{type:'geojson',data:{type:'FeatureCollection',features}});
+ map.addLayer({id:'historic-walls-old',type:'line',source:'historic-walls',filter:['==',['get','wall'],'old'],layout:{visibility:'none'},paint:{'line-color':'#e7b65f','line-width':2.4,'line-opacity':.95,'line-dasharray':[2,1]}});
+ map.addLayer({id:'historic-walls-fernandina',type:'line',source:'historic-walls',filter:['==',['get','wall'],'fernandina'],layout:{visibility:'none'},paint:{'line-color':'#e8a06b','line-width':2.2,'line-opacity':.9,'line-dasharray':[3,1]}});
+ const shore={type:'FeatureCollection',features:[
+  {type:'Feature',properties:{period:'before'},geometry:{type:'LineString',coordinates:[[-9.151,38.703],[-9.146,38.706],[-9.142,38.709],[-9.139,38.713],[-9.135,38.717]]}},
+  {type:'Feature',properties:{period:'after'},geometry:{type:'LineString',coordinates:[[-9.153,38.701],[-9.145,38.701],[-9.137,38.701],[-9.129,38.701],[-9.121,38.701]]}}
+ ]};
+ map.addSource('historic-waterfront',{type:'geojson',data:shore});
+ map.addLayer({id:'historic-waterfront-before',type:'line',source:'historic-waterfront',filter:['==',['get','period'],'before'],layout:{visibility:'none'},paint:{'line-color':'#7fcfdd','line-width':2.5,'line-opacity':.95,'line-dasharray':[2,2]}});
+ map.addLayer({id:'historic-waterfront-after',type:'line',source:'historic-waterfront',filter:['==',['get','period'],'after'],layout:{visibility:'none'},paint:{'line-color':'#7fcfdd','line-width':2.5,'line-opacity':.95}});
+ updateHistoricalLayers();
+}
+function updateHistoricalLayers(){
+ const year=selectedYear,wallsOn=$('toggleWalls')?.checked,shoreOn=$('toggleWaterfront')?.checked,extentOn=$('toggleUrbanExtent')?.checked!==false;
+ if(map.getLayer('historic-extent-fill'))map.setLayoutProperty('historic-extent-fill','visibility',extentOn?'visible':'none');
+ if(map.getLayer('historic-extent-line'))map.setLayoutProperty('historic-extent-line','visibility',extentOn?'visible':'none');
+ const wallVisible=!!wallsOn&&year>=1100&&year<=1600;
+ for(const id of ['historic-walls-old','historic-walls-fernandina'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',wallVisible?'visible':'none');
+ if(map.getLayer('historic-waterfront-before'))map.setLayoutProperty('historic-waterfront-before','visibility',shoreOn&&year<=1754?'visible':'none');
+ if(map.getLayer('historic-waterfront-after'))map.setLayoutProperty('historic-waterfront-after','visibility',shoreOn&&year>=1755?'visible':'none');
+}
+function bindHistoricalLayerControls(){
+ $('historicalLayersToggle').addEventListener('click',()=>{const panel=$('historicalLayerPanel'),open=!panel.classList.contains('open');panel.classList.toggle('open',open);$('historicalLayersToggle').setAttribute('aria-expanded',String(open))});
+ ['toggleUrbanExtent','toggleWalls','toggleWaterfront'].forEach(id=>$(id).addEventListener('change',updateHistoricalLayers));
+}
 function addHistoricalExtent(){map.addSource('historic-extent',{type:'geojson',data:historicalExtentFeature(selectedYear)});map.addLayer({id:'historic-extent-fill',type:'fill',source:'historic-extent',paint:{'fill-color':'#f5bd65','fill-opacity':.075}});map.addLayer({id:'historic-extent-line',type:'line',source:'historic-extent',paint:{'line-color':'#f5bd65','line-width':2,'line-opacity':.8,'line-dasharray':[2,2]}});const quake={type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[[-9.144,38.704],[-9.129,38.704],[-9.129,38.713],[-9.141,38.714],[-9.144,38.704]]]}};map.addSource('earthquake-zone',{type:'geojson',data:quake});map.addLayer({id:'earthquake-zone-fill',type:'fill',source:'earthquake-zone',paint:{'fill-color':'#f0785e','fill-opacity':selectedYear===1755 ? 0.28 : 0}});map.addLayer({id:'earthquake-zone-line',type:'line',source:'earthquake-zone',paint:{'line-color':'#f0785e','line-width':2,'line-opacity':selectedYear>=1755&&selectedYear<=1760 ? 0.9 : 0,'line-dasharray':[2,1]}});setHistoricalYear(selectedYear)}
 
 
@@ -264,6 +306,7 @@ function focusPlace(id){const p=places.find(x=>x.id===id);if(!p)return;selectedI
 function hideDetail(){$('detail').classList.remove('open');selectedId=null;renderPlaces();renderMarkers()}
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{currentEra=b.dataset.era;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderPlaces();renderMarkers();if(selectedId&&!places.some(p=>p.id===selectedId&&(currentEra==='all'||p.era===currentEra)))hideDetail()});
 $('closeDetail').onclick=hideDetail;
+bindHistoricalLayerControls();
 const map = new maplibregl.Map({container:'map',style:'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',center:[-9.157,38.726],zoom:11.65,pitch:38,bearing:-10,antialias:true,attributionControl:true,cooperativeGestures:true});
 map.addControl(new maplibregl.NavigationControl({showCompass:true,showZoom:false,visualizePitch:true}),'bottom-right');
 map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
@@ -274,6 +317,7 @@ map.on('load',()=>{
  try{addDesertMask()}catch(e){console.warn('Desert mask unavailable',e)}
  try{addHistoricalExtent()}catch(e){console.warn('Historical extent unavailable',e)}
  try{add1755ReconstructionLayer()}catch(e){console.warn('1755 reconstruction overlay unavailable',e)}
+ try{addHistoricalContextLayers()}catch(e){console.warn('Historical context layers unavailable',e)}
  try{
   const layers=map.getStyle().layers||[];
   const labelLayerId=layers.find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
