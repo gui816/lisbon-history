@@ -324,6 +324,16 @@ button,input,select{touch-action:manipulation}
  .timebar,.timebar-expand{transition:none!important}
 }
 
+
+/* Remove the hard-edged satellite cutout: use a continuous basemap and a quiet study-area cue. */
+#studyMaskOverlay{display:none!important}
+.app.satellite-mode #studyMaskOverlay{display:none!important}
+.study-area-chip{display:none}
+@media(max-width:720px){
+ .study-area-chip{display:block;position:fixed;z-index:4;left:10px;bottom:calc(92px + env(safe-area-inset-bottom));max-width:calc(100% - 20px);padding:7px 10px;border:1px solid rgba(120,219,195,.3);border-radius:999px;background:rgba(10,22,31,.82);color:#d8e8e7;font-size:10px;backdrop-filter:blur(12px);pointer-events:none}
+ .app.mobile-explore-closed .study-area-chip{display:block}
+}
+
 </style>
 </head>
 <body>
@@ -335,6 +345,7 @@ button,input,select{touch-action:manipulation}
   <div class="brand"><div class="brand-mark">⌘</div><div><div class="brand-name">LISBOA <span style="color:var(--gold)">NO TEMPO</span></div><div class="brand-sub">A cidade conta histórias</div></div></div>
   <div class="top-actions"><div class="chip" id="modeChip">MODO EXPLORAÇÃO <strong>● ATIVO</strong></div><select id="languageSelect" aria-label="Idioma" title="Idioma" class="language-select"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option><option value="fr">FR</option></select><button class="icon-btn" id="resetView" aria-label="Vista inicial" title="Vista inicial">⌂</button></div>
  </header>
+ <div class="study-area-chip" id="studyAreaChip">◈ Baixa Pombalina · zona histórica em foco</div>
  <button class="mobile-map-toggle" id="mobileExploreToggle" type="button" aria-expanded="true" aria-controls="mobileExplorePanel">☰ Explorar</button>
  <aside class="left-panel" id="mobileExplorePanel">
   <div class="intro"><div class="eyebrow" id="eyebrow">◆ Uma cidade. Muitas eras.</div><h1 id="heroTitle">Descobre Lisboa<br><span style="color:var(--gold)">através do tempo.</span></h1><p id="heroText">Explora lugares, compara épocas e descobre as histórias por trás da cidade. Seleciona um ponto ou inicia um percurso guiado.</p><div class="intro-meta"><span class="intro-stat" id="introStatPlaces"><strong>58</strong> locais históricos</span><span class="intro-stat" id="introStatYears"><strong>2.000+</strong> anos de história</span></div></div>
@@ -656,8 +667,10 @@ function updatePombalineAreaMask(active){
 function updateStudyMaskOverlay(active){
  const overlay=document.getElementById('studyMaskOverlay'),path=document.getElementById('studyMaskPath');
  if(!overlay||!path)return;
- const visible=!!active&&mapReady&&isPombalineStudyActive();
- overlay.style.display=visible?'block':'none';
+ const visible=false;
+ // A hard-edged SVG cutout made the satellite imagery look like a floating square.
+ // Keep the historic study area as contextual metadata and a soft boundary, not a clipped basemap.
+ overlay.style.display='none';
  if(!visible)return;
  const container=map.getContainer(),width=container.clientWidth,height=container.clientHeight;
  if(!width||!height)return;
