@@ -251,6 +251,27 @@ button,input,select{touch-action:manipulation}
   .timebar-era{max-width:48%!important}
 }
 
+
+/* Mobile map-first controls: panels can be dismissed instead of competing for the viewport. */
+.mobile-map-toggle{display:none}
+@media(max-width:720px){
+ .mobile-map-toggle{display:flex;align-items:center;justify-content:center;gap:7px;position:fixed;z-index:9;left:10px;top:72px;min-height:36px;padding:0 12px;border:1px solid rgba(120,219,195,.42);border-radius:11px;background:rgba(10,22,31,.94);color:#dff8f1;box-shadow:0 8px 24px #0005;backdrop-filter:blur(14px);font-size:11px;font-weight:700}
+ .app.mobile-explore-closed .left-panel{display:none!important}
+ .app.mobile-explore-closed .mobile-map-toggle{background:rgba(120,219,195,.16)}
+ .timebar{transition:padding .2s ease}
+ .timebar-collapse{display:none}
+}
+@media(max-width:720px) and (min-height:901px){
+ .mobile-map-toggle{top:72px}
+}
+@media(max-width:720px) and (max-height:900px){
+ .left-panel{top:116px!important}
+ .mobile-map-toggle{top:70px}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .mobile-map-toggle{top:68px;left:8px}
+}
+
 </style>
 </head>
 <body>
@@ -262,7 +283,8 @@ button,input,select{touch-action:manipulation}
   <div class="brand"><div class="brand-mark">⌘</div><div><div class="brand-name">LISBOA <span style="color:var(--gold)">NO TEMPO</span></div><div class="brand-sub">A cidade conta histórias</div></div></div>
   <div class="top-actions"><div class="chip" id="modeChip">MODO EXPLORAÇÃO <strong>● ATIVO</strong></div><select id="languageSelect" aria-label="Idioma" title="Idioma" class="language-select"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option><option value="fr">FR</option></select><button class="icon-btn" id="resetView" aria-label="Vista inicial" title="Vista inicial">⌂</button></div>
  </header>
- <aside class="left-panel">
+ <button class="mobile-map-toggle" id="mobileExploreToggle" type="button" aria-expanded="true" aria-controls="mobileExplorePanel">☰ Explorar</button>
+ <aside class="left-panel" id="mobileExplorePanel">
   <div class="intro"><div class="eyebrow" id="eyebrow">◆ Uma cidade. Muitas eras.</div><h1 id="heroTitle">Descobre Lisboa<br><span style="color:var(--gold)">através do tempo.</span></h1><p id="heroText">Explora lugares, compara épocas e descobre as histórias por trás da cidade. Seleciona um ponto ou inicia um percurso guiado.</p><div class="intro-meta"><span class="intro-stat" id="introStatPlaces"><strong>58</strong> locais históricos</span><span class="intro-stat" id="introStatYears"><strong>2.000+</strong> anos de história</span></div></div>
   <div class="glass filter-box"><div class="section-label" id="eraLabel">Explorar por época</div><div class="filters" id="filters"><button class="filter active" data-era="all" data-i18n="all">Todas</button><button class="filter" data-era="medieval" data-i18n="medieval">Medieval</button><button class="filter" data-era="1500" data-i18n="discoveries">Descobrimentos</button><button class="filter" data-era="1755" data-i18n="quake">1755</button><button class="filter" data-era="1900" data-i18n="century">Século XX</button></div></div>
   <div class="glass journey-box"><div class="journey-title" id="journeyTitle">Percursos guiados</div><select class="journey-select" id="journeySelect" aria-label="Selecionar percurso"><option value="medieval">Lisboa medieval</option><option value="quake">O terramoto de 1755</option><option value="pombaline">A reconstrução pombalina</option></select><div class="journey-actions"><button class="journey-btn primary" id="journeyStart">Iniciar percurso</button><button class="journey-btn" id="journeyExit" hidden>Terminar</button></div><div class="journey-status" id="journeyStatus" aria-live="polite">Explora uma história através de vários locais.</div><div class="journey-actions" id="journeyNav" hidden><button class="journey-btn" id="journeyPrev">← Anterior</button><button class="journey-btn primary" id="journeyNext">Seguinte →</button></div></div>
@@ -817,6 +839,22 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape')hideDetail();if(e.key=
 renderPlaces();
 $('placeSearch').addEventListener('input',()=>{renderPlaces();renderMarkers()});
 bindJourneyControls();
+const mobileExploreToggle=$('mobileExploreToggle');
+if(mobileExploreToggle){
+ const syncMobileExplore=()=>{
+  const mobile=window.matchMedia('(max-width:720px)').matches;
+  mobileExploreToggle.style.display=mobile?'flex':'none';
+  if(!mobile){document.querySelector('.app').classList.remove('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','true');}
+ };
+ mobileExploreToggle.addEventListener('click',()=>{
+  const app=document.querySelector('.app');
+  const closed=app.classList.toggle('mobile-explore-closed');
+  mobileExploreToggle.setAttribute('aria-expanded',String(!closed));
+  mobileExploreToggle.innerHTML=closed?'☰ Explorar':'✕ Fechar';
+ });
+ syncMobileExplore();
+ window.addEventListener('resize',syncMobileExplore,{passive:true});
+}
 $('languageSelect').addEventListener('change',e=>{applyLanguage(e.target.value);updateMapViewLabels()});
 $('viewHistorical').addEventListener('click',()=>setMapView('historical'));
 updateMapViewLabels();
