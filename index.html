@@ -151,6 +151,49 @@ button,input,select{touch-action:manipulation}
 @media(max-height:760px) and (max-width:720px){
   .left-panel{bottom:292px;top:118px}.intro p{font-size:10px}.timebar{padding:8px 10px}.history-note{display:none}.time-events{margin-top:6px}
 }
+
+/* Adaptive filters: the available width, not a fixed device assumption, decides the layout. */
+.filters{min-width:0}
+.filter-box{min-width:0}
+@media(max-width:900px){
+  .filter-box{padding:12px}
+  .filters{gap:6px}
+  .filter{flex:0 0 auto}
+}
+@media(max-width:720px){
+  .filter-box{padding:10px 11px}
+  .filters{
+    display:flex;flex-wrap:nowrap;align-items:center;gap:7px;
+    overflow-x:auto;overflow-y:hidden;max-width:100%;
+    padding:1px 2px 7px;margin:0 -2px;
+    scrollbar-width:thin;scrollbar-color:rgba(245,189,101,.45) transparent;
+    overscroll-behavior-x:contain;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;
+  }
+  .filters::-webkit-scrollbar{height:3px}
+  .filters::-webkit-scrollbar-thumb{background:rgba(245,189,101,.45);border-radius:4px}
+  .filter{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;font-size:10px;padding:8px 11px}
+  .section-label{margin-bottom:7px}
+}
+@media(max-width:390px){
+  .filter-box{padding:9px 10px}
+  .filters{gap:6px}
+  .filter{font-size:9px;padding:8px 10px}
+}
+@media(orientation:landscape) and (max-width:900px){
+  .left-panel{top:76px;bottom:155px;max-height:none}
+  .intro{padding:9px 12px}
+  .intro h1{font-size:22px;margin:5px 0}
+  .intro p{font-size:10px;line-height:1.35}
+  .intro-meta{margin-top:6px}
+  .intro-stat{padding:4px 7px}
+  .timebar{left:auto;right:8px;bottom:8px;width:min(54vw,520px);padding:8px 10px}
+  .time-events{max-width:100%}
+  .bottom-left{bottom:165px}
+  .bottom-right{top:68px}
+  .bottom-right .map-tools{top:108px}
+}
+
 </style>
 </head>
 <body>
