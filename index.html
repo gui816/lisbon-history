@@ -66,7 +66,7 @@
   <label class="layer-option"><input type="checkbox" id="toggleUrbanExtent" checked><span id="urbanExtentLabel">Extensão urbana <small>Limite indicativo por época</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleWalls"><span id="wallsLabel">Muralhas históricas <small>Traçados esquemáticos das cercas</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleWaterfront"><span id="waterfrontLabel">Frente ribeirinha <small>Margem indicativa antes/depois de 1755</small></span></label>
-  <label class="layer-option"><input type="checkbox" id="togglePombaline3D"><span id="pombaline3DLabel">Baixa Pombalina 3D <small>Volumes ilustrativos, a partir de 1775</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="togglePombaline3D"><span id="pombaline3DLabel">Reconstrução urbana 3D <small>Modelo esquemático que muda por época, a partir de 1500</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleMap1650"><span id="map1650Label">Planta de Tinoco · 1650 <small>Cartografia histórica georreferenciada · CML</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleMap1756"><span id="map1756Label">Planta de Mardel · 1756 <small>Plano de reconstrução georreferenciado · CML</small></span></label>
   <label class="history-map-opacity"><span id="mapOpacityLabel">Opacidade</span><input type="range" id="historicalMapOpacity" min="0.15" max="1" step="0.05" value="0.78" aria-label="Opacidade da planta histórica"></label>
@@ -294,13 +294,33 @@ function addHistoricalContextLayers(){
  map.addLayer({id:'historic-waterfront-after',type:'line',source:'historic-waterfront',filter:['==',['get','period'],'after'],layout:{visibility:'none'},paint:{'line-color':'#7fcfdd','line-width':2.5,'line-opacity':.95}});
  updateHistoricalLayers();
 }
-function pombalineBlocksFeature(){
- const features=[];const xs=[-9.151,-9.147,-9.143,-9.139,-9.135,-9.131],ys=[38.703,38.706,38.709,38.712,38.715,38.718,38.720];
+// A deliberately schematic, time-dependent 3D study model of the Baixa.
+// It changes footprint, height and colour by period; it is not a building-level survey.
+function pombalineBlocksFeature(year=selectedYear){
+ const features=[];
+ const period=year<1755?'pre-quake':year===1755?'ruins':year<1775?'rebuilding':year<1900?'pombaline':year<1990?'modernized':'contemporary';
+ const xs=[-9.151,-9.147,-9.143,-9.139,-9.135,-9.131],ys=[38.703,38.706,38.709,38.712,38.715,38.718,38.720];
  for(let r=0;r<ys.length-1;r++)for(let c=0;c<xs.length-1;c++){
-  const gapLng=.00045,gapLat=.00032,x1=xs[c]+gapLng,x2=xs[c+1]-gapLng,y1=ys[r]+gapLat,y2=ys[r+1]-gapLat;
+  const n=r*5+c;
+  let gapLng=.00045,gapLat=.00032;
+  if(period==='pre-quake'){gapLng=.00022+((r+c)%3)*.00012;gapLat=.00018+((r*2+c)%3)*.00009}
+  if(period==='ruins'){gapLng=.00065+((r+c)%2)*.00015;gapLat=.0005+((r*2+c)%2)*.00015}
+  if(period==='rebuilding'){gapLng=.00072;gapLat=.00056}
+  if(period==='modernized'||period==='contemporary'){gapLng=.00038;gapLat=.00028}
+  const x1=xs[c]+gapLng,x2=xs[c+1]-gapLng,y1=ys[r]+gapLat,y2=ys[r+1]-gapLat;
   if(x2<=x1||y2<=y1)continue;
-  const height=10+((r*3+c*5)%8)*1.6;
-  features.push({type:'Feature',properties:{height,base:0,block:r*5+c+1},geometry:{type:'Polygon',coordinates:[[[x1,y1],[x2,y1],[x2,y2],[x1,y2],[x1,y1]]]}});
+  // Older street blocks are slightly offset to suggest the less regular pre-1755 pattern.
+  const skew=period==='pre-quake'?(((r+c)%3)-1)*.00028:0;
+  const coords=[[x1+skew,y1],[x2,y1+skew*.25],[x2-skew*.2,y2],[x1,y2-skew*.25],[x1+skew,y1]];
+  let height;
+  if(period==='pre-quake')height=6+((r*3+c*5)%6)*1.25;
+  else if(period==='ruins')height=1.2+((r+c)%4)*.65;
+  else if(period==='rebuilding')height=1.4+((r*2+c)%3)*.55;
+  else if(period==='pombaline')height=10+((r*3+c*5)%8)*1.6;
+  else if(period==='modernized')height=12+((r*3+c*5)%7)*1.7;
+  else height=13+((r*3+c*5)%8)*1.7;
+  const color=period==='pre-quake'?'#a78b70':period==='ruins'?'#b96f5d':period==='rebuilding'?'#d8b779':period==='pombaline'?'#d8b98b':period==='modernized'?'#b69b7e':'#c7b49b';
+  features.push({type:'Feature',properties:{height,base:0,block:n+1,period,color},geometry:{type:'Polygon',coordinates:[coords]}});
  }
  return{type:'FeatureCollection',features};
 }
@@ -320,19 +340,20 @@ function pombalineBoundsFeature(){
  return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[[west,south],[east,south],[east,north],[west,north],[west,south]]]}};
 }
 function addPombaline3DLayer(){
- map.addSource('pombaline-blocks',{type:'geojson',data:pombalineBlocksFeature()});
- map.addLayer({id:'pombaline-blocks-3d',type:'fill-extrusion',source:'pombaline-blocks',minzoom:12.2,layout:{visibility:'none'},paint:{'fill-extrusion-color':['interpolate',['linear'],['get','height'],10,'#d8b98b',18,'#b9855d',22,'#8e654d'],'fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','base'],'fill-extrusion-opacity':.82}});
+ map.addSource('pombaline-blocks',{type:'geojson',data:pombalineBlocksFeature(selectedYear)});
+ map.addLayer({id:'pombaline-blocks-3d',type:'fill-extrusion',source:'pombaline-blocks',minzoom:12.2,layout:{visibility:'none'},paint:{'fill-extrusion-color':['get','color'],'fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','base'],'fill-extrusion-opacity':.88}});
  map.addSource('pombaline-area-mask',{type:'geojson',data:pombalineAreaMaskFeature()});
  map.addLayer({id:'pombaline-area-mask-fill',type:'fill',source:'pombaline-area-mask',layout:{visibility:'none'},paint:{'fill-pattern':'desert-texture','fill-opacity':.99}});
  map.addSource('pombaline-bounds',{type:'geojson',data:pombalineBoundsFeature()});
  map.addLayer({id:'pombaline-bounds-line',type:'line',source:'pombaline-bounds',layout:{visibility:'none'},paint:{'line-color':'#f5bd65','line-width':3,'line-opacity':1,'line-dasharray':[2,1]}});
 }
 function updatePombalineAreaMask(active){
- const visible=!!active&&selectedYear>=1775;
+ const visible=!!active&&selectedYear>=1500;
+ if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData(pombalineBlocksFeature(selectedYear));
  if(map.getSource('pombaline-area-mask'))map.getSource('pombaline-area-mask').setData(pombalineAreaMaskFeature());
  for(const id of ['pombaline-area-mask-fill','pombaline-bounds-line'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',visible?'visible':'none');
  // The general-purpose basemap extrusion is intentionally disabled in historical study mode.
- if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',visible?'none':(selectedYear>=2020?'visible':'none'));
+ if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',active?'none':(selectedYear>=2020?'visible':'none'));
  if(visible){
   // Keep the mask above all map labels/buildings, while HTML place markers are filtered separately.
   map.moveLayer('pombaline-area-mask-fill');
@@ -344,7 +365,7 @@ function updateHistoricalLayers(){
  const opacity=Number($('historicalMapOpacity')?.value||0.78);
  if(map.getLayer('historical-map-1650')){map.setPaintProperty('historical-map-1650','raster-opacity',opacity);map.setLayoutProperty('historical-map-1650','visibility',$('toggleMap1650')?.checked&&year>=1500&&year<=1755?'visible':'none')}
  if(map.getLayer('historical-map-1756')){map.setPaintProperty('historical-map-1756','raster-opacity',opacity);map.setLayoutProperty('historical-map-1756','visibility',$('toggleMap1756')?.checked&&year>=1755&&year<=1800?'visible':'none')}
- if(map.getLayer('pombaline-blocks-3d'))map.setLayoutProperty('pombaline-blocks-3d','visibility',blocksOn&&year>=1775?'visible':'none');
+ if(map.getLayer('pombaline-blocks-3d'))map.setLayoutProperty('pombaline-blocks-3d','visibility',blocksOn&&year>=1500?'visible':'none');
  if(map.getLayer('historic-extent-fill'))map.setLayoutProperty('historic-extent-fill','visibility',extentOn?'visible':'none');
  if(map.getLayer('historic-extent-line'))map.setLayoutProperty('historic-extent-line','visibility',extentOn?'visible':'none');
  const wallVisible=!!wallsOn&&year>=1100&&year<=1600;
@@ -356,7 +377,7 @@ function updateHistoricalLayers(){
 function bindHistoricalLayerControls(){
  $('historicalLayersToggle').addEventListener('click',()=>{const panel=$('historicalLayerPanel'),open=!panel.classList.contains('open');panel.classList.toggle('open',open);$('historicalLayersToggle').setAttribute('aria-expanded',String(open))});
  ['toggleUrbanExtent','toggleWalls','toggleWaterfront','togglePombaline3D'].forEach(id=>$(id).addEventListener('change',updateHistoricalLayers));
- $('togglePombaline3D').addEventListener('change',renderMarkers);
+ $('togglePombaline3D').addEventListener('change',()=>{updateHistoricalLayers();renderMarkers()});
  $('toggleMap1650').addEventListener('change',()=>{if($('toggleMap1650').checked){$('toggleMap1756').checked=false;setHistoricalYear(1650)}updateHistoricalLayers()});
  $('toggleMap1756').addEventListener('change',()=>{if($('toggleMap1756').checked){$('toggleMap1650').checked=false;setHistoricalYear(1756)}updateHistoricalLayers()});
  $('historicalMapOpacity').addEventListener('input',()=>{const opacity=Number($('historicalMapOpacity').value);for(const id of ['historical-map-1650','historical-map-1756'])if(map.getLayer(id))map.setPaintProperty(id,'raster-opacity',opacity)});
