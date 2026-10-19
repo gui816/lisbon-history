@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101d28">
+<meta name="description" content="Descobre Lisboa através do tempo: lugares, histórias, imagens e mapas históricos desde Olisipo até à cidade contemporânea.">
+<title>Lisboa no Tempo — Explore a história</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0d1720;--panel:rgba(14,27,37,.92);--line:rgba(229,239,243,.13);--muted:#9eafb8;--gold:#f5bd65;--mint:#78dbc3;--white:#f3f5f1}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif}body{overflow:hidden}button,input{font:inherit}button{cursor:pointer;color:inherit}.app{position:relative;height:100%;width:100%;overflow:hidden;background:#182c37}#map{position:absolute;inset:0}#studyMaskOverlay{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:none;pointer-events:none}#studyMaskOverlay path{fill:#07121a;fill-opacity:.82;fill-rule:evenodd}.maplibregl-ctrl-attrib{font-size:9px!important;opacity:.72}.maplibregl-ctrl-group{background:#10202a!important;border:1px solid var(--line)!important}.maplibregl-ctrl-group button{filter:invert(1)}.topbar{position:absolute;z-index:5;top:0;left:0;right:0;height:82px;padding:18px 25px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(7,16,23,.93),rgba(7,16,23,.55),transparent);pointer-events:none}.topbar>*{pointer-events:auto}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:41px;height:41px;border:1px solid rgba(245,189,101,.6);border-radius:13px;display:grid;place-items:center;color:var(--gold);font-size:22px;background:rgba(245,189,101,.09)}.brand-name{font-family:'Space Grotesk';font-weight:700;font-size:16px;letter-spacing:-.5px}.brand-sub{font-size:10px;color:#a3b2bb;letter-spacing:2px;text-transform:uppercase;margin-top:3px}.top-actions{display:flex;align-items:center;gap:8px}.chip,.icon-btn{border:1px solid var(--line);background:rgba(10,22,31,.72);backdrop-filter:blur(15px);padding:10px 13px;border-radius:12px;font-size:12px;color:#dbe4e6}.chip strong{color:var(--mint);font-weight:600}.icon-btn{width:39px;height:39px;display:grid;place-items:center;font-size:17px;padding:0}.left-panel{position:absolute;z-index:4;top:100px;left:24px;width:306px;max-height:calc(100% - 125px);display:flex;flex-direction:column;gap:13px;pointer-events:none}.left-panel>*{pointer-events:auto}.eyebrow{font-size:10px;letter-spacing:2.3px;text-transform:uppercase;color:var(--gold);font-weight:700}.intro h1{font:600 clamp(29px,3vw,39px)/1.06 'Space Grotesk';letter-spacing:-1.8px;margin:10px 0}.intro p{font-size:12px;line-height:1.65;color:#c0ccd1;margin:0;max-width:280px}.glass{background:var(--panel);border:1px solid var(--line);box-shadow:0 18px 60px rgba(0,0,0,.18);backdrop-filter:blur(22px);border-radius:17px}.filter-box{padding:13px}.section-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#92a6b1;font-weight:700;margin:0 0 10px}.filters{display:flex;gap:6px;flex-wrap:wrap}.filter{padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:transparent;color:#adbdc4;font-size:11px}.filter.active{background:rgba(245,189,101,.14);border-color:rgba(245,189,101,.5);color:#ffce82}.places{overflow:auto;scrollbar-width:thin;scrollbar-color:#48616b transparent;padding:13px}.place-list{display:flex;flex-direction:column;gap:6px}.place{border:1px solid transparent;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;background:transparent;text-align:left;width:100%;transition:.18s}.place:hover,.place.selected{background:rgba(120,219,195,.08);border-color:rgba(120,219,195,.25)}.place-icon{flex:none;width:37px;height:37px;border-radius:11px;background:#213943;display:grid;place-items:center;font-size:17px}.place-copy{min-width:0;flex:1}.place-title{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.place-meta{color:#98abb3;font-size:10px;margin-top:4px}.place-arrow{color:#7e969f;font-size:14px}.bottom-left{position:absolute;z-index:4;left:24px;bottom:20px;display:flex;gap:8px;align-items:center}.small-note{font-size:10px;color:#c3d0d5;background:rgba(10,22,31,.78);border:1px solid var(--line);padding:9px 12px;border-radius:10px;backdrop-filter:blur(12px)}.bottom-right{position:absolute;z-index:4;right:23px;bottom:20px;display:flex;flex-direction:column;align-items:flex-end;gap:9px}.map-tools{display:flex;flex-direction:column;gap:6px}.language-select{height:39px;min-width:54px;border:1px solid var(--line);border-radius:11px;background:rgba(10,22,31,.9);color:#f3f5f1;padding:0 7px;font-size:11px;backdrop-filter:blur(15px)}.coverage-key{display:flex;flex-direction:column;gap:6px;background:rgba(10,22,31,.82);border:1px solid var(--line);padding:9px 11px;border-radius:10px;backdrop-filter:blur(12px);font-size:9px;color:#d2dcdf}.coverage-key span{display:flex;align-items:center;gap:7px}.key-dot{width:9px;height:9px;display:inline-block;border-radius:3px;flex:none}.key-dot.covered{background:#78dbc3;box-shadow:0 0 9px #78dbc377}.key-dot.uncovered{background:#8d9aa3;opacity:.75}.map-tool{height:39px;width:39px;border:1px solid var(--line);border-radius:12px;background:var(--panel);backdrop-filter:blur(12px);font-size:17px}.map-tool:hover{border-color:var(--gold);color:var(--gold)}.location-tag{font-size:10px;color:#ced7d8;border:1px solid var(--line);background:var(--panel);padding:9px 12px;border-radius:10px;backdrop-filter:blur(12px)}.detail{position:absolute;z-index:6;right:24px;top:100px;bottom:20px;width:340px;max-height:calc(100% - 120px);overflow:auto;padding:0 0 14px;transform:translateX(calc(100% + 35px));transition:transform .32s cubic-bezier(.2,.8,.2,1);background:rgba(12,25,35,.96);border:1px solid var(--line);border-radius:20px;box-shadow:0 25px 90px rgba(0,0,0,.4);backdrop-filter:blur(25px)}.detail.open{transform:translateX(0)}.detail-image{height:170px;position:relative;background:linear-gradient(180deg,transparent,rgba(8,18,25,.8)),var(--cover);background-size:cover;background-position:center}.detail-image.no-cover{background:linear-gradient(135deg,#1a303c,#0d1720)}.detail-image.no-cover:after{content:attr(data-photo-label);position:absolute;left:14px;bottom:14px;font-size:11px;color:#c4d0d5;background:#0d1720b8;padding:6px 8px;border-radius:6px}.detail-close{position:absolute;top:12px;right:12px;background:rgba(8,18,25,.76);border:1px solid var(--line);border-radius:10px;width:34px;height:34px}.detail-content{padding:20px}.detail-date{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px}.detail h2{font:600 26px/1.1 'Space Grotesk';letter-spacing:-1px;margin:9px 0}.detail-location{color:#aabac1;font-size:11px;margin:0 0 17px}.detail p{font-size:12px;color:#d1dadd;line-height:1.75;margin:0 0 14px}.story-tag{display:inline-flex;font-size:10px;color:var(--mint);border:1px solid rgba(120,219,195,.27);background:rgba(120,219,195,.08);padding:7px 9px;border-radius:8px;margin-bottom:14px}.detail h3{font:600 11px 'Space Grotesk';letter-spacing:1.3px;text-transform:uppercase;margin:20px 0 10px}.timeline{border-left:1px solid rgba(245,189,101,.45);padding-left:14px;margin-left:4px}.timeline-item{position:relative;font-size:11px;line-height:1.6;color:#bac7cc;padding:0 0 12px}.timeline-item:before{content:'';width:7px;height:7px;position:absolute;left:-18px;top:4px;background:var(--gold);border-radius:50%;box-shadow:0 0 12px #f5bd6577}.sources{font-size:10px;color:#99aab1;line-height:1.6}.source-link{color:var(--mint);text-decoration:none}.map-point-dot{width:9px;height:9px;border-radius:50%;padding:0;border:2px solid #f3f5f1;background:var(--marker-color,#78dbc3);box-shadow:0 0 0 4px color-mix(in srgb,var(--marker-color,#78dbc3) 20%,transparent),0 2px 8px #0009;cursor:pointer}.map-point-dot[data-era="medieval"]{--marker-color:#f5bd65}.map-point-dot[data-era="1500"]{--marker-color:#78dbc3}.map-point-dot[data-era="1755"]{--marker-color:#ff806b}.map-point-dot[data-era="1900"]{--marker-color:#a9b9ff}.map-point-dot.active{width:13px;height:13px;background:#fff;border-color:#f5bd65;box-shadow:0 0 0 5px #f5bd6555,0 0 20px #f5bd65}.map-label{font:600 11px 'DM Sans';color:#fbf2dc;background:rgba(12,25,35,.9);border:1px solid rgba(245,189,101,.55);border-radius:9px;padding:7px 9px;white-space:nowrap;box-shadow:0 4px 18px #0005;cursor:pointer}.map-label:before{content:'✦';color:var(--gold);margin-right:6px}.map-label:hover{background:#263d45}.map-label.active{background:#f5bd65;color:#18252b;border-color:#ffe0a5}.map-label.active:before{color:#18252b}
+.map-label{--marker-color:#78dbc3;position:relative;border-color:color-mix(in srgb,var(--marker-color) 68%,transparent);background:color-mix(in srgb,var(--marker-color) 13%,rgba(12,25,35,.94));transition:opacity .2s,background .2s,border-color .2s,box-shadow .2s;backdrop-filter:blur(10px)}
+.map-label:before{color:var(--marker-color);animation:marker-glow 2.8s ease-in-out infinite;text-shadow:0 0 10px color-mix(in srgb,var(--marker-color) 55%,transparent)}
+.map-label[data-era="medieval"]{--marker-color:#f5bd65}
+.map-label[data-era="1500"]{--marker-color:#78dbc3}
+.map-label[data-era="1755"]{--marker-color:#ff806b}
+.map-label[data-era="1900"]{--marker-color:#a9b9ff}
+.map-label:hover{border-color:var(--marker-color);background:color-mix(in srgb,var(--marker-color) 24%,#132630);box-shadow:0 4px 20px #0007,0 0 0 2px color-mix(in srgb,var(--marker-color) 18%,transparent)}
+.map-label.active{--marker-color:#f5bd65;background:#f5bd65;border-color:#ffe0a5;box-shadow:0 0 0 3px #f5bd6544,0 0 24px #f5bd6588}
+@keyframes marker-glow{0%,100%{opacity:.72}50%{opacity:1;text-shadow:0 0 14px currentColor}}
+.view-switch{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:rgba(10,22,31,.91);backdrop-filter:blur(16px);margin-bottom:7px;box-shadow:0 12px 35px #0004}
+.view-switch button{border:1px solid transparent;background:transparent;color:#aebfc6;border-radius:8px;padding:9px 11px;font-size:10px;white-space:nowrap;transition:.18s}
+.view-switch button.active{background:rgba(120,219,195,.14);border-color:rgba(120,219,195,.48);color:#a4f0dc}
+.view-switch button[data-view="satellite"].active{background:rgba(245,189,101,.15);border-color:rgba(245,189,101,.55);color:#ffd18a}
+.app.satellite-mode .map-label:not(.active){background:rgba(9,22,28,.91);box-shadow:0 3px 14px #0008}
+@media(max-width:720px){.view-switch{align-self:flex-end;margin-bottom:6px}.view-switch button{padding:8px 9px;font-size:9px}}.loading{position:absolute;inset:0;z-index:10;background:#12232c;display:grid;place-items:center;transition:opacity .4s}.loading.hide{opacity:0;pointer-events:none}.loader-inner{text-align:center}.loader-mark{font-size:35px;color:var(--gold);animation:pulse 1.5s infinite}.loader-text{font:600 14px 'Space Grotesk';margin-top:15px}.loader-sub{font-size:11px;color:#9cafb8;margin-top:7px}@keyframes pulse{50%{opacity:.35;transform:scale(.93)}}.toast{position:absolute;z-index:12;left:50%;bottom:75px;transform:translate(-50%,15px);background:#132b34;border:1px solid var(--line);padding:11px 15px;border-radius:12px;color:#dbe6e8;font-size:11px;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.mobile-menu{display:none}
+/* Interactive historical timeline */
+.timebar{position:absolute;z-index:5;left:50%;bottom:18px;transform:translateX(-50%);width:min(790px,calc(100% - 520px));min-width:390px;padding:13px 16px 12px;background:rgba(10,22,31,.95);border:1px solid rgba(245,189,101,.32);border-radius:17px;box-shadow:0 18px 55px #0007;backdrop-filter:blur(22px)}
+.timebar-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.timebar-kicker{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:#a7b8c0}.timebar-date{font:700 25px/1 'Space Grotesk';color:var(--gold);letter-spacing:-1px}.timebar-era{font-size:11px;color:#d4dfe2;text-align:right}.timebar-controls{display:flex;align-items:center;gap:9px}.time-control{width:31px;height:30px;flex:none;border:1px solid var(--line);background:#1a303b;border-radius:8px;color:#f5bd65}.year-slider{width:100%;min-width:50px;accent-color:var(--gold);cursor:ew-resize}.timebar-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px}.timebar-hint{font-size:9px;color:#95aab2}.time-events{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;margin-top:9px}.time-events::-webkit-scrollbar{display:none}.time-event{flex:none;border:1px solid rgba(226,238,242,.13);border-radius:7px;padding:5px 7px;background:rgba(255,255,255,.025);font-size:9px;color:#c3d0d5}.time-event:hover,.time-event.active{border-color:rgba(245,189,101,.65);background:rgba(245,189,101,.12);color:#ffd18a}.history-note{font-size:9px;color:#a7b8c0;margin-top:8px;line-height:1.4}.history-note strong{color:#f5bd65;font-weight:600}
+/* 1755 evidence-led comparison panel */
+.reconstruction-panel{position:absolute;z-index:5;top:102px;right:24px;width:286px;padding:14px;background:rgba(10,22,31,.94);border:1px solid rgba(245,189,101,.34);border-radius:15px;box-shadow:0 16px 48px #0005;backdrop-filter:blur(20px);display:none}
+.reconstruction-panel.visible{display:block}.recon-kicker{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700}.recon-title{font:600 17px/1.15 'Space Grotesk';margin:7px 0 8px}.recon-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:10px 0}.recon-tab{padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.035);font-size:10px;color:#cbd7db}.recon-tab.active{border-color:rgba(245,189,101,.7);background:rgba(245,189,101,.15);color:#ffd18a}.recon-copy{font-size:10px;line-height:1.55;color:#c3d0d5}.recon-status{display:inline-block;margin-top:8px;border:1px solid rgba(120,219,195,.32);color:var(--mint);padding:5px 7px;border-radius:7px;font-size:9px}.recon-sources{font-size:9px;line-height:1.6;margin-top:9px;color:#9eafb8}.recon-sources a{color:var(--mint);text-decoration:none}
+@media(max-width:720px){.reconstruction-panel{top:78px;right:10px;width:min(270px,calc(100% - 20px));padding:10px}.recon-title{font-size:15px}.recon-copy{font-size:9px}.recon-tabs{margin:7px 0}}
+.historical-layer-panel{display:none;width:236px;padding:12px;background:rgba(10,22,31,.96);border:1px solid rgba(245,189,101,.32);border-radius:13px;box-shadow:0 14px 42px #0006;backdrop-filter:blur(18px);margin-bottom:7px}
+.historical-layer-panel.open{display:block}.layer-panel-title{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--gold);font-weight:700;margin-bottom:8px}
+.layer-option{display:flex;gap:8px;align-items:flex-start;font-size:10px;line-height:1.35;color:#d3dfe2;margin:9px 0;cursor:pointer}.layer-option input{accent-color:var(--mint);margin:1px 0 0}.layer-option small{display:block;font-size:8px;color:#9eafb8;margin-top:2px}.history-source-note{font-size:9px;line-height:1.5;color:#a6b7bf;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+.history-source-note a{color:var(--mint);text-decoration:none}.history-map-opacity{display:flex;align-items:center;gap:8px;font-size:9px;color:#c3d0d5;margin:8px 0}.history-map-opacity input{width:100%;accent-color:var(--mint)}
+.journey-box{padding:11px 12px;gap:8px}.journey-title{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);font-weight:700}.journey-select,.place-search{width:100%;box-sizing:border-box;background:#122630;color:#e4edf0;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font:inherit;font-size:10px;outline:none}.journey-select:focus,.place-search:focus{border-color:var(--mint)}.journey-actions{display:flex;gap:5px}.journey-btn{flex:1;border:1px solid var(--line);background:#1b303a;color:#dbe6e8;border-radius:8px;padding:7px 5px;font-size:9px;cursor:pointer}.journey-btn.primary{background:rgba(120,219,195,.12);border-color:rgba(120,219,195,.5);color:var(--mint)}.journey-status{font-size:9px;line-height:1.45;color:#b6c6cc;min-height:14px;white-space:pre-line}.places-search{margin:0 0 8px}
+@media(max-width:720px){.historical-layer-panel{width:210px}.layer-option{font-size:9px}.history-source-note{font-size:8px}}
+
+
+@media(max-width:900px){.timebar{width:calc(100% - 330px);min-width:330px;bottom:12px}.bottom-left{bottom:105px}.bottom-right{bottom:105px}}
+@media(max-width:720px){.timebar{left:8px;right:8px;bottom:8px;transform:none;width:auto;min-width:0;padding:10px 11px;border-radius:14px}.timebar-date{font-size:22px}.timebar-era{font-size:10px;max-width:48%}.timebar-kicker{font-size:8px}.time-event{font-size:8px;padding:5px 6px}.history-note{font-size:8px;margin-top:6px}.left-panel{max-height:calc(100% - 310px)}.bottom-left{bottom:190px}.bottom-right{bottom:190px}.detail{bottom:175px;max-height:calc(100% - 260px)}}
+
+@media(max-width:720px){.topbar{height:70px;padding:13px}.brand-mark{width:36px;height:36px}.brand-name{font-size:14px}.brand-sub{font-size:8px;letter-spacing:1.5px}.top-actions .chip{display:none}.left-panel{left:12px;top:82px;width:min(270px,calc(100% - 24px));max-height:calc(100% - 165px);gap:9px}.intro h1{font-size:29px}.intro p{font-size:11px;max-width:240px}.filter-box{padding:10px}.places{padding:9px;max-height:29vh}.place{padding:7px}.place-icon{width:31px;height:31px}.bottom-left{left:12px;bottom:12px}.coverage-key{max-width:210px}@media(max-width:720px){.bottom-left{flex-direction:column;align-items:flex-start;gap:6px}.coverage-key{max-width:175px;font-size:8px;padding:6px 8px}.small-note{max-width:calc(100vw - 24px)}}.bottom-right{right:12px;bottom:12px}.small-note{max-width:190px;font-size:9px}.detail{top:auto;left:8px;right:8px;bottom:8px;width:auto;max-height:74%;transform:translateY(calc(100% + 25px));}.detail.open{transform:translateY(0)}.detail-image{height:125px}.detail-content{padding:16px}.detail h2{font-size:23px}.maplibregl-ctrl-bottom-right{bottom:57px!important}.maplibregl-ctrl-bottom-left{display:none}.bottom-right .location-tag{display:none}.map-label{font-size:10px;padding:6px 7px}}
+
+/* Product UX refresh: clearer hierarchy, readable map context, responsive controls */
+:root{--panel:rgba(10,24,33,.94);--line:rgba(226,239,242,.16);--muted:#a9bac2}
+:focus-visible{outline:2px solid var(--gold)!important;outline-offset:3px}
+button,input,select{touch-action:manipulation}
+.topbar{padding:16px 22px;background:linear-gradient(180deg,rgba(5,14,21,.96),rgba(5,14,21,.55),transparent)}
+.brand-mark{box-shadow:0 0 28px rgba(245,189,101,.08)}
+.left-panel{left:20px;top:94px;width:320px;max-height:calc(100% - 145px);gap:11px}
+.intro{padding:15px 16px 14px;border-radius:18px;background:linear-gradient(135deg,rgba(9,23,32,.91),rgba(9,23,32,.62));border:1px solid rgba(226,239,242,.12);box-shadow:0 18px 55px rgba(0,0,0,.18);backdrop-filter:blur(16px)}
+.intro h1{font-size:clamp(28px,2.35vw,36px);line-height:1.06;letter-spacing:-1.4px;margin:11px 0 9px;max-width:290px}
+.intro p{font-size:12px;line-height:1.7;max-width:285px;color:#d0dadd}
+.intro-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.intro-stat{font-size:10px;color:#aebfc6;border:1px solid rgba(226,239,242,.13);background:rgba(255,255,255,.035);padding:7px 9px;border-radius:9px}
+.intro-stat strong{color:var(--gold);font:700 13px 'Space Grotesk';margin-right:3px}
+.glass{background:rgba(10,24,33,.94);border-color:rgba(226,239,242,.15);box-shadow:0 16px 45px rgba(0,0,0,.24)}
+.filter-box,.journey-box,.places{border-radius:16px}
+.filter-box{padding:13px 14px}
+.section-label,.journey-title{letter-spacing:1.35px}
+.filter{padding:8px 11px;border-radius:10px;font-size:11px;transition:background .18s,border-color .18s,color .18s}
+.filter:hover{border-color:rgba(245,189,101,.5);color:#fff0d3}
+.journey-box{padding:13px 14px}
+.journey-select,.place-search{min-height:38px;font-size:11px;background:#10232d}
+.journey-btn{min-height:34px;font-size:10px;transition:background .18s,border-color .18s}
+.journey-btn:hover{border-color:rgba(120,219,195,.65)}
+.places{min-height:130px}
+.place{min-height:58px}
+.place-title{font-size:12px}
+.detail{width:360px}
+.detail p{font-size:13px;line-height:1.8}
+.timebar{width:min(760px,calc(100% - 700px));min-width:410px;padding:14px 17px 13px;background:rgba(8,20,29,.96);box-shadow:0 18px 60px rgba(0,0,0,.34)}
+.timebar-date{font-size:27px}
+.time-event{font-size:10px;padding:6px 8px}
+.view-switch{padding:5px;border-radius:13px}
+.view-switch button{font-size:11px;padding:10px 12px}
+.historical-layer-panel{width:260px}
+.bottom-left{left:20px;bottom:18px}
+.bottom-right{right:20px;bottom:18px}
+.coverage-key{font-size:10px;line-height:1.35}
+.map-label{font-size:11px;padding:8px 10px}
+.maplibregl-ctrl-bottom-right{z-index:4}
+@media(max-width:1100px){.left-panel{width:285px}.timebar{width:calc(100% - 350px);min-width:350px}.intro h1{font-size:30px}.intro-meta{gap:5px}}
+@media(max-width:720px){
+ .topbar{height:66px;padding:10px 12px}.brand{gap:8px}.brand-mark{width:34px;height:34px;border-radius:10px}.brand-name{font-size:12px}.brand-sub{font-size:7px}
+ .left-panel{left:10px;top:74px;width:min(290px,calc(100% - 20px));max-height:calc(100% - 205px);gap:7px}
+ .intro{padding:10px 12px;border-radius:14px}.intro h1{font-size:25px;margin:7px 0}.intro p{font-size:10px;line-height:1.5}.intro-meta{margin-top:8px}.intro-stat{font-size:9px;padding:5px 7px}
+ .filter-box{padding:9px 10px}.section-label{margin-bottom:7px;font-size:9px}.filter{padding:6px 8px;font-size:9px}
+ .journey-box{padding:9px 10px}.journey-select,.place-search{min-height:34px;padding:7px 8px}.journey-btn{min-height:30px;padding:6px 4px}
+ .places{max-height:24vh;min-height:80px;padding:8px}.place{min-height:48px;padding:6px}.place-icon{width:30px;height:30px}
+ .timebar{left:8px;right:8px;bottom:8px;width:auto;min-width:0;padding:9px 10px}.timebar-date{font-size:21px}.timebar-kicker{font-size:7px}.timebar-era{font-size:9px}.time-events{margin-top:6px}.time-event{font-size:8px;padding:5px 6px}
+ .bottom-left{left:10px;bottom:145px;gap:5px}.coverage-key{max-width:180px;padding:6px 8px;font-size:8px}.small-note{font-size:8px;padding:7px 8px}
+ .bottom-right{right:10px;bottom:145px;gap:5px}.view-switch button{font-size:9px;padding:7px 8px}.map-tool{width:35px;height:35px}
+ .detail{left:6px;right:6px;bottom:6px;max-height:72%;width:auto}.detail-image{height:115px}.detail-content{padding:13px}.detail h2{font-size:22px}
+ .reconstruction-panel{top:74px;right:8px;width:min(250px,calc(100% - 16px))}
+ .maplibregl-ctrl-bottom-right{bottom:54px!important}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+
+/* Mobile-first layout correction: keep the map visible and prevent the timeline/control collisions. */
+@media(max-width:720px){
+  .topbar{height:64px;padding:9px 12px;align-items:center}
+  .brand{gap:8px;min-width:0}.brand-mark{width:34px;height:34px;border-radius:11px;font-size:18px}
+  .brand-name{font-size:12px;letter-spacing:-.2px}.brand-sub{font-size:7px;letter-spacing:1.15px}
+  .top-actions{gap:6px}.language-select{height:35px;min-width:48px;font-size:11px}.top-actions .icon-btn{width:35px;height:35px}
+  .left-panel{left:10px;right:10px;top:124px;bottom:326px;width:auto;max-height:none;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;gap:8px;padding:0 0 8px;display:flex}
+  .left-panel::-webkit-scrollbar{display:none}
+  .intro{padding:12px 13px;border-radius:15px}.eyebrow{font-size:8px;letter-spacing:1.7px}
+  .intro h1{font-size:clamp(23px,6vw,29px);line-height:1.03;letter-spacing:-1px;margin:8px 0}
+  .intro p{font-size:11px;line-height:1.45;max-width:none}.intro-meta{margin-top:9px;gap:6px}
+  .intro-stat{font-size:9px;padding:6px 8px}.intro-stat strong{font-size:12px}
+  .filter-box{padding:10px 11px;border-radius:14px}.section-label{font-size:9px;letter-spacing:1.35px;margin-bottom:8px}
+  .filters{gap:5px}.filter{font-size:10px;padding:7px 9px;border-radius:9px}
+  .journey-box{padding:10px 11px;gap:7px;border-radius:14px}.journey-title{font-size:9px}
+  .journey-select{font-size:11px;padding:10px}.journey-actions{gap:6px}
+  .journey-btn{font-size:10px;padding:9px 7px;min-height:36px}.journey-status{font-size:10px;line-height:1.35}
+  .places{min-height:120px;max-height:220px;padding:10px}.place-search{font-size:12px;padding:10px}
+  .place{padding:8px}.place-title{font-size:11px}.place-meta{font-size:9px}
+  .bottom-right{top:74px;right:10px;bottom:auto;left:auto;align-items:flex-end;gap:5px}
+  .view-switch{position:fixed;z-index:7;top:72px;right:10px;margin:0;padding:3px;gap:2px}
+  .view-switch button{font-size:9px;padding:7px 9px}
+  .bottom-right .map-tools{position:fixed;z-index:6;top:111px;right:10px;display:flex;flex-direction:row;gap:4px}
+  .map-tool{width:32px;height:32px;border-radius:10px;font-size:15px}
+  .bottom-right .historical-layer-panel{position:fixed;z-index:8;top:150px;right:10px;margin:0;max-height:calc(100% - 490px);overflow:auto}
+  .bottom-right .location-tag{display:none}
+  .bottom-left{left:10px;right:10px;bottom:calc(302px + env(safe-area-inset-bottom));flex-direction:row;align-items:center;gap:6px}
+  .small-note{font-size:9px;padding:7px 9px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.coverage-key{display:none}
+  .timebar{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));width:auto;min-width:0;padding:10px 11px 9px;border-radius:15px}
+  .timebar-top{margin-bottom:8px}.timebar-date{font-size:23px}.timebar-era{font-size:10px;max-width:54%;line-height:1.25}
+  .timebar-kicker{font-size:8px;letter-spacing:1.5px}.timebar-controls{gap:6px}
+  .time-control{width:36px;height:36px;border-radius:10px;font-size:15px}.year-slider{min-width:0}
+  .timebar-bottom{margin-top:7px}.timebar-hint{font-size:9px}.time-events{margin-top:8px;gap:5px}
+  .time-event{font-size:9px;padding:6px 8px}.history-note{font-size:9px;line-height:1.35;margin-top:7px}
+  .detail{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));top:auto;width:auto;max-height:62%;border-radius:17px;transform:translateY(calc(100% + 24px))}
+  .detail.open{transform:translateY(0)}.detail-image{height:115px}.detail-content{padding:14px}.detail h2{font-size:22px}
+  .reconstruction-panel{top:154px;right:10px;width:min(270px,calc(100% - 20px));max-height:calc(100% - 490px);overflow:auto}
+  .maplibregl-ctrl-bottom-right{bottom:calc(300px + env(safe-area-inset-bottom))!important;right:10px!important}.maplibregl-ctrl-bottom-left{display:none}
+}
+@media(max-width:380px){
+  .brand-sub{display:none}.brand-name{font-size:11px}.intro h1{font-size:23px}.intro-stat{font-size:8px}
+  .view-switch button{padding:6px 7px;font-size:8px}.timebar{padding:9px}.time-control{width:32px;height:34px}.timebar-era{font-size:9px}
+}
+@media(max-height:760px) and (max-width:720px){
+  .left-panel{bottom:292px;top:118px}.intro p{font-size:10px}.timebar{padding:8px 10px}.history-note{display:none}.time-events{margin-top:6px}
+}
+
+/* Adaptive filters: the available width, not a fixed device assumption, decides the layout. */
+.filters{min-width:0}
+.filter-box{min-width:0}
+@media(max-width:900px){
+  .filter-box{padding:12px}
+  .filters{gap:6px}
+  .filter{flex:0 0 auto}
+}
+@media(max-width:720px){
+  .filter-box{padding:10px 11px}
+  .filters{
+    display:flex;flex-wrap:nowrap;align-items:center;gap:7px;
+    overflow-x:auto;overflow-y:hidden;max-width:100%;
+    padding:1px 2px 7px;margin:0 -2px;
+    scrollbar-width:thin;scrollbar-color:rgba(245,189,101,.45) transparent;
+    overscroll-behavior-x:contain;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;
+  }
+  .filters::-webkit-scrollbar{height:3px}
+  .filters::-webkit-scrollbar-thumb{background:rgba(245,189,101,.45);border-radius:4px}
+  .filter{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;font-size:10px;padding:8px 11px}
+  .section-label{margin-bottom:7px}
+}
+@media(max-width:390px){
+  .filter-box{padding:9px 10px}
+  .filters{gap:6px}
+  .filter{font-size:9px;padding:8px 10px}
+}
+@media(orientation:landscape) and (max-width:900px){
+  .left-panel{top:76px;bottom:155px;max-height:none}
+  .intro{padding:9px 12px}
+  .intro h1{font-size:22px;margin:5px 0}
+  .intro p{font-size:10px;line-height:1.35}
+  .intro-meta{margin-top:6px}
+  .intro-stat{padding:4px 7px}
+  .timebar{left:auto;right:8px;bottom:8px;width:min(54vw,520px);padding:8px 10px}
+  .time-events{max-width:100%}
+  .bottom-left{bottom:165px}
+  .bottom-right{top:68px}
+  .bottom-right .map-tools{top:108px}
+}
+
+
+/* Mobile composition: reserve clear, non-overlapping zones for discovery, map and timeline. */
+@media(max-width:720px){
+  .left-panel{
+    top:116px!important;
+    bottom:300px!important;
+    gap:6px!important;
+    overflow-y:auto!important;
+    padding-bottom:6px!important;
+  }
+  .intro{padding:10px 12px!important}
+  .intro .eyebrow{margin-bottom:5px}
+  .intro h1{font-size:clamp(21px,5.6vw,27px)!important;line-height:1.04!important;margin:5px 0 7px!important}
+  .intro p{font-size:10px!important;line-height:1.38!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .intro-meta{margin-top:7px!important;gap:5px!important}
+  .intro-stat{padding:5px 7px!important}
+  .filter-box{padding:9px 10px!important}
+  .filter-box .section-label{margin-bottom:5px!important}
+  .filters{padding-bottom:4px!important}
+  .filter{padding:6px 9px!important}
+  .journey-box{padding:9px 10px!important;gap:5px!important}
+  .journey-title{margin:0!important}
+  .journey-select{min-height:34px!important;padding:7px 9px!important}
+  .journey-btn{min-height:32px!important;padding:6px!important}
+  .journey-status{font-size:9px!important;line-height:1.25!important}
+  .places{min-height:80px!important;max-height:145px!important}
+  .bottom-left{bottom:calc(270px + env(safe-area-inset-bottom))!important}
+  .timebar{padding:8px 10px 7px!important}
+  .timebar-top{margin-bottom:5px!important}
+  .timebar-date{font-size:21px!important}
+  .timebar-controls{gap:5px!important}
+  .time-control{width:32px!important;height:34px!important}
+  .timebar-bottom{margin-top:5px!important}
+  .time-events{margin-top:5px!important;gap:4px!important;max-height:34px;overflow-x:auto;flex-wrap:nowrap}
+  .time-event{flex:0 0 auto;font-size:8px!important;padding:5px 7px!important}
+  .history-note{font-size:8px!important;line-height:1.25!important;margin-top:5px!important}
+  .maplibregl-ctrl-bottom-right{bottom:calc(265px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:720px) and (max-height:900px){
+  .left-panel{top:108px!important;bottom:260px!important}
+  .intro p{-webkit-line-clamp:2}
+  .intro-meta{display:none!important}
+  .journey-status{display:none!important}
+  .timebar{bottom:calc(6px + env(safe-area-inset-bottom))!important}
+  .timebar-kicker{display:none!important}
+  .history-note{display:none!important}
+  .time-events{max-height:29px!important}
+  .bottom-left{bottom:calc(230px + env(safe-area-inset-bottom))!important}
+  .maplibregl-ctrl-bottom-right{bottom:calc(225px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:390px){
+  .left-panel{left:7px!important;right:7px!important}
+  .intro h1{font-size:22px!important}
+  .filter{font-size:9px!important}
+  .timebar-era{max-width:48%!important}
+}
+
+
+/* Mobile map-first controls: panels can be dismissed instead of competing for the viewport. */
+.mobile-map-toggle{display:none}
+@media(max-width:720px){
+ .mobile-map-toggle{display:flex;align-items:center;justify-content:center;gap:7px;position:fixed;z-index:9;left:10px;top:72px;min-height:36px;padding:0 12px;border:1px solid rgba(120,219,195,.42);border-radius:11px;background:rgba(10,22,31,.94);color:#dff8f1;box-shadow:0 8px 24px #0005;backdrop-filter:blur(14px);font-size:11px;font-weight:700}
+ .app.mobile-explore-closed .left-panel{display:none!important}
+ .app.mobile-explore-closed .mobile-map-toggle{background:rgba(120,219,195,.16)}
+ .timebar{transition:padding .2s ease}
+ .timebar-collapse{display:none}
+}
+@media(max-width:720px) and (min-height:901px){
+ .mobile-map-toggle{top:72px}
+}
+@media(max-width:720px) and (max-height:900px){
+ .left-panel{top:116px!important}
+ .mobile-map-toggle{top:70px}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .mobile-map-toggle{top:68px;left:8px}
+}
+
+
+/* Final responsive pass: mobile opens map-first; timeline details are progressive disclosure. */
+.timebar-expand{display:none}
+.timebar-details{min-width:0}
+@media(min-width:721px){
+ .timebar-expand{display:none!important}
+}
+@media(max-width:720px){
+ .timebar{width:auto;min-width:0;left:8px;right:8px;transform:none;bottom:calc(6px + env(safe-area-inset-bottom));padding:8px 10px!important}
+ .timebar-top{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) 30px;align-items:center;gap:8px;margin-bottom:6px!important}
+ .timebar-era{max-width:none!important;text-align:right;font-size:9px!important}
+ .timebar-expand{display:grid;place-items:center;width:29px;height:29px;border:1px solid var(--line);border-radius:9px;background:#1a303b;color:var(--gold);font-size:17px;line-height:1}
+ .timebar-controls{gap:6px!important}
+ .time-control{width:32px!important;height:33px!important}
+ .timebar-details{display:block}
+ .timebar:not(.timeline-expanded) .timebar-details{display:none}
+ .timebar:not(.timeline-expanded) .timebar-top{margin-bottom:0!important}
+ .timebar:not(.timeline-expanded) .timebar-date{font-size:20px!important}
+ .timebar:not(.timeline-expanded) .timebar-expand{transform:none}
+ .timebar.timeline-expanded .timebar-details{padding-top:7px}
+ .app.mobile-explore-closed .timebar{z-index:7}
+ .app.mobile-explore-closed .mobile-map-toggle{top:76px}
+ .app.mobile-explore-closed .bottom-left{display:none}
+ .app.mobile-explore-closed .bottom-right{top:74px}
+ .app.mobile-explore-closed .bottom-right .map-tools{top:114px}
+ .app.mobile-explore-closed .maplibregl-ctrl-bottom-right{bottom:12px!important}
+}
+@media(max-width:720px) and (max-height:900px){
+ .timebar.timeline-expanded .timebar-details{max-height:36vh;overflow-y:auto}
+ .left-panel{bottom:250px!important}
+}
+@media(max-width:390px){
+ .timebar-top{grid-template-columns:auto minmax(0,1fr) 28px;gap:5px}
+ .timebar-era{font-size:8px!important}
+ .timebar-expand{width:27px;height:27px}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .left-panel{top:108px!important;bottom:150px!important;width:min(340px,48vw)!important}
+ .timebar{left:auto;right:8px;bottom:8px;width:min(54vw,520px);transform:none}
+ .timebar.timeline-expanded .timebar-details{max-height:35vh;overflow-y:auto}
+}
+@media(min-width:721px) and (max-width:1100px){
+ .left-panel{left:14px;width:270px}
+ .timebar{left:300px;right:14px;width:auto;min-width:0;transform:none}
+ .detail{right:14px;width:310px}
+ .bottom-left{left:14px}
+ .bottom-right{right:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .timebar,.timebar-expand{transition:none!important}
+}
+
+
+/* Remove the hard-edged satellite cutout: use a continuous basemap and a quiet study-area cue. */
+#studyMaskOverlay{display:none!important}
+.app.satellite-mode #studyMaskOverlay{display:none!important}
+.study-area-chip{display:none}
+@media(max-width:720px){
+ .study-area-chip{display:block;position:fixed;z-index:4;left:10px;bottom:calc(92px + env(safe-area-inset-bottom));max-width:calc(100% - 20px);padding:7px 10px;border:1px solid rgba(120,219,195,.3);border-radius:999px;background:rgba(10,22,31,.82);color:#d8e8e7;font-size:10px;backdrop-filter:blur(12px);pointer-events:none}
+ .app.mobile-explore-closed .study-area-chip{display:block}
+}
+
+
+/* Guided journey UX: one clear primary action, explicit progress, and a map-first mobile step view. */
+.journey-progress{height:3px;overflow:hidden;border-radius:99px;background:rgba(220,235,240,.1);margin-top:-2px}
+.journey-progress span{display:block;width:0;height:100%;background:var(--mint);border-radius:99px;transition:width .22s ease}
+.journey-box.journey-active .journey-progress{height:4px}
+.journey-box.journey-active .journey-select{border-color:rgba(120,219,195,.38)}
+.journey-box.journey-active .journey-status{padding:10px 11px;border:1px solid rgba(120,219,195,.18);border-radius:11px;background:rgba(120,219,195,.055);font-size:11px;line-height:1.5;min-height:0}
+.journey-box.journey-active .journey-actions{gap:8px}
+.journey-box.journey-active .journey-btn{min-height:42px;font-size:11px}
+#journeyExit{flex:0 0 auto}
+@media(max-width:720px){
+ .left-panel.journey-mode{top:116px!important;bottom:calc(265px + env(safe-area-inset-bottom))!important;max-height:none!important;overflow:visible!important}
+ .left-panel.journey-mode>.intro,.left-panel.journey-mode>.filter-box,.left-panel.journey-mode>.places{display:none!important}
+ .left-panel.journey-mode>.journey-box{padding:12px!important;gap:8px!important;border-color:rgba(120,219,195,.35);box-shadow:0 18px 45px rgba(0,0,0,.35)}
+ .left-panel.journey-mode .journey-title{font-size:10px;letter-spacing:1.6px}
+ .left-panel.journey-mode .journey-select{min-height:42px;font-size:13px;padding:10px 12px}
+ .left-panel.journey-mode .journey-status{font-size:11px!important;line-height:1.5!important;overflow-wrap:anywhere}
+ .left-panel.journey-mode .journey-actions{display:flex;gap:7px}
+ .left-panel.journey-mode .journey-btn{min-height:42px;padding:9px 8px;font-size:11px}
+ .left-panel.journey-mode .journey-actions[hidden],.left-panel.journey-mode [hidden]{display:none!important}
+ .left-panel.journey-mode #journeyNav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:7px}
+ .left-panel.journey-mode #journeyNav #journeyNext{font-weight:700}
+ .left-panel.journey-mode #journeyExit{width:100%;background:transparent;border-color:rgba(220,235,240,.14);color:#9fb2ba;min-height:34px}
+ .left-panel.journey-mode .journey-progress{margin:1px 0 3px}
+ .app.mobile-explore-closed .left-panel.journey-mode{display:flex!important}
+}
+@media(max-width:390px){
+ .left-panel.journey-mode{left:7px!important;right:7px!important}
+ .left-panel.journey-mode .journey-box{padding:10px!important}
+ .left-panel.journey-mode .journey-btn{font-size:10px;padding:8px 5px}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .left-panel.journey-mode{top:106px!important;bottom:145px!important;width:min(360px,52vw)!important}
+ .left-panel.journey-mode .journey-box{max-height:100%;overflow-y:auto}
+}
+
+
+/* Mobile guided-tour composition: compact navigation, readable place sheet, gesture affordances. */
+@media(max-width:720px){
+ .left-panel.journey-mode{z-index:8;bottom:auto!important;max-height:none!important}
+ .left-panel.journey-mode>.journey-box{gap:7px!important}
+ .left-panel.journey-mode .journey-title{padding-right:68px}
+ .left-panel.journey-mode .journey-select{min-height:40px!important}
+ .left-panel.journey-mode .journey-status{padding:8px 10px!important;font-size:10px!important;line-height:1.4!important}
+ .left-panel.journey-mode #journeyNav{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:8px}
+ .left-panel.journey-mode #journeyNav .journey-btn{min-height:46px;font-size:12px;border-radius:12px}
+ .left-panel.journey-mode #journeyExit{min-height:34px!important;font-size:10px!important}
+ .detail{left:10px!important;right:10px!important;top:auto!important;bottom:calc(154px + env(safe-area-inset-bottom))!important;width:auto!important;max-height:42vh!important;max-height:min(42vh,360px)!important;transform:translateY(calc(100% + 24px))!important;border-radius:18px!important;overflow:auto!important;overscroll-behavior:contain}
+ .detail.open{transform:translateY(0)!important}
+ .detail-image{height:clamp(76px,13vh,112px)!important;background-position:center 45%!important}
+ .detail-close{top:8px!important;right:8px!important;width:36px!important;height:36px!important}
+ .detail-content{padding:12px 14px 18px!important}
+ .detail-date{font-size:10px!important}
+ .detail h2{font-size:21px!important;line-height:1.12!important;margin:6px 0!important;letter-spacing:-.5px!important}
+ .detail-location{font-size:10px!important;margin-bottom:10px!important}
+ .detail p{font-size:12px!important;line-height:1.55!important;margin-bottom:10px!important}
+ .detail h3{margin:14px 0 8px!important}
+ .detail-swipe-hint{display:block!important}
+ .app.mobile-explore-closed .detail{bottom:calc(90px + env(safe-area-inset-bottom))!important;max-height:52vh!important}
+}
+.detail-swipe-hint{display:none;font-size:9px;color:#8fa7af;letter-spacing:.4px;text-align:center;padding:7px 10px 0}
+@media(max-width:390px){
+ .detail{left:7px!important;right:7px!important;max-height:39vh!important}
+ .detail-content{padding:10px 12px 15px!important}
+ .detail h2{font-size:19px!important}
+ .left-panel.journey-mode .journey-status{font-size:9px!important}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .detail{left:auto!important;right:8px!important;top:108px!important;bottom:145px!important;width:min(340px,46vw)!important;max-height:none!important;transform:translateX(calc(100% + 20px))!important}
+ .detail.open{transform:translateX(0)!important}
+ .detail-image{height:90px!important}
+ .left-panel.journey-mode{width:min(340px,46vw)!important}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+ <div id="map" aria-label="Mapa 3D interativo de Lisboa"></div>
+ <svg id="studyMaskOverlay" aria-hidden="true" focusable="false"><path id="studyMaskPath" fill="#07121a" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+ <div class="loading" id="loading"><div class="loader-inner"><div class="loader-mark">✦</div><div class="loader-text" id="loaderText">A abrir as memórias de Lisboa</div><div class="loader-sub" id="loaderSub">A preparar a cidade para explorar</div></div></div>
+ <header class="topbar">
+  <div class="brand"><div class="brand-mark">⌘</div><div><div class="brand-name">LISBOA <span style="color:var(--gold)">NO TEMPO</span></div><div class="brand-sub">A cidade conta histórias</div></div></div>
+  <div class="top-actions"><div class="chip" id="modeChip">MODO EXPLORAÇÃO <strong>● ATIVO</strong></div><select id="languageSelect" aria-label="Idioma" title="Idioma" class="language-select"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option><option value="fr">FR</option></select><button class="icon-btn" id="resetView" aria-label="Vista inicial" title="Vista inicial">⌂</button></div>
+ </header>
+ <div class="study-area-chip" id="studyAreaChip">◈ Baixa Pombalina · zona histórica em foco</div>
+ <button class="mobile-map-toggle" id="mobileExploreToggle" type="button" aria-expanded="true" aria-controls="mobileExplorePanel">☰ Explorar</button>
+ <aside class="left-panel" id="mobileExplorePanel">
+  <div class="intro"><div class="eyebrow" id="eyebrow">◆ Uma cidade. Muitas eras.</div><h1 id="heroTitle">Descobre Lisboa<br><span style="color:var(--gold)">através do tempo.</span></h1><p id="heroText">Explora lugares, compara épocas e descobre as histórias por trás da cidade. Seleciona um ponto ou inicia um percurso guiado.</p><div class="intro-meta"><span class="intro-stat" id="introStatPlaces"><strong>58</strong> locais históricos</span><span class="intro-stat" id="introStatYears"><strong>2.000+</strong> anos de história</span></div></div>
+  <div class="glass filter-box"><div class="section-label" id="eraLabel">Explorar por época</div><div class="filters" id="filters"><button class="filter active" data-era="all" data-i18n="all">Todas</button><button class="filter" data-era="medieval" data-i18n="medieval">Medieval</button><button class="filter" data-era="1500" data-i18n="discoveries">Descobrimentos</button><button class="filter" data-era="1755" data-i18n="quake">1755</button><button class="filter" data-era="1900" data-i18n="century">Século XX</button></div></div>
+  <div class="glass journey-box"><div class="journey-title" id="journeyTitle">Percursos guiados</div><div class="journey-progress" id="journeyProgress" aria-hidden="true"><span id="journeyProgressFill"></span></div><select class="journey-select" id="journeySelect" aria-label="Selecionar percurso"><option value="medieval">Lisboa medieval</option><option value="quake">O terramoto de 1755</option><option value="pombaline">A reconstrução pombalina</option></select><div class="journey-actions"><button class="journey-btn primary" id="journeyStart">Iniciar percurso</button><button class="journey-btn" id="journeyExit" hidden>Terminar</button></div><div class="journey-status" id="journeyStatus" aria-live="polite">Explora uma história através de vários locais.</div><div class="journey-actions" id="journeyNav" hidden><button class="journey-btn" id="journeyPrev">← Anterior</button><button class="journey-btn primary" id="journeyNext">Seguinte →</button></div></div>
+  <div class="glass places"><div class="section-label" id="pointsLabel">Pontos históricos <span id="placeCount" style="float:right;color:var(--gold)">58</span></div><div class="places-search"><input class="place-search" id="placeSearch" type="search" placeholder="Pesquisar locais históricos…" aria-label="Pesquisar locais históricos"></div><div class="place-list" id="placeList"></div></div>
+ </aside>
+ <section class="reconstruction-panel" id="reconstructionPanel" aria-live="polite">
+  <div class="recon-kicker" id="reconKicker">Arquivo histórico · Baixa</div>
+  <div class="recon-title" id="reconTitle">Lisboa antes e depois de 1755</div>
+  <div class="recon-tabs">
+   <button class="recon-tab" data-recon-year="1754">1754 · Antes</button>
+   <button class="recon-tab" data-recon-year="1755">1755 · Ruínas</button>
+   <button class="recon-tab" data-recon-year="1756">1756 · Plano</button>
+  </div>
+  <div class="recon-copy" id="reconCopy"></div>
+  <div class="recon-status" id="reconStatus">Reconstituição aproximada</div>
+  <div class="recon-sources" id="reconSources">Fontes: Museu de Lisboa · Arquivo Municipal de Lisboa</div>
+ </section>
+ <div class="bottom-left"><div class="small-note">⌖ <span id="coords">38.7223° N, 9.1393° W</span> · Lisboa, Portugal</div><div class="coverage-key" id="coverageKey"><span><i class="key-dot covered"></i><b id="coveredLabel">Com pontos históricos</b></span><span><i class="key-dot uncovered"></i><b id="uncoveredLabel">Sem pontos catalogados</b></span></div></div>
+ <div class="bottom-right"><div class="view-switch" role="group" aria-label="Modo de mapa"><button id="viewHistorical" class="active" data-view="historical" type="button">Histórico</button><button id="viewSatellite" data-view="satellite" type="button">Satélite 3D</button></div><div class="historical-layer-panel" id="historicalLayerPanel">
+  <div class="layer-panel-title" id="historicalLayerTitle">Camadas históricas</div>
+  <label class="layer-option"><input type="checkbox" id="toggleUrbanExtent" checked><span id="urbanExtentLabel">Extensão urbana <small>Limite indicativo por época</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="toggleWalls"><span id="wallsLabel">Muralhas históricas <small>Traçados esquemáticos das cercas</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="toggleWaterfront"><span id="waterfrontLabel">Frente ribeirinha <small>Margem indicativa antes/depois de 1755</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="togglePombaline3D"><span id="pombaline3DLabel">Destacar zona histórica <small>Realçar a Baixa Pombalina no mapa</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="toggleMap1650"><span id="map1650Label">Planta de Tinoco · 1650 <small>Cartografia histórica georreferenciada · CML</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="toggleMap1756"><span id="map1756Label">Planta de Mardel · 1756 <small>Plano de reconstrução georreferenciado · CML</small></span></label>
+  <label class="history-map-opacity"><span id="mapOpacityLabel">Opacidade</span><input type="range" id="historicalMapOpacity" min="0.15" max="1" step="0.05" value="0.78" aria-label="Opacidade da planta histórica"></label>
+  <div class="history-source-note" id="layerSources">Cartografia Histórica de Lisboa · Câmara Municipal de Lisboa.</div>
+ </div><div class="map-tools"><button class="map-tool" id="historicalLayersToggle" title="Camadas históricas" aria-label="Camadas históricas" aria-expanded="false">▤</button><button class="map-tool" id="coverageToggle" title="Mostrar cobertura" aria-pressed="true">◌</button><button class="map-tool" id="zoomIn" title="Aproximar">＋</button><button class="map-tool" id="zoomOut" title="Afastar">－</button><button class="map-tool" id="tilt" title="Alternar inclinação">◢</button><button class="map-tool" id="locate" title="Centro de Lisboa">⌖</button></div><div class="location-tag">◈ EXPLORAÇÃO 3D · LISBOA</div></div>
+
+ <section class="timebar" id="timebar" aria-label="Linha temporal histórica">
+  <div class="timebar-top"><div><div class="timebar-kicker" id="timeKicker">VIAJA NO TEMPO</div><div class="timebar-date" id="timeYear">2026</div></div><div class="timebar-era" id="timeEra">Lisboa contemporânea</div><button class="timebar-expand" id="timebarExpand" type="button" aria-expanded="false" aria-controls="timebarDetails" aria-label="Expandir linha temporal">⌄</button></div>
+  <div class="timebar-controls"><button class="time-control" id="timeBack" aria-label="Recuar no tempo" title="Recuar">‹</button><input class="year-slider" id="yearSlider" type="range" min="-100" max="2026" step="1" value="2026" aria-label="Selecionar ano histórico"><button class="time-control" id="timeForward" aria-label="Avançar no tempo" title="Avançar">›</button><button class="time-control" id="timeNow" aria-label="Voltar ao presente" title="Hoje">↺</button></div>
+  <div class="timebar-details" id="timebarDetails"><div class="timebar-bottom"><span class="timebar-hint" id="timeStart">100 a.C.</span><span class="timebar-hint" id="timeHint">Arrasta para mudar a cidade</span><span class="timebar-hint" id="timeEnd">Hoje</span></div>
+  <div class="time-events" id="timeEvents"></div>
+  <div class="history-note" id="historyNote">A área urbana histórica é esquemática; os pontos surgem a partir da data aproximada de construção.</div></div>
+ </section>
+ <section class="detail" id="detail" aria-live="polite"><div class="detail-image" id="detailImage"><button class="detail-close" id="closeDetail" aria-label="Fechar">✕</button></div><div class="detail-swipe-hint" id="detailSwipeHint">← Desliza para navegar · Swipe to navigate →</div><div class="detail-content" id="detailContent"></div></section>
+ <div class="toast" id="toast"></div>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+const places=[
+{id:'castle',name:'Castelo de São Jorge',short:'Castelo de São Jorge',year:'1147',era:'medieval',category:'Conquista medieval',icon:'♜',coords:[-9.1334,38.7139],zoom:16.7,pitch:62,color:'#e4ad55',cover:'https://commons.wikimedia.org/wiki/Special:FilePath/Castelo_de_S%C3%A3o_Jorge_Lisboa.jpg?width=1200',description:'Erguido numa das colinas mais altas de Lisboa, o castelo domina a paisagem e guarda vestígios de ocupações que atravessam séculos. Em 1147, durante a conquista de Lisboa por D. Afonso Henriques, a fortificação foi tomada às forças muçulmanas após um cerco.',timeline:[['Antes de 1147','A colina foi ocupada por diferentes povos, incluindo comunidades islâmicas.'],['1147','A conquista cristã de Lisboa integrou a cidade no reino português.'],['Séculos seguintes','O castelo tornou-se residência régia e, mais tarde, estrutura defensiva.']],coverCredit:'Wikimedia Commons — Castelo de São Jorge Lisboa',coverSource:'https://commons.wikimedia.org/wiki/File:Castelo_de_S%C3%A3o_Jorge_Lisboa.jpg',source:'https://castelodesaojorge.pt/'},
+{id:'commerce',name:'Praça do Comércio',short:'Praça do Comércio',year:'1755',era:'1755',category:'Terramoto e reconstrução',icon:'✦',coords:[-9.1366,38.7077],zoom:16.8,pitch:62,color:'#ef9566',cover:'https://commons.wikimedia.org/wiki/Special:FilePath/Pra%C3%A7a_do_Com%C3%A9rcio_de_Lisboa.jpg?width=1200',description:'Onde se erguia o Paço da Ribeira, o terramoto de 1 de novembro de 1755, seguido de incêndios e de um tsunami, devastou grande parte da cidade. A praça foi reconstruída no plano iluminista associado ao Marquês de Pombal e abriu-se ao Tejo como uma das grandes portas simbólicas de Lisboa.',timeline:[['Até 1755','O Paço da Ribeira era o centro da vida da corte junto ao rio.'],['1 de novembro de 1755','O terramoto devastou a cidade e alterou profundamente a sua história.'],['Segunda metade do século XVIII','A reconstrução criou a malha regular da Baixa Pombalina.']],coverCredit:'Wikimedia Commons — Praça do Comércio de Lisboa',coverSource:'https://commons.wikimedia.org/wiki/File:Pra%C3%A7a_do_Com%C3%A9rcio_de_Lisboa.jpg',source:'https://www.visitportugal.com/pt-pt/NR/exeres/64BE2716-BB28-4041-8E05-594DF1BAAE95'},
+{id:'belem',name:'Torre de Belém',short:'Torre de Belém',year:'1514–1520',era:'1500',category:'Era dos Descobrimentos',icon:'⚓',coords:[-9.2163,38.6916],zoom:16.8,pitch:58,color:'#76cdbc',cover:'https://commons.wikimedia.org/wiki/Special:FilePath/Torre_de_Bel%C3%A9m_-_Lisboa_-_Portugal.jpg?width=1200',description:'Construída na margem do Tejo no início do século XVI, a Torre de Belém fazia parte do sistema defensivo da entrada do porto de Lisboa. Tornou-se um símbolo da expansão marítima portuguesa e da arquitetura manuelina, combinando funções militares e cerimoniais.',timeline:[['1514','O projeto foi iniciado durante o reinado de D. Manuel I.'],['1519–1520','A torre ficou concluída na sua configuração inicial.'],['1983','Foi inscrita na Lista do Património Mundial da UNESCO, integrada com o Mosteiro dos Jerónimos.']],coverCredit:'Wikimedia Commons — Torre de Belém',coverSource:'https://commons.wikimedia.org/wiki/File:Torre_de_Bel%C3%A9m_-_Lisboa_-_Portugal.jpg',source:'https://whc.unesco.org/en/list/263/'},
+{id:'jeronimos',name:'Mosteiro dos Jerónimos',short:'Mosteiro dos Jerónimos',year:'1502',era:'1500',category:'Arte manuelina',icon:'✧',coords:[-9.2065,38.6979],zoom:16.8,pitch:58,color:'#76cdbc',cover:'https://commons.wikimedia.org/wiki/Special:FilePath/Mosteiro_dos_Jer%C3%B3nimos_-_Lisbon_(52742527644).jpg?width=1200',description:'Mandado construir por D. Manuel I, o mosteiro está intimamente ligado à expansão marítima portuguesa. A sua arquitetura manuelina combina motivos marítimos, símbolos régios e elementos religiosos, expressando as ambições de Portugal no início da época moderna.',timeline:[['1501','Começaram as obras do mosteiro, financiadas em parte pelas riquezas do comércio ultramarino.'],['Séculos XVI–XVII','A construção prolongou-se e tornou-se um marco da arte portuguesa.'],['1983','A UNESCO reconheceu o mosteiro como Património Mundial.']],coverCredit:'Wikimedia Commons — Mosteiro dos Jerónimos',coverSource:'https://commons.wikimedia.org/wiki/File:Mosteiro_dos_Jer%C3%B3nimos_-_Lisbon_(52742527644).jpg',source:'https://whc.unesco.org/en/list/263/'},
+{id:'carmo',name:'Convento do Carmo',short:'Convento do Carmo',year:'1755',era:'1755',category:'Memória do terramoto',icon:'⌁',coords:[-9.1402,38.7120],zoom:17,pitch:62,color:'#ef9566',cover:'https://commons.wikimedia.org/wiki/Special:FilePath/Ruinas_do_Convento_do_Carmo_.jpg?width=1200',description:'As ruínas do Convento do Carmo são uma das imagens mais marcantes do terramoto de 1755. A abóbada da igreja colapsou durante a catástrofe e nunca foi reconstruída, deixando o espaço aberto ao céu como memória material da destruição que atingiu Lisboa.',timeline:[['1389','A construção do convento foi iniciada por ordem de Nuno Álvares Pereira.'],['1755','O terramoto provocou o colapso de grande parte da igreja.'],['Século XIX','As ruínas foram preservadas e tornaram-se um testemunho histórico.']],coverCredit:'Wikimedia Commons — Ruínas do Convento do Carmo',coverSource:'https://commons.wikimedia.org/wiki/File:Ruinas_do_Convento_do_Carmo_.jpg',source:'https://www.museuarqueologicodocarmo.pt/mac.html'},
+{id:'restauradores',name:'Praça dos Restauradores',short:'Restauradores',year:'1640 / 1974',era:'1900',category:'Liberdade e mudança',icon:'✺',coords:[-9.1427,38.7160],zoom:16.6,pitch:58,color:'#8ca8e8',cover:'https://commons.wikimedia.org/wiki/Special:FilePath/Pra%C3%A7a_dos_Restauradores-.jpg?width=1200',description:'A praça celebra a restauração da independência portuguesa em 1640 após seis décadas de união dinástica com a monarquia espanhola. Lisboa viria também a ser palco de transformações políticas decisivas no século XX, incluindo a Revolução de 25 de Abril de 1974, que pôs fim à ditadura.',timeline:[['1 de dezembro de 1640','Um golpe em Lisboa iniciou a restauração da independência de Portugal.'],['1886','Foi inaugurado o obelisco comemorativo da Restauração na praça.'],['25 de abril de 1974','A revolução militar e popular abriu caminho à democracia.']],coverCredit:'Wikimedia Commons — Praça dos Restauradores',coverSource:'https://commons.wikimedia.org/wiki/File:Pra%C3%A7a_dos_Restauradores-.jpg',source:'https://www.museudelisboa.pt/'}
+,
+{"id":"alfama","name":"Bairro de Alfama","short":"Alfama","year":"Séculos VIII–XII","era":"medieval","category":"Bairro histórico","icon":"⌂","coords":[-9.1288,38.7112],"zoom":16,"pitch":54,"color":"#e4ad55","cover":"","description":"Alfama conserva um traçado de ruas estreitas e escadarias associado à longa história urbana da cidade, com marcas da presença islâmica e da expansão medieval.","timeline":[["Contexto histórico","Alfama conserva um traçado de ruas estreitas e escadarias associado à longa história urbana da cidade, com marcas da presença islâmica e da expansão medieval."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"se","name":"Sé de Lisboa","short":"Sé de Lisboa","year":"1147–século XIII","era":"medieval","category":"Arquitetura religiosa","icon":"✧","coords":[-9.1336,38.7098],"zoom":16,"pitch":54,"color":"#e4ad55","cover":"","description":"Fundada após a conquista cristã de Lisboa, a catedral combina elementos românicos, góticos e posteriores, refletindo séculos de alterações e restauros.","timeline":[["Contexto histórico","Fundada após a conquista cristã de Lisboa, a catedral combina elementos românicos, góticos e posteriores, refletindo séculos de alterações e restauros."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patriarcado-lisboa.pt/"},
+{"id":"muralha","name":"Cerca Velha","short":"Cerca Velha","year":"Antiguidade tardia–Idade Média","era":"medieval","category":"Defesas da cidade","icon":"▦","coords":[-9.1314,38.7111],"zoom":16,"pitch":54,"color":"#e4ad55","cover":"","description":"Vestígios da antiga cerca defensiva revelam como Lisboa foi protegida e reorganizada ao longo de diferentes épocas.","timeline":[["Contexto histórico","Vestígios da antiga cerca defensiva revelam como Lisboa foi protegida e reorganizada ao longo de diferentes épocas."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"sao-vicente","name":"Mosteiro de São Vicente de Fora","short":"São Vicente de Fora","year":"1582–1629","era":"1500","category":"Monumento religioso","icon":"✧","coords":[-9.1252,38.7137],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"Um dos grandes conjuntos maneiristas de Lisboa, com claustros, azulejos e túmulos ligados à história religiosa e monárquica portuguesa.","timeline":[["Contexto histórico","Um dos grandes conjuntos maneiristas de Lisboa, com claustros, azulejos e túmulos ligados à história religiosa e monárquica portuguesa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patrimoniocultural.gov.pt/"},
+{"id":"panteao","name":"Panteão Nacional","short":"Panteão Nacional","year":"Século XVII–XX","era":"1500","category":"Património e memória","icon":"✧","coords":[-9.125,38.7145],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"A Igreja de Santa Engrácia começou no século XVII e só foi concluída no século XX; hoje acolhe túmulos de figuras relevantes da história portuguesa.","timeline":[["Contexto histórico","A Igreja de Santa Engrácia começou no século XVII e só foi concluída no século XX; hoje acolhe túmulos de figuras relevantes da história portuguesa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patrimoniocultural.gov.pt/"},
+{"id":"graca","name":"Miradouro da Graça","short":"Miradouro da Graça","year":"Séculos XVIII–XX","era":"1900","category":"Paisagem urbana","icon":"◉","coords":[-9.131,38.7179],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Um miradouro sobre as colinas e o centro histórico, numa zona que cresceu em torno de conventos e bairros populares.","timeline":[["Contexto histórico","Um miradouro sobre as colinas e o centro histórico, numa zona que cresceu em torno de conventos e bairros populares."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"santo-antonio","name":"Igreja de Santo António","short":"Santo António","year":"Século XVIII","era":"1755","category":"Devoção e reconstrução","icon":"✧","coords":[-9.1329,38.7104],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Associada à tradição do nascimento de Santo António, a igreja atual foi reconstruída após o terramoto de 1755.","timeline":[["Contexto histórico","Associada à tradição do nascimento de Santo António, a igreja atual foi reconstruída após o terramoto de 1755."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"rossio","name":"Praça do Rossio","short":"Rossio","year":"Idade Média–hoje","era":"1900","category":"Praça cívica","icon":"✺","coords":[-9.139,38.7138],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Uma das praças centrais de Lisboa, palco de mercados, festas e manifestações; a configuração atual foi marcada pela reconstrução após 1755.","timeline":[["Contexto histórico","Uma das praças centrais de Lisboa, palco de mercados, festas e manifestações; a configuração atual foi marcada pela reconstrução após 1755."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"santa-justa","name":"Elevador de Santa Justa","short":"Santa Justa","year":"1902","era":"1900","category":"Engenharia urbana","icon":"↟","coords":[-9.1393,38.712],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Inaugurado em 1902, liga a Baixa ao Carmo e tornou-se um marco da engenharia do ferro e da modernização dos transportes.","timeline":[["Contexto histórico","Inaugurado em 1902, liga a Baixa ao Carmo e tornou-se um marco da engenharia do ferro e da modernização dos transportes."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"cais-colunas","name":"Cais das Colunas","short":"Cais das Colunas","year":"Século XVIII","era":"1755","category":"Frente ribeirinha","icon":"≈","coords":[-9.1363,38.7072],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"A escadaria monumental junto ao Tejo marcou a entrada cerimonial de Lisboa e integra a frente ribeirinha reconstruída após o terramoto.","timeline":[["Contexto histórico","A escadaria monumental junto ao Tejo marcou a entrada cerimonial de Lisboa e integra a frente ribeirinha reconstruída após o terramoto."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"casa-bicos","name":"Casa dos Bicos","short":"Casa dos Bicos","year":"1523","era":"1500","category":"Arquitetura civil","icon":"⌂","coords":[-9.1308,38.7085],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"Casa senhorial do início do século XVI, conhecida pela fachada de pedra em pontas e hoje ligada à Fundação José Saramago.","timeline":[["Contexto histórico","Casa senhorial do início do século XVI, conhecida pela fachada de pedra em pontas e hoje ligada à Fundação José Saramago."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.josesaramago.org/"},
+{"id":"museu-fado","name":"Museu do Fado","short":"Museu do Fado","year":"1998","era":"1900","category":"Música e património imaterial","icon":"♫","coords":[-9.1284,38.7115],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"O museu documenta a história do fado, género musical associado à identidade cultural de Lisboa e reconhecido pela UNESCO em 2011.","timeline":[["Contexto histórico","O museu documenta a história do fado, género musical associado à identidade cultural de Lisboa e reconhecido pela UNESCO em 2011."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudofado.pt/"},
+{"id":"chiado","name":"Chiado","short":"Chiado","year":"Séculos XVIII–XX","era":"1900","category":"Cultura e cidade","icon":"✦","coords":[-9.143,38.7108],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Bairro de comércio, cafés, livrarias e vida intelectual, reabilitado após o incêndio de 1988.","timeline":[["Contexto histórico","Bairro de comércio, cafés, livrarias e vida intelectual, reabilitado após o incêndio de 1988."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"sao-roque","name":"Igreja de São Roque","short":"São Roque","year":"Séculos XVI–XVII","era":"1500","category":"Arte sacra","icon":"✧","coords":[-9.1453,38.714],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"Igreja jesuíta conhecida pelas capelas ricamente decoradas e por importantes testemunhos da arte religiosa portuguesa.","timeline":[["Contexto histórico","Igreja jesuíta conhecida pelas capelas ricamente decoradas e por importantes testemunhos da arte religiosa portuguesa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://museu-saoroque.com/"},
+{"id":"sao-bento","name":"Assembleia da República","short":"São Bento","year":"1598 / 1834","era":"1900","category":"História política","icon":"⚑","coords":[-9.1582,38.7135],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Antigo mosteiro beneditino convertido em parlamento no século XIX, central à vida política portuguesa contemporânea.","timeline":[["Contexto histórico","Antigo mosteiro beneditino convertido em parlamento no século XIX, central à vida política portuguesa contemporânea."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.parlamento.pt/"},
+{"id":"aqueduto","name":"Aqueduto das Águas Livres","short":"Aqueduto","year":"1731–1799","era":"1755","category":"Infraestrutura histórica","icon":"≈","coords":[-9.1656,38.7238],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Grande obra hidráulica criada para abastecer Lisboa; os seus arcos e galerias são um marco da engenharia histórica.","timeline":[["Contexto histórico","Grande obra hidráulica criada para abastecer Lisboa; os seus arcos e galerias são um marco da engenharia histórica."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.epal.pt/"},
+{"id":"marques-pombal","name":"Praça Marquês de Pombal","short":"Marquês de Pombal","year":"1934","era":"1900","category":"Expansão urbana","icon":"✺","coords":[-9.1502,38.7253],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Praça entre a Baixa e a expansão a norte, com monumento que evoca a reconstrução de Lisboa após 1755.","timeline":[["Contexto histórico","Praça entre a Baixa e a expansão a norte, com monumento que evoca a reconstrução de Lisboa após 1755."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"parque-eduardo","name":"Parque Eduardo VII","short":"Parque Eduardo VII","year":"Século XX","era":"1900","category":"Espaço público","icon":"♧","coords":[-9.1526,38.7289],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Grande espaço verde no eixo da Avenida da Liberdade, usado para lazer, feiras e eventos urbanos.","timeline":[["Contexto histórico","Grande espaço verde no eixo da Avenida da Liberdade, usado para lazer, feiras e eventos urbanos."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"avenida","name":"Avenida da Liberdade","short":"Av. da Liberdade","year":"1882","era":"1900","category":"Urbanismo moderno","icon":"↟","coords":[-9.1454,38.7189],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Aberta no século XIX e inspirada nos boulevards europeus, liga os Restauradores à expansão urbana a norte.","timeline":[["Contexto histórico","Aberta no século XIX e inspirada nos boulevards europeus, liga os Restauradores à expansão urbana a norte."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"estufa-fria","name":"Estufa Fria","short":"Estufa Fria","year":"1933","era":"1900","category":"Jardim histórico","icon":"♧","coords":[-9.153,38.727],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Jardim visitável desenvolvido a partir de uma antiga pedreira, com plantas de diferentes regiões e ambiente singular.","timeline":[["Contexto histórico","Jardim visitável desenvolvido a partir de uma antiga pedreira, com plantas de diferentes regiões e ambiente singular."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"gulbenkian","name":"Fundação Calouste Gulbenkian","short":"Gulbenkian","year":"1969","era":"1900","category":"Arte e cultura","icon":"✧","coords":[-9.153,38.7373],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Complexo cultural inaugurado em 1969, com museu, auditórios e jardins modernistas dedicados à arte, música e ciência.","timeline":[["Contexto histórico","Complexo cultural inaugurado em 1969, com museu, auditórios e jardins modernistas dedicados à arte, música e ciência."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://gulbenkian.pt/"},
+{"id":"campo-pequeno","name":"Praça de Touros do Campo Pequeno","short":"Campo Pequeno","year":"1892","era":"1900","category":"Arquitetura e espetáculos","icon":"✺","coords":[-9.1463,38.7425],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Edifício neomudéjar inaugurado em 1892 e posteriormente adaptado a diferentes usos culturais e de entretenimento.","timeline":[["Contexto histórico","Edifício neomudéjar inaugurado em 1892 e posteriormente adaptado a diferentes usos culturais e de entretenimento."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"mercado-campo-ourique","name":"Mercado de Campo de Ourique","short":"Mercado de Campo de Ourique","year":"1934","era":"1900","category":"Vida quotidiana","icon":"⌂","coords":[-9.166,38.7184],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Mercado inaugurado para servir um bairro em expansão, hoje renovado e ainda ligado ao comércio alimentar e à vida local.","timeline":[["Contexto histórico","Mercado inaugurado para servir um bairro em expansão, hoje renovado e ainda ligado ao comércio alimentar e à vida local."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"prazeres","name":"Cemitério dos Prazeres","short":"Cemitério dos Prazeres","year":"1833","era":"1900","category":"Memória e património","icon":"✧","coords":[-9.17,38.7164],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Criado durante uma epidemia de cólera, tornou-se uma paisagem de jazigos monumentais e memória social e artística.","timeline":[["Contexto histórico","Criado durante uma epidemia de cólera, tornou-se uma paisagem de jazigos monumentais e memória social e artística."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"ajuda","name":"Palácio Nacional da Ajuda","short":"Palácio da Ajuda","year":"1795–século XIX","era":"1755","category":"Residência real","icon":"♜","coords":[-9.1978,38.7076],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"A construção foi decidida após o terramoto de 1755; o palácio tornou-se residência da monarquia portuguesa no século XIX.","timeline":[["Contexto histórico","A construção foi decidida após o terramoto de 1755; o palácio tornou-se residência da monarquia portuguesa no século XIX."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museusemonumentos.pt/"},
+{"id":"padrao","name":"Padrão dos Descobrimentos","short":"Padrão dos Descobrimentos","year":"1960","era":"1900","category":"Memória marítima","icon":"⚓","coords":[-9.2058,38.6937],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Monumento junto ao Tejo dedicado a figuras da expansão marítima, inaugurado na sua forma atual em 1960.","timeline":[["Contexto histórico","Monumento junto ao Tejo dedicado a figuras da expansão marítima, inaugurado na sua forma atual em 1960."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://padraodosdescobrimentos.pt/"},
+{"id":"palacio-belem","name":"Palácio de Belém","short":"Palácio de Belém","year":"Século XVI","era":"1500","category":"História política","icon":"♜","coords":[-9.197,38.6965],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"Antiga residência nobre e real, hoje residência oficial do Presidente da República portuguesa.","timeline":[["Contexto histórico","Antiga residência nobre e real, hoje residência oficial do Presidente da República portuguesa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.presidencia.pt/"},
+{"id":"coches","name":"Museu Nacional dos Coches","short":"Museu dos Coches","year":"1905 / 2015","era":"1900","category":"Museu e património","icon":"✧","coords":[-9.1977,38.6979],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Museu de carruagens cerimoniais que documentam a história dos transportes e da corte portuguesa.","timeline":[["Contexto histórico","Museu de carruagens cerimoniais que documentam a história dos transportes e da corte portuguesa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://museudoscoches.gov.pt/"},
+{"id":"maat","name":"MAAT","short":"MAAT","year":"2016","era":"1900","category":"Arte e arquitetura contemporânea","icon":"◉","coords":[-9.1945,38.6958],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Museu de arte, arquitetura e tecnologia junto à antiga Central Tejo, com edifício contemporâneo na frente ribeirinha.","timeline":[["Contexto histórico","Museu de arte, arquitetura e tecnologia junto à antiga Central Tejo, com edifício contemporâneo na frente ribeirinha."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://maat.pt/"},
+{"id":"central-tejo","name":"Central Tejo","short":"Central Tejo","year":"1909–1972","era":"1900","category":"Património industrial","icon":"⚙","coords":[-9.195,38.6969],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Antiga central termoelétrica que forneceu energia à cidade e hoje preserva a memória da eletrificação de Lisboa.","timeline":[["Contexto histórico","Antiga central termoelétrica que forneceu energia à cidade e hoje preserva a memória da eletrificação de Lisboa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.fundacaoedp.pt/"},
+{"id":"docas","name":"Docas de Alcântara","short":"Docas de Alcântara","year":"Séculos XIX–XX","era":"1900","category":"Porto e transformação urbana","icon":"⚓","coords":[-9.1762,38.7005],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Zona portuária e industrial reconvertida, que ilustra a mudança de relação entre Lisboa, os armazéns e o Tejo.","timeline":[["Contexto histórico","Zona portuária e industrial reconvertida, que ilustra a mudança de relação entre Lisboa, os armazéns e o Tejo."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"lxfactory","name":"LX Factory","short":"LX Factory","year":"1846 / 2008","era":"1900","category":"Património industrial","icon":"⚙","coords":[-9.178,38.7031],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Antigo complexo industrial de Alcântara reconvertido num polo de cultura, comércio e criatividade.","timeline":[["Contexto histórico","Antigo complexo industrial de Alcântara reconvertido num polo de cultura, comércio e criatividade."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://lxfactory.com/"},
+{"id":"ponte-25-abril","name":"Ponte 25 de Abril (vista de Lisboa)","short":"Ponte 25 de Abril","year":"1966","era":"1900","category":"Infraestrutura moderna","icon":"↔","coords":[-9.1776,38.6952],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"A ponte transformou a mobilidade entre Lisboa e a margem sul; após 1974 recebeu o nome que evoca a Revolução dos Cravos.","timeline":[["Contexto histórico","A ponte transformou a mobilidade entre Lisboa e a margem sul; após 1974 recebeu o nome que evoca a Revolução dos Cravos."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"palacio-baldaya","name":"Palácio Baldaya","short":"Palácio Baldaya","year":"Século XVIII","era":"1755","category":"Património de bairro","icon":"⌂","coords":[-9.204,38.7508],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Palácio histórico de Benfica, exemplo de património senhorial fora do núcleo turístico central, recuperado para uso cultural.","timeline":[["Contexto histórico","Palácio histórico de Benfica, exemplo de património senhorial fora do núcleo turístico central, recuperado para uso cultural."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"monsanto","name":"Parque Florestal de Monsanto","short":"Monsanto","year":"1934–hoje","era":"1900","category":"Paisagem e natureza","icon":"♧","coords":[-9.1878,38.7275],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Grande parque florestal planeado como pulmão verde da capital, com trilhos, áreas de lazer e miradouros.","timeline":[["Contexto histórico","Grande parque florestal planeado como pulmão verde da capital, com trilhos, áreas de lazer e miradouros."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"parque-nacoes","name":"Parque das Nações","short":"Parque das Nações","year":"1998","era":"1900","category":"Renovação urbana","icon":"◉","coords":[-9.0956,38.7636],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"A Expo 98 transformou uma antiga zona industrial e portuária numa frente urbana de habitação, cultura e espaços públicos.","timeline":[["Contexto histórico","A Expo 98 transformou uma antiga zona industrial e portuária numa frente urbana de habitação, cultura e espaços públicos."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"oceanario","name":"Oceanário de Lisboa","short":"Oceanário","year":"1998","era":"1900","category":"Ciência e arquitetura","icon":"≈","coords":[-9.0937,38.7636],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Criado para a Expo 98, tornou-se uma instituição de ciência e educação dedicada aos oceanos.","timeline":[["Contexto histórico","Criado para a Expo 98, tornou-se uma instituição de ciência e educação dedicada aos oceanos."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://oceanario.pt/"},
+{"id":"oriente","name":"Estação do Oriente","short":"Gare do Oriente","year":"1998","era":"1900","category":"Transportes e arquitetura","icon":"↔","coords":[-9.0992,38.7678],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Estação desenhada por Santiago Calatrava para a Expo 98, hoje um dos principais interfaces de transportes de Lisboa.","timeline":[["Contexto histórico","Estação desenhada por Santiago Calatrava para a Expo 98, hoje um dos principais interfaces de transportes de Lisboa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.infraestruturasdeportugal.pt/"},
+{"id":"cidade-universitaria","name":"Cidade Universitária","short":"Cidade Universitária","year":"Século XX","era":"1900","category":"Educação e cidade","icon":"⌘","coords":[-9.1588,38.7524],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Campus universitário que acompanhou a expansão de Lisboa no século XX e concentra ensino e investigação.","timeline":[["Contexto histórico","Campus universitário que acompanhou a expansão de Lisboa no século XX e concentra ensino e investigação."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.ulisboa.pt/"},
+{"id":"campo-grande","name":"Jardim do Campo Grande","short":"Campo Grande","year":"Séculos XIX–XX","era":"1900","category":"Jardim e espaço público","icon":"♧","coords":[-9.157,38.7591],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Jardim histórico que acompanhou a expansão a norte e hoje liga bairros, universidades e equipamentos culturais.","timeline":[["Contexto histórico","Jardim histórico que acompanhou a expansão a norte e hoje liga bairros, universidades e equipamentos culturais."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.lisboa.pt/"},
+{"id":"martires","name":"Igreja dos Mártires","short":"Igreja dos Mártires","year":"Século XVIII","era":"1755","category":"Reconstrução religiosa","icon":"✧","coords":[-9.1428,38.7104],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Ligada à tradição da conquista cristã de Lisboa, a igreja foi reconstruída após o terramoto de 1755.","timeline":[["Contexto histórico","Ligada à tradição da conquista cristã de Lisboa, a igreja foi reconstruída após o terramoto de 1755."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patriarcado-lisboa.pt/"},
+{"id":"sao-domingos","name":"Igreja de São Domingos","short":"São Domingos","year":"1241 / 1959","era":"1900","category":"Memória urbana","icon":"✧","coords":[-9.1382,38.715],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Igreja histórica danificada por terramotos e por um incêndio em 1959, conservando marcas visíveis da sua história.","timeline":[["Contexto histórico","Igreja histórica danificada por terramotos e por um incêndio em 1959, conservando marcas visíveis da sua história."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patriarcado-lisboa.pt/"},
+{"id":"teatro-dmaria","name":"Teatro Nacional D. Maria II","short":"Teatro D. Maria II","year":"1846","era":"1900","category":"Artes performativas","icon":"✦","coords":[-9.139,38.7138],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Teatro inaugurado no Rossio, uma das instituições centrais das artes performativas em Portugal.","timeline":[["Contexto histórico","Teatro inaugurado no Rossio, uma das instituições centrais das artes performativas em Portugal."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.tndm.pt/"},
+{"id":"teatro-romano","name":"Teatro Romano de Lisboa","short":"Teatro Romano","year":"Século I d.C.","era":"medieval","category":"Lisboa romana","icon":"◉","coords":[-9.1328,38.709],"zoom":16,"pitch":54,"color":"#e4ad55","cover":"","description":"Vestígios arqueológicos do teatro de Olisipo revelam a importância da cidade na época imperial romana.","timeline":[["Contexto histórico","Vestígios arqueológicos do teatro de Olisipo revelam a importância da cidade na época imperial romana."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"rua-correeiros","name":"Núcleo Arqueológico da Rua dos Correeiros","short":"Rua dos Correeiros","year":"Época romana–século XVIII","era":"1755","category":"Arqueologia urbana","icon":"◉","coords":[-9.1377,38.7111],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Escavações revelaram vestígios de ocupação desde a época romana até à reconstrução pombalina da Baixa.","timeline":[["Contexto histórico","Escavações revelaram vestígios de ocupação desde a época romana até à reconstrução pombalina da Baixa."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"},
+{"id":"santa-apolonia","name":"Estação de Santa Apolónia","short":"Santa Apolónia","year":"1865","era":"1900","category":"Transportes e cidade","icon":"↔","coords":[-9.1233,38.7148],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Inaugurada em 1865, foi a primeira estação ferroviária de Lisboa e ligou a capital à rede nacional.","timeline":[["Contexto histórico","Inaugurada em 1865, foi a primeira estação ferroviária de Lisboa e ligou a capital à rede nacional."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.cp.pt/"},
+{"id":"estrelabasilica","name":"Basílica da Estrela","short":"Basílica da Estrela","year":"1779–1790","era":"1755","category":"Arquitetura religiosa","icon":"✧","coords":[-9.1603,38.7139],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Basílica monumental encomendada por D. Maria I, construída na segunda metade do século XVIII e marcante na paisagem ocidental.","timeline":[["Contexto histórico","Basílica monumental encomendada por D. Maria I, construída na segunda metade do século XVIII e marcante na paisagem ocidental."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patriarcado-lisboa.pt/"},
+{"id":"assembleia-antiga","name":"Palácio das Necessidades","short":"Palácio das Necessidades","year":"Século XVIII","era":"1755","category":"Diplomacia e monarquia","icon":"♜","coords":[-9.1626,38.707],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Antigo convento e palácio real, associado à diplomacia portuguesa e a episódios decisivos da monarquia constitucional.","timeline":[["Contexto histórico","Antigo convento e palácio real, associado à diplomacia portuguesa e a episódios decisivos da monarquia constitucional."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museusemonumentos.pt/"},
+{"id":"museu-azulejo","name":"Museu Nacional do Azulejo","short":"Museu do Azulejo","year":"Século XVI–hoje","era":"1500","category":"Arte decorativa","icon":"✧","coords":[-9.1207,38.7252],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"Instalado no antigo Convento da Madre de Deus, documenta a tradição do azulejo português desde os primeiros séculos modernos.","timeline":[["Contexto histórico","Instalado no antigo Convento da Madre de Deus, documenta a tradição do azulejo português desde os primeiros séculos modernos."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museusemonumentos.pt/"},
+{"id":"convento-beato","name":"Convento do Beato","short":"Convento do Beato","year":"Século XV","era":"1500","category":"Património conventual","icon":"✧","coords":[-9.1119,38.7355],"zoom":16,"pitch":54,"color":"#76cdbc","cover":"","description":"Antigo conjunto conventual na zona oriental, reutilizado ao longo do tempo e hoje associado a eventos e usos culturais.","timeline":[["Contexto histórico","Antigo conjunto conventual na zona oriental, reutilizado ao longo do tempo e hoje associado a eventos e usos culturais."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.visitlisboa.com/"},
+{"id":"igreja-campo-grande","name":"Igreja de São João de Brito","short":"São João de Brito","year":"Século XX","era":"1900","category":"Arquitetura religiosa","icon":"✧","coords":[-9.153,38.7545],"zoom":16,"pitch":54,"color":"#8ca8e8","cover":"","description":"Igreja paroquial da zona de Alvalade, representativa da expansão residencial e dos equipamentos de bairro do século XX.","timeline":[["Contexto histórico","Igreja paroquial da zona de Alvalade, representativa da expansão residencial e dos equipamentos de bairro do século XX."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.patriarcado-lisboa.pt/"},
+{"id":"museu-cidade","name":"Museu de Lisboa — Palácio Pimenta","short":"Palácio Pimenta","year":"Século XVIII","era":"1755","category":"História da cidade","icon":"✧","coords":[-9.1514,38.7595],"zoom":16,"pitch":54,"color":"#ef9566","cover":"","description":"Palácio de recreio do século XVIII que acolhe parte do Museu de Lisboa e ajuda a contar a evolução da capital.","timeline":[["Contexto histórico","Palácio de recreio do século XVIII que acolhe parte do Museu de Lisboa e ajuda a contar a evolução da capital."],["Transformações ao longo do tempo","O local foi adaptado e reinterpretado por diferentes gerações, acompanhando a evolução de Lisboa."],["Hoje","É um ponto de referência para compreender a história e a paisagem urbana da cidade."]],"source":"https://www.museudelisboa.pt/"}
+];
+let currentEra='all',selectedId=null,mapReady=false,markers=[],labelMarkers=[],currentPitch=58,selectedYear=2026,currentMapView='historical';
+
+const translations={
+pt:{mode:'MODO EXPLORAÇÃO',active:'● ATIVO',eyebrow:'◆ Uma cidade. Muitas eras.',hero:'Descobre Lisboa<br><span style="color:var(--gold)">através do tempo.</span>',intro:'Explora lugares, compara épocas e descobre as histórias por trás da cidade. Seleciona um ponto ou inicia um percurso guiado.',era:'Explorar por época',all:'Todas',medieval:'Medieval',discoveries:'Descobrimentos',quake:'1755',century:'Século XX',points:'Pontos históricos',covered:'Com pontos históricos',uncovered:'Área por explorar',loading:'A abrir as memórias de Lisboa',loadingSub:'A preparar a cidade para explorar',detailTag:'✧ MEMÓRIA DESBLOQUEADA',timeline:'Fragmentos da história',explore:'Explora mais',location:'Lisboa, Portugal',source:'Conteúdo introdutório. Confirma datas e contexto em fontes patrimoniais.',sourceLink:'Consultar fonte de referência ↗',contentNote:'Os controlos estão traduzidos; os textos históricos ainda estão em português.',category:'Pontos de interesse',allAreas:'Todas as épocas',coverageTitle:'Cobertura histórica',toast:'Camada de cobertura atualizada',timeKicker:'VIAJA NO TEMPO',timeHint:'Arrasta para mudar a cidade',timeStart:'100 a.C.',timeEnd:'Hoje',historyNote:'A área urbana é esquemática; os pontos surgem a partir da data aproximada de construção.',eraAncient:'Olisipo romana',eraEarly:'Lisboa tardo-antiga',eraMedieval:'Lisboa medieval',eraDiscovery:'Era dos Descobrimentos',eraBeforeQuake:'Lisboa antes do terramoto',eraQuake:'Terramoto de 1755',eraRebuild:'Reconstrução pombalina',eraModern:'Lisboa em modernização',eraTwentieth:'Lisboa do século XX',eraExpo:'Lisboa antes da Expo',eraNow:'Lisboa contemporânea',event100:'Olisipo',event1147:'Conquista',event1500:'Descobrimentos',event1754:'Antes do terramoto',event1755:'Terramoto',event1756:'Após o terramoto',event1775:'Baixa Pombalina',event1800:'Reconstrução',event1910:'República',event1974:'Revolução',event1998:'Expo 98',event2026:'Hoje'},
+en:{mode:'EXPLORATION MODE',active:'● ACTIVE',eyebrow:'◆ One city. Many eras.',hero:'Discover Lisbon<br><span style="color:var(--gold)">through time.</span>',intro:'Explore places, compare eras and uncover the stories behind the city. Select a map point or start a guided journey.',era:'Explore by era',all:'All',medieval:'Medieval',discoveries:'Age of Discovery',quake:'1755',century:'20th century',points:'Historic places',covered:'Historic points mapped',uncovered:'Area to explore',loading:'Opening Lisbon’s memories',loadingSub:'Preparing the city to explore',detailTag:'✧ MEMORY UNLOCKED',timeline:'Fragments of history',explore:'Explore further',location:'Lisbon, Portugal',source:'Introductory content. Verify dates and context with heritage sources.',sourceLink:'Open reference source ↗',contentNote:'The interface is translated; historical narratives are currently in Portuguese.',category:'Places of interest',allAreas:'All eras',coverageTitle:'Historical coverage',toast:'Coverage layer updated',timeKicker:'TRAVEL THROUGH TIME',timeHint:'Drag to change the city',timeStart:'100 BC',timeEnd:'Today',historyNote:'The urban footprint is schematic; places appear from their approximate construction date.',eraAncient:'Roman Olisipo',eraEarly:'Late antique Lisbon',eraMedieval:'Medieval Lisbon',eraDiscovery:'Age of Discovery',eraBeforeQuake:'Lisbon before the earthquake',eraQuake:'1755 earthquake',eraRebuild:'Pombaline reconstruction',eraModern:'Lisbon modernises',eraTwentieth:'20th-century Lisbon',eraExpo:'Lisbon before Expo',eraNow:'Contemporary Lisbon',event100:'Olisipo',event1147:'Conquest',event1500:'Discoveries',event1754:'Before earthquake',event1755:'Earthquake',event1756:'After earthquake',event1775:'Pombaline Baixa',event1800:'Rebuilding',event1910:'Republic',event1974:'Revolution',event1998:'Expo 98',event2026:'Today'},
+es:{mode:'MODO EXPLORACIÓN',active:'● ACTIVO',eyebrow:'◆ Una ciudad. Muchas épocas.',hero:'Descubre Lisboa<br><span style="color:var(--gold)">a través del tiempo.</span>',intro:'Explora lugares, compara épocas y descubre las historias de la ciudad. Selecciona un punto o inicia una ruta guiada.',era:'Explorar por época',all:'Todas',medieval:'Medieval',discoveries:'Descubrimientos',quake:'1755',century:'Siglo XX',points:'Lugares históricos',covered:'Puntos históricos incluidos',uncovered:'Zona por explorar',loading:'Abriendo los recuerdos de Lisboa',loadingSub:'Preparando la ciudad para explorar',detailTag:'✧ MEMORIA DESBLOQUEADA',timeline:'Fragmentos de historia',explore:'Descubre más',location:'Lisboa, Portugal',source:'Contenido introductorio. Verifica fechas y contexto con fuentes patrimoniales.',sourceLink:'Consultar fuente de referencia ↗',contentNote:'La interfaz está traducida; los textos históricos siguen en portugués.',category:'Lugares de interés',allAreas:'Todas las épocas',coverageTitle:'Cobertura histórica',toast:'Capa de cobertura actualizada',timeKicker:'VIAJA EN EL TIEMPO',timeHint:'Arrastra para cambiar la ciudad',timeStart:'100 a. C.',timeEnd:'Hoy',historyNote:'La extensión urbana es esquemática; los lugares aparecen desde su fecha aproximada de construcción.',eraAncient:'Olisipo romana',eraEarly:'Lisboa tardoantigua',eraMedieval:'Lisboa medieval',eraDiscovery:'Era de los Descubrimientos',eraBeforeQuake:'Lisboa antes del terremoto',eraQuake:'Terremoto de 1755',eraRebuild:'Reconstrucción pombalina',eraModern:'Lisboa en modernización',eraTwentieth:'Lisboa del siglo XX',eraExpo:'Lisboa antes de la Expo',eraNow:'Lisboa contemporánea',event100:'Olisipo',event1147:'Conquista',event1500:'Descubrimientos',event1754:'Antes del terremoto',event1755:'Terremoto',event1756:'Después del terremoto',event1775:'Baixa pombalina',event1800:'Reconstrucción',event1910:'República',event1974:'Revolución',event1998:'Expo 98',event2026:'Hoy'},
+fr:{mode:'MODE EXPLORATION',active:'● ACTIF',eyebrow:'◆ Une ville. Plusieurs époques.',hero:'Découvrez Lisbonne<br><span style="color:var(--gold)">à travers le temps.</span>',intro:'Explorez les lieux, comparez les époques et découvrez les histoires de la ville. Choisissez un lieu ou lancez un parcours guidé.',era:'Explorer par époque',all:'Toutes',medieval:'Médiéval',discoveries:'Grandes découvertes',quake:'1755',century:'XXe siècle',points:'Sites historiques',covered:'Points historiques répertoriés',uncovered:'Zone à explorer',loading:'Ouverture des mémoires de Lisbonne',loadingSub:'Préparation de la ville à explorer',detailTag:'✧ MÉMOIRE DÉBLOQUÉE',timeline:'Fragments d’histoire',explore:'Explorer davantage',location:'Lisbonne, Portugal',source:'Contenu introductif. Vérifiez les dates et le contexte auprès des sources patrimoniales.',sourceLink:'Consulter la source ↗',contentNote:'L’interface est traduite ; les récits historiques sont encore en portugais.',category:'Points d’intérêt',allAreas:'Toutes les époques',coverageTitle:'Couverture historique',toast:'Couche de couverture mise à jour',timeKicker:'VOYAGE DANS LE TEMPS',timeHint:'Faites glisser pour changer la ville',timeStart:'100 av. J.-C.',timeEnd:'Aujourd’hui',historyNote:'L’emprise urbaine est schématique ; les lieux apparaissent à partir de leur date approximative de construction.',eraAncient:'Olisipo romaine',eraEarly:'Lisbonne de l’Antiquité tardive',eraMedieval:'Lisbonne médiévale',eraDiscovery:'Grandes découvertes',eraBeforeQuake:'Lisbonne avant le séisme',eraQuake:'Séisme de 1755',eraRebuild:'Reconstruction pombaline',eraModern:'Lisbonne se modernise',eraTwentieth:'Lisbonne au XXe siècle',eraExpo:'Lisbonne avant l’Expo',eraNow:'Lisbonne contemporaine',event100:'Olisipo',event1147:'Conquête',event1500:'Découvertes',event1754:'Avant le séisme',event1755:'Séisme',event1756:'Après le séisme',event1775:'Baixa pombaline',event1800:'Reconstruction',event1910:'République',event1974:'Révolution',event1998:'Expo 98',event2026:'Aujourd’hui'}
+};
+let language='pt';
+function chooseLanguage(){const browser=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'pt']).map(x=>String(x).toLowerCase());for(const l of browser){if(l.startsWith('pt'))return'pt';if(l.startsWith('en'))return'en';if(l.startsWith('es'))return'es';if(l.startsWith('fr'))return'fr'}return'pt'}
+function tr(key){return (translations[language]||translations.pt)[key]||translations.pt[key]||key}
+function applyHistoricalLayerLanguage(){
+ const labels={
+ pt:{title:'Camadas históricas',extent:'Extensão urbana',extentSub:'Limite indicativo por época',walls:'Muralhas históricas',wallsSub:'Traçados esquemáticos das cercas',shore:'Frente ribeirinha',shoreSub:'Margem indicativa antes/depois de 1755',sources:'Fonte: <a href="https://dados.cm-lisboa.pt/ar/dataset/cartografia-historica-de-lisboa" target="_blank" rel="noopener">Cartografia histórica CML ↗</a>. As plantas raster da CML são georreferenciadas; as restantes linhas são esquemáticas.',toggle:'Camadas históricas'},
+ en:{title:'Historical layers',extent:'Urban extent',extentSub:'Indicative boundary by period',walls:'Historic walls',wallsSub:'Schematic wall alignments',shore:'Riverfront',shoreSub:'Indicative shoreline before/after 1755',sources:'Source: <a href="https://dados.cm-lisboa.pt/ar/dataset/cartografia-historica-de-lisboa" target="_blank" rel="noopener">Lisbon historical cartography ↗</a>. CML raster maps are georeferenced; other drawn lines are schematic.',toggle:'Historical layers'},
+ es:{title:'Capas históricas',extent:'Extensión urbana',extentSub:'Límite orientativo por época',walls:'Murallas históricas',wallsSub:'Trazados esquemáticos de las murallas',shore:'Frente fluvial',shoreSub:'Margen orientativo antes/después de 1755',sources:'Fuente: <a href="https://dados.cm-lisboa.pt/ar/dataset/cartografia-historica-de-lisboa" target="_blank" rel="noopener">Cartografía histórica de Lisboa ↗</a>. Los mapas raster de CML están georreferenciados; las demás líneas son esquemáticas.',toggle:'Capas históricas'},
+ fr:{title:'Couches historiques',extent:'Emprise urbaine',extentSub:'Limite indicatif par époque',walls:'Remparts historiques',wallsSub:'Tracés schématiques des remparts',shore:'Front fluvial',shoreSub:'Rive indicative avant/après 1755',sources:'Source : <a href="https://dados.cm-lisboa.pt/ar/dataset/cartografia-historica-de-lisboa" target="_blank" rel="noopener">Cartographie historique de Lisbonne ↗</a>. Les cartes raster de la CML sont géoréférencées ; les autres lignes sont schématiques.',toggle:'Couches historiques'}
+ }[language];
+ if(!$('historicalLayerTitle'))return;
+ $('historicalLayerTitle').textContent=labels.title;
+ $('urbanExtentLabel').innerHTML=labels.extent+' <small>'+labels.extentSub+'</small>';
+ $('wallsLabel').innerHTML=labels.walls+' <small>'+labels.wallsSub+'</small>';
+ $('waterfrontLabel').innerHTML=labels.shore+' <small>'+labels.shoreSub+'</small>';
+ const blockLabels={pt:['Destacar zona histórica','Realçar a Baixa Pombalina no mapa'],en:['Highlight historic area','Highlight Pombaline Baixa on the map'],es:['Destacar zona histórica','Resaltar la Baixa Pombalina en el mapa'],fr:['Mettre en évidence la zone','Souligner la Baixa pombaline sur la carte']}[language];
+ $('pombaline3DLabel').innerHTML=blockLabels[0]+' <small>'+blockLabels[1]+'</small>';
+ $('layerSources').innerHTML=labels.sources;
+ $('historicalLayersToggle').title=labels.toggle;
+ $('historicalLayersToggle').setAttribute('aria-label',labels.toggle);
+}
+function applyLanguage(lang){language=translations[lang]?lang:'pt';document.documentElement.lang=language==='pt'?'pt-PT':language;const t=translations[language];applyHistoricalLayerLanguage();updateJourneyLanguage();$('languageSelect').value=language;$('modeChip').innerHTML=t.mode+' <strong>'+t.active+'</strong>';$('eyebrow').textContent=t.eyebrow;$('heroTitle').innerHTML=t.hero;$('heroText').textContent=t.intro;$('introStatPlaces').innerHTML=({pt:'<strong>58</strong> locais históricos',en:'<strong>58</strong> historic places',es:'<strong>58</strong> lugares históricos',fr:'<strong>58</strong> lieux historiques'})[language];$('introStatYears').innerHTML=({pt:'<strong>2.000+</strong> anos de história',en:'<strong>2,000+</strong> years of history',es:'<strong>2.000+</strong> años de historia',fr:'<strong>2 000+</strong> ans d’histoire'})[language];$('eraLabel').textContent=t.era;document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=t[el.dataset.i18n]);$('pointsLabel').childNodes[0].textContent=t.points+' ';$('coveredLabel').textContent=t.covered;$('uncoveredLabel').textContent=t.uncovered;$('loaderText').textContent=t.loading;$('loaderSub').textContent=t.loadingSub;$('coverageToggle').title=t.coverageTitle;$('resetView').title=language==='pt'?'Vista inicial':language==='es'?'Vista inicial':language==='fr'?'Vue initiale':'Reset view';renderPlaces();renderMarkers();renderTimeEvents();updateTimeLabels();if(selectedId)focusPlace(selectedId)}
+
+const $=id=>document.getElementById(id);
+
+const journeys={
+ medieval:{steps:[{year:1147,id:'castle',note:'A tomada do castelo em 1147 marcou a conquista cristã de Lisboa.'},{year:1200,id:'alfama',note:'Alfama preserva a memória de bairros antigos e de uma longa continuidade urbana.'},{year:1500,id:'se',note:'A Sé tornou-se um dos marcos religiosos da cidade após a conquista.'}]},
+ quake:{steps:[{year:1754,id:'commerce',note:'O Terreiro do Paço e o Paço Real ocupavam a margem do Tejo.'},{year:1755,id:'carmo',note:'As ruínas do Carmo recordam a destruição provocada pelo terramoto.'},{year:1756,id:'commerce',note:'A reconstrução abriu caminho a uma nova praça e à malha pombalina.'}]},
+ pombaline:{steps:[{year:1756,id:'commerce',note:'O novo plano propôs uma malha regular e uma relação diferente com o rio.'},{year:1775,id:'rossio',note:'O Rossio integrou-se na reorganização do centro urbano reconstruído.'},{year:1785,id:'casa-bicos',note:'A Casa dos Bicos ajuda a contrastar vestígios de épocas anteriores com a cidade reconstruída.'}]}
+};
+let activeJourney=null,journeyStep=0;
+function journeyLabels(){return {
+ pt:{title:'Percursos guiados',start:'Iniciar percurso',exit:'Terminar percurso',finishStep:'Concluir percurso →',prev:'← Anterior',next:'Seguinte →',idle:'Explora uma história através de vários locais.',step:(n,total,name,year)=>'Paragem '+n+' de '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Percurso concluído. Podes continuar a explorar livremente.',search:'Pesquisar locais históricos…',opacity:'Opacidade',map1650:'Planta de Tinoco · 1650',map1756:'Planta de Mardel · 1756',medieval:'Lisboa medieval',quake:'O terramoto de 1755',pombaline:'A reconstrução pombalina',georef:'Cartografia CML georreferenciada'},
+ en:{title:'Guided journeys',start:'Start journey',exit:'End journey',finishStep:'Finish journey →',prev:'← Previous',next:'Next →',idle:'Explore a story through several places.',step:(n,total,name,year)=>'Stop '+n+' of '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Journey complete. Keep exploring freely.',search:'Search historic places…',opacity:'Opacity',map1650:'Tinoco map · 1650',map1756:'Mardel map · 1756',medieval:'Medieval Lisbon',quake:'The 1755 earthquake',pombaline:'The Pombaline rebuilding',georef:'Georeferenced CML cartography'},
+ es:{title:'Recorridos guiados',start:'Iniciar recorrido',exit:'Terminar recorrido',finishStep:'Finalizar recorrido →',prev:'← Anterior',next:'Siguiente →',idle:'Explora una historia a través de varios lugares.',step:(n,total,name,year)=>'Parada '+n+' de '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Recorrido completado. Sigue explorando libremente.',search:'Buscar lugares históricos…',opacity:'Opacidad',map1650:'Plano de Tinoco · 1650',map1756:'Plano de Mardel · 1756',medieval:'Lisboa medieval',quake:'El terremoto de 1755',pombaline:'La reconstrucción pombalina',georef:'Cartografía CML georreferenciada'},
+ fr:{title:'Parcours guidés',start:'Commencer',exit:'Terminer le parcours',finishStep:'Terminer le parcours →',prev:'← Précédent',next:'Suivant →',idle:'Explorez une histoire à travers plusieurs lieux.',step:(n,total,name,year)=>'Étape '+n+' sur '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Parcours terminé. Continuez à explorer librement.',search:'Rechercher des lieux historiques…',opacity:'Opacité',map1650:'Plan de Tinoco · 1650',map1756:'Plan de Mardel · 1756',medieval:'Lisbonne médiévale',quake:'Le séisme de 1755',pombaline:'La reconstruction pombaline',georef:'Cartographie CML géoréférencée'}
+}[language]}
+function updateJourneyLanguage(){if(!$('journeyTitle'))return;const t=journeyLabels();$('journeyTitle').textContent=t.title;$('journeyStart').textContent=t.start;$('journeyExit').textContent=t.exit;$('journeyPrev').textContent=t.prev;$('journeyNext').textContent=t.next;$('placeSearch').placeholder=t.search;$('mapOpacityLabel').textContent=t.opacity;$('map1650Label').innerHTML=t.map1650+' <small>'+t.georef+'</small>';$('map1756Label').innerHTML=t.map1756+' <small>'+t.georef+'</small>';const opts=$('journeySelect').options;opts[0].textContent=t.medieval;opts[1].textContent=t.quake;opts[2].textContent=t.pombaline;if(!activeJourney)$('journeyStatus').textContent=t.idle}
+function syncJourneyPresentation(){
+ const panel=document.querySelector('.left-panel'),box=document.querySelector('.journey-box'),active=!!activeJourney;
+ panel?.classList.toggle('journey-mode',active);
+ box?.classList.toggle('journey-active',active);
+ $('journeyStart').hidden=active;
+ $('journeySelect').disabled=active;
+ $('journeyProgress').style.display=active?'block':'none';
+ const steps=active?journeys[activeJourney].steps:[];
+ $('journeyProgressFill').style.width=active?(((journeyStep+1)/steps.length)*100)+'%':'0%';
+ if(active){
+  $('journeyNav').hidden=false;$('journeyExit').hidden=false;
+  $('journeyNext').textContent=journeyStep===steps.length-1?journeyLabels().finishStep:journeyLabels().next;
+  $('journeyPrev').disabled=journeyStep===0;
+ }else{
+  $('journeyNav').hidden=true;$('journeyExit').hidden=true;$('journeySelect').disabled=false;
+  $('journeyNext').textContent=journeyLabels().next;$('journeyPrev').disabled=false;
+ }
+}
+function bindJourneyControls(){
+ $('journeyStart').addEventListener('click',()=>{
+  activeJourney=$('journeySelect').value;journeyStep=0;syncJourneyPresentation();showJourneyStep();
+  if(window.matchMedia('(max-width:720px)').matches){document.querySelector('.left-panel')?.scrollTo({top:0,behavior:'smooth'});}
+ });
+ $('journeyNext').addEventListener('click',()=>{
+  if(!activeJourney)return;
+  if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep();}
+  else{$('journeyStatus').textContent=journeyLabels().finished;activeJourney=null;clearJourneyRoute();syncJourneyPresentation();}
+ });
+ $('journeyPrev').addEventListener('click',()=>{if(!activeJourney)return;journeyStep=Math.max(0,journeyStep-1);showJourneyStep()});
+ $('journeyExit').addEventListener('click',()=>{activeJourney=null;$('journeyStatus').textContent=journeyLabels().idle;clearJourneyRoute();syncJourneyPresentation()});
+ $('journeySelect').addEventListener('change',()=>{if(activeJourney){activeJourney=null;journeyStep=0;clearJourneyRoute();syncJourneyPresentation()}});
+ syncJourneyPresentation();
+}
+function showJourneyStep(){const journey=journeys[activeJourney],step=journey.steps[journeyStep],p=places.find(x=>x.id===step.id);if(!p){$('journeyStatus').textContent='';return}currentEra='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.era==='all'));$('placeSearch').value='';setHistoricalYear(step.year);$('journeyStatus').textContent=journeyLabels().step(journeyStep+1,journey.steps.length,placeNameAtDate(p),step.year)+'\n'+step.note;updateJourneyRoute();syncJourneyPresentation();focusPlace(p.id)}
+
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2800)}
+
+const placeStartYears={
+castle:1100,commerce:1500,belem:1514,jeronimos:1502,carmo:1389,restauradores:1886,
+alfama:-500,se:1147,muralha:500,'sao-vicente':1582,panteao:1682,graca:1750,'santo-antonio':1767,rossio:1200,'santa-justa':1902,'cais-colunas':1770,'casa-bicos':1523,'museu-fado':1998,chiado:1750,'sao-roque':1555,'sao-bento':1834,aqueduto:1731,'marques-pombal':1934,'parque-eduardo':1903,avenida:1882,'estufa-fria':1933,gulbenkian:1969,'campo-pequeno':1892,'mercado-campo-ourique':1934,prazeres:1833,ajuda:1795,padrao:1960,'palacio-belem':1559,coches:1905,maat:2016,'central-tejo':1909,docas:1850,lxfactory:1846,'ponte-25-abril':1966,'palacio-baldaya':1750,monsanto:1934,'parque-nacoes':1998,oceanario:1998,oriente:1998,'cidade-universitaria':1950,'campo-grande':1800,martires:1770,'sao-domingos':1241,'teatro-dmaria':1846,'teatro-romano':50,'rua-correeiros':-100,'santa-apolonia':1865,estrelabasilica:1779,'assembleia-antiga':1740,'museu-azulejo':1509,'convento-beato':1452,'igreja-campo-grande':1950,'museu-cidade':1747
+};
+function getPlaceStartYear(p){if(Object.prototype.hasOwnProperty.call(placeStartYears,p.id))return placeStartYears[p.id];const m=String(p.year).match(/(?:19|20)\d{2}|1[0-8]\d{2}|1[0-7]\d{2}|1[0-5]\d{2}|11\d{2}|10\d{2}/);if(m)return Number(m[0]);return p.era==='medieval'?1147:p.era==='1500'?1500:p.era==='1755'?1755:1800}
+function pointInPolygon(point,polygon){const x=point[0],y=point[1];let inside=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const xi=polygon[i][0],yi=polygon[i][1],xj=polygon[j][0],yj=polygon[j][1];const crosses=((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi+Number.EPSILON)+xi);if(crosses)inside=!inside}return inside}
+function isVisibleInYear(p){return selectedYear>=getPlaceStartYear(p)&&pointInPolygon(p.coords,historicalExtentFeature(selectedYear).geometry.coordinates[0])}
+function formatHistoricalYear(year){if(year<0){const n=Math.abs(year);return language==='en'?n+' BC':language==='es'?n+' a. C.':language==='fr'?n+' av. J.-C.':n+' a.C.'}return String(year)}
+function historicalEra(year){if(year<300)return tr('eraAncient');if(year<800)return tr('eraEarly');if(year<1500)return tr('eraMedieval');if(year<1755)return tr('eraDiscovery');if(year===1755)return tr('eraQuake');if(year<=1800)return tr('eraRebuild');if(year<1910)return tr('eraModern');if(year<1998)return tr('eraTwentieth');if(year<2026)return tr('eraExpo');return tr('eraNow')}
+const eventYears=[100,1147,1500,1754,1755,1756,1775,1800,1910,1974,1998,2026];
+function renderTimeEvents(){$('timeEvents').innerHTML=eventYears.map(y=>'<button class="time-event '+(selectedYear===y?'active':'')+'" data-year="'+y+'">'+tr('event'+y)+'</button>').join('');document.querySelectorAll('.time-event').forEach(b=>b.addEventListener('click',()=>setHistoricalYear(Number(b.dataset.year))))}
+function updateTimeLabels(){$('timeKicker').textContent=tr('timeKicker');$('timeYear').textContent=formatHistoricalYear(selectedYear);$('timeEra').textContent=historicalEra(selectedYear);$('timeHint').textContent=tr('timeHint');$('timeStart').textContent=tr('timeStart');$('timeEnd').textContent=tr('timeEnd');$('historyNote').innerHTML=selectedYear===1755?(language==='pt'?'A zona a laranja assinala uma área afetada pelo terramoto; os limites são esquemáticos.':language==='en'?'The orange area marks a zone affected by the earthquake; boundaries are schematic.':language==='es'?'La zona naranja indica un área afectada por el terremoto; los límites son esquemáticos.':'La zone orange indique une zone touchée par le séisme ; les limites sont schématiques.'):tr('historyNote');document.querySelectorAll('.time-event').forEach(b=>b.classList.toggle('active',Number(b.dataset.year)===selectedYear))}
+function setHistoricalYear(year){selectedYear=Math.max(-100,Math.min(2026,Math.round(year)));$('yearSlider').value=String(selectedYear);updateTimeLabels();update1755Reconstruction();updateHistoricalLayers();if(map.getSource('historic-extent'))map.getSource('historic-extent').setData(historicalExtentFeature(selectedYear));updateDesertMask();if(map.getLayer('earthquake-zone-fill'))map.setPaintProperty('earthquake-zone-fill','fill-opacity',selectedYear===1755 ? 0.28 : (selectedYear>=1756&&selectedYear<=1760 ? 0.12 : 0));if(map.getLayer('earthquake-zone-line'))map.setPaintProperty('earthquake-zone-line','line-opacity',selectedYear>=1755&&selectedYear<=1760?0.9:0);if(selectedId&&(!isVisibleInYear(places.find(p=>p.id===selectedId)||{id:''})||(isPombalineStudyActive()&&!isWithinPombalineBounds(places.find(p=>p.id===selectedId)||{coords:[0,0]}))))hideDetail();if(selectedId){const activePlace=places.find(p=>p.id===selectedId);if(activePlace)renderDetailContent(activePlace)}renderPlaces();renderMarkers()}
+function historicalExtentFeature(year){let coords;if(year<800){coords=[[-9.141,38.705],[-9.128,38.705],[-9.124,38.713],[-9.133,38.719],[-9.143,38.715],[-9.141,38.705]]}else if(year<1500){coords=[[-9.146,38.704],[-9.121,38.704],[-9.119,38.716],[-9.128,38.722],[-9.143,38.719],[-9.149,38.711],[-9.146,38.704]]}else if(year<=1755){coords=[[-9.163,38.699],[-9.121,38.701],[-9.116,38.714],[-9.128,38.724],[-9.149,38.722],[-9.164,38.711],[-9.163,38.699]]}else if(year<=1800){coords=[[-9.164,38.699],[-9.119,38.701],[-9.116,38.716],[-9.129,38.725],[-9.151,38.722],[-9.166,38.711],[-9.164,38.699]]}else if(year<1998){coords=[[-9.205,38.691],[-9.115,38.695],[-9.087,38.756],[-9.126,38.771],[-9.169,38.752],[-9.204,38.729],[-9.205,38.691]]}else{coords=[[-9.222,38.688],[-9.081,38.688],[-9.075,38.775],[-9.132,38.786],[-9.190,38.759],[-9.222,38.688]]}return{type:'Feature',properties:{year},geometry:{type:'Polygon',coordinates:[coords]}}}
+
+function createDesertTexture(){if(map.hasImage('desert-texture'))return;const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;const ctx=canvas.getContext('2d');ctx.fillStyle='#c6ad80';ctx.fillRect(0,0,128,128);for(let i=0;i<260;i++){const x=(i*47+13)%128,y=(i*83+29)%128;ctx.fillStyle=i%3===0?'rgba(105,79,43,.16)':'rgba(255,239,193,.20)';ctx.fillRect(x,y,i%4===0?2:1,i%5===0?2:1)}for(let i=0;i<3;i++){const y=24+i*43;ctx.beginPath();ctx.moveTo(-8,y+8);ctx.bezierCurveTo(22,y-15,45,y-11,70,y+2);ctx.bezierCurveTo(90,y+13,112,y+12,138,y-5);ctx.strokeStyle='rgba(117,88,48,.19)';ctx.lineWidth=1.4;ctx.stroke();ctx.beginPath();ctx.moveTo(-8,y+11);ctx.bezierCurveTo(22,y-12,45,y-8,70,y+5);ctx.bezierCurveTo(90,y+16,112,y+15,138,y-2);ctx.strokeStyle='rgba(255,237,188,.28)';ctx.lineWidth=1;ctx.stroke()}map.addImage('desert-texture',canvas,{pixelRatio:2})}
+function desertMaskFeature(year){const city=historicalExtentFeature(year).geometry.coordinates[0];const bounds=map.getBounds(),sw=bounds.getSouthWest(),ne=bounds.getNorthEast();const cityLng=city.map(p=>p[0]),cityLat=city.map(p=>p[1]);const padLng=Math.max((ne.lng-sw.lng)*.6,.08),padLat=Math.max((ne.lat-sw.lat)*.6,.06);const minLng=Math.min(sw.lng,Math.min(...cityLng))-padLng,maxLng=Math.max(ne.lng,Math.max(...cityLng))+padLng,minLat=Math.max(-84,Math.min(sw.lat,Math.min(...cityLat))-padLat),maxLat=Math.min(84,Math.max(ne.lat,Math.max(...cityLat))+padLat);const outer=[[minLng,minLat],[maxLng,minLat],[maxLng,maxLat],[minLng,maxLat],[minLng,minLat]];return{type:'Feature',properties:{year},geometry:{type:'Polygon',coordinates:[outer,city.slice().reverse()]}}}
+function addDesertMask(){createDesertTexture();map.addSource('desert-mask',{type:'geojson',data:desertMaskFeature(selectedYear)});map.addLayer({id:'desert-mask-fill',type:'fill',source:'desert-mask',paint:{'fill-pattern':'desert-texture','fill-opacity':.98}})}
+function updateDesertMask(){const source=map.getSource('desert-mask');if(source)source.setData(desertMaskFeature(selectedYear))}
+
+// These street lines are interpretive sketches, not georeferenced cadastral data.
+function add1755ReconstructionLayer(){
+ const features=[
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.145,38.704],[-9.142,38.707],[-9.139,38.710],[-9.136,38.714]]}},
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.151,38.706],[-9.145,38.708],[-9.140,38.709],[-9.135,38.711],[-9.130,38.714]]}},
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.150,38.711],[-9.145,38.712],[-9.141,38.713],[-9.137,38.716],[-9.132,38.718]]}},
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.147,38.702],[-9.145,38.707],[-9.146,38.711],[-9.143,38.715],[-9.140,38.718]]}},
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.139,38.702],[-9.140,38.706],[-9.137,38.710],[-9.139,38.714],[-9.136,38.718]]}},
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.153,38.709],[-9.147,38.709],[-9.143,38.710],[-9.138,38.709],[-9.133,38.711]]}},
+  {type:'Feature',properties:{phase:'before'},geometry:{type:'LineString',coordinates:[[-9.148,38.716],[-9.144,38.714],[-9.139,38.715],[-9.134,38.717],[-9.130,38.720]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.151,38.704],[-9.130,38.704]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.151,38.707],[-9.130,38.707]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.151,38.710],[-9.130,38.710]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.151,38.713],[-9.130,38.713]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.151,38.716],[-9.130,38.716]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.151,38.719],[-9.130,38.719]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.150,38.703],[-9.150,38.720]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.146,38.703],[-9.146,38.720]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.142,38.703],[-9.142,38.720]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.138,38.703],[-9.138,38.720]]}},
+  {type:'Feature',properties:{phase:'after'},geometry:{type:'LineString',coordinates:[[-9.134,38.703],[-9.134,38.720]]}}
+ ];
+ map.addSource('reconstruction-1755',{type:'geojson',data:{type:'FeatureCollection',features}});
+ map.addLayer({id:'reconstruction-before-lines',type:'line',source:'reconstruction-1755',filter:['==',['get','phase'],'before'],paint:{'line-color':'#e8d4a5','line-width':2,'line-opacity':0.92,'line-dasharray':[1,1]}});
+ map.addLayer({id:'reconstruction-after-lines',type:'line',source:'reconstruction-1755',filter:['==',['get','phase'],'after'],paint:{'line-color':'#78dbc3','line-width':2.1,'line-opacity':0.95}});
+ update1755Reconstruction();
+}
+function update1755Reconstruction(){
+ const year=selectedYear,active=year>=1754&&year<=1756;
+ const panel=$('reconstructionPanel');if(!panel)return;
+ panel.classList.toggle('visible',active);
+ const before=year===1754,ruins=year===1755,after=year===1756;
+ const copy={
+ pt:[ 'A Baixa tinha uma rede densa e irregular de ruas, becos e travessas. Este traçado é esquemático; não representa a posição exata de cada rua.','O sismo de 1 de novembro, os incêndios e o tsunami devastaram o centro. A mancha vermelha é indicativa, não um mapa de danos por edifício.','Em 1756 avançavam propostas para uma malha mais regular. As linhas verdes ilustram o princípio ortogonal, não reproduzem o plano original georreferenciado.'],
+ en:[ 'Before the earthquake, downtown Lisbon had a dense, irregular network of streets and alleys. This sketch is illustrative, not an exact street map.','The 1 November earthquake, fires and tsunami devastated the centre. The red area is indicative, not a building-by-building damage map.','Plans for a more regular street grid were developed after the disaster. Green lines illustrate the orthogonal principle, not a georeferenced copy of the original plan.'],
+ es:[ 'Antes del terremoto, la Baixa tenía una red densa e irregular de calles y callejones. Este trazado es esquemático, no un plano exacto.','El terremoto del 1 de noviembre, los incendios y el tsunami devastaron el centro. La zona roja es orientativa, no un mapa de daños por edificio.','Tras la catástrofe se desarrollaron planes para una trama más regular. Las líneas verdes ilustran el principio ortogonal, no reproducen el plano original georreferenciado.'],
+ fr:[ 'Avant le séisme, la Baixa possédait un réseau dense et irrégulier de rues et de ruelles. Ce tracé est schématique, pas un plan exact.','Le séisme du 1er novembre, les incendies et le tsunami ont dévasté le centre. La zone rouge est indicative, pas une carte des dégâts par bâtiment.','Après la catastrophe, des plans pour un réseau plus régulier ont été élaborés. Les lignes vertes illustrent le principe orthogonal, sans reproduire le plan original géoréférencé.']
+ }[language]||[];
+ const status={
+ pt:['Traçado antigo · esquemático','Zona afetada · esquemática','Malha pombalina · esquemática'],
+ en:['Old street pattern · schematic','Affected area · schematic','Pombaline grid · schematic'],
+ es:['Trazado antiguo · esquemático','Zona afectada · esquemática','Trama pombalina · esquemática'],
+ fr:['Ancien tracé · schématique','Zone touchée · schématique','Trame pombaline · schématique']
+ }[language]||[];
+ for(const [id,visible] of [['reconstruction-before-lines',before],['reconstruction-after-lines',after]]){
+  if(map.getLayer(id))map.setLayoutProperty(id,'visibility',visible?'visible':'none');
+ }
+ if(map.getLayer('earthquake-zone-fill'))map.setPaintProperty('earthquake-zone-fill','fill-opacity',ruins?.34:0);
+ if(map.getLayer('earthquake-zone-line'))map.setPaintProperty('earthquake-zone-line','line-opacity',ruins?.95:0);
+ $('reconKicker').textContent=({pt:'Arquivo histórico · Baixa',en:'Historical archive · Baixa',es:'Archivo histórico · Baixa',fr:'Archives historiques · Baixa'})[language];
+ $('reconTitle').textContent=({pt:'Lisboa antes e depois de 1755',en:'Lisbon before and after 1755',es:'Lisboa antes y después de 1755',fr:'Lisbonne avant et après 1755'})[language];
+ $('reconCopy').textContent=copy[before?0:ruins?1:2];
+ $('reconStatus').textContent=status[before?0:ruins?1:2];
+ $('reconSources').innerHTML=({pt:'Fontes: ',en:'Sources: ',es:'Fuentes: ',fr:'Sources : '})[language]+'<a href="https://museudelisboa.pt/pt/collection/assets/4837-lisboa-antes-terramoto-1755/" target="_blank" rel="noopener noreferrer">Maqueta pré-1755 · Museu de Lisboa</a><br><a href="https://arquivomunicipal3.cm-lisboa.pt/x-arqweb/Result.aspx?id=1288470&type=PCD" target="_blank" rel="noopener noreferrer">Plantas de 1650 e alinhamentos pós-terramoto · Arquivo Municipal</a><br><a href="https://geo.lisboa.pt/fileadmin/geo/difusao/Publicacoes/historiadelisboatemposfortes.pdf" target="_blank" rel="noopener noreferrer">História de Lisboa · Câmara Municipal</a>';
+ const labels=({pt:['1754 · Antes','1755 · Ruínas','1756 · Plano'],en:['1754 · Before','1755 · Ruins','1756 · Plan'],es:['1754 · Antes','1755 · Ruinas','1756 · Plan'],fr:['1754 · Avant','1755 · Ruines','1756 · Plan']})[language];
+ document.querySelectorAll('.recon-tab').forEach((b,i)=>{b.textContent=labels[i];b.classList.toggle('active',Number(b.dataset.reconYear)===year)});
+}
+
+
+function addHistoricalContextLayers(){
+ const features=[
+  {type:'Feature',properties:{wall:'old'},geometry:{type:'LineString',coordinates:[[-9.137,38.715],[-9.135,38.718],[-9.131,38.719],[-9.127,38.716],[-9.126,38.712],[-9.130,38.708],[-9.135,38.708],[-9.138,38.711],[-9.137,38.715]]}},
+  {type:'Feature',properties:{wall:'fernandina'},geometry:{type:'LineString',coordinates:[[-9.148,38.707],[-9.146,38.715],[-9.142,38.722],[-9.133,38.727],[-9.123,38.725],[-9.116,38.718],[-9.115,38.711],[-9.120,38.704],[-9.128,38.700]]}},
+  {type:'Feature',properties:{wall:'fernandina'},geometry:{type:'LineString',coordinates:[[-9.128,38.700],[-9.137,38.700],[-9.146,38.703],[-9.148,38.707]]}}
+ ];
+ map.addSource('historic-walls',{type:'geojson',data:{type:'FeatureCollection',features}});
+ map.addLayer({id:'historic-walls-old',type:'line',source:'historic-walls',filter:['==',['get','wall'],'old'],layout:{visibility:'none'},paint:{'line-color':'#e7b65f','line-width':2.4,'line-opacity':.95,'line-dasharray':[2,1]}});
+ map.addLayer({id:'historic-walls-fernandina',type:'line',source:'historic-walls',filter:['==',['get','wall'],'fernandina'],layout:{visibility:'none'},paint:{'line-color':'#e8a06b','line-width':2.2,'line-opacity':.9,'line-dasharray':[3,1]}});
+ const shore={type:'FeatureCollection',features:[
+  {type:'Feature',properties:{period:'before'},geometry:{type:'LineString',coordinates:[[-9.151,38.703],[-9.146,38.706],[-9.142,38.709],[-9.139,38.713],[-9.135,38.717]]}},
+  {type:'Feature',properties:{period:'after'},geometry:{type:'LineString',coordinates:[[-9.153,38.701],[-9.145,38.701],[-9.137,38.701],[-9.129,38.701],[-9.121,38.701]]}}
+ ]};
+ map.addSource('historic-waterfront',{type:'geojson',data:shore});
+ map.addLayer({id:'historic-waterfront-before',type:'line',source:'historic-waterfront',filter:['==',['get','period'],'before'],layout:{visibility:'none'},paint:{'line-color':'#7fcfdd','line-width':2.5,'line-opacity':.95,'line-dasharray':[2,2]}});
+ map.addLayer({id:'historic-waterfront-after',type:'line',source:'historic-waterfront',filter:['==',['get','period'],'after'],layout:{visibility:'none'},paint:{'line-color':'#7fcfdd','line-width':2.5,'line-opacity':.95}});
+ updateHistoricalLayers();
+}
+// A deliberately schematic, time-dependent 3D study model of the Baixa.
+// It changes footprint, height and colour by period; it is not a building-level survey.
+function pombalineBlocksFeature(year=selectedYear){
+ const features=[];
+ const period=year<1755?'pre-quake':year===1755?'ruins':year<1775?'rebuilding':year<1900?'pombaline':year<1990?'modernized':'contemporary';
+ const xs=[-9.151,-9.147,-9.143,-9.139,-9.135,-9.131],ys=[38.703,38.706,38.709,38.712,38.715,38.718,38.720];
+ for(let r=0;r<ys.length-1;r++)for(let c=0;c<xs.length-1;c++){
+  const n=r*5+c;
+  let gapLng=.00045,gapLat=.00032;
+  if(period==='pre-quake'){gapLng=.00022+((r+c)%3)*.00012;gapLat=.00018+((r*2+c)%3)*.00009}
+  if(period==='ruins'){gapLng=.00065+((r+c)%2)*.00015;gapLat=.0005+((r*2+c)%2)*.00015}
+  if(period==='rebuilding'){gapLng=.00072;gapLat=.00056}
+  if(period==='modernized'||period==='contemporary'){gapLng=.00038;gapLat=.00028}
+  const x1=xs[c]+gapLng,x2=xs[c+1]-gapLng,y1=ys[r]+gapLat,y2=ys[r+1]-gapLat;
+  if(x2<=x1||y2<=y1)continue;
+  // Older street blocks are slightly offset to suggest the less regular pre-1755 pattern.
+  const skew=period==='pre-quake'?(((r+c)%3)-1)*.00028:0;
+  const coords=[[x1+skew,y1],[x2,y1+skew*.25],[x2-skew*.2,y2],[x1,y2-skew*.25],[x1+skew,y1]];
+  let height;
+  if(period==='pre-quake')height=6+((r*3+c*5)%6)*1.25;
+  else if(period==='ruins')height=1.2+((r+c)%4)*.65;
+  else if(period==='rebuilding')height=1.4+((r*2+c)%3)*.55;
+  else if(period==='pombaline')height=10+((r*3+c*5)%8)*1.6;
+  else if(period==='modernized')height=12+((r*3+c*5)%7)*1.7;
+  else height=13+((r*3+c*5)%8)*1.7;
+  const color=period==='pre-quake'?'#a78b70':period==='ruins'?'#b96f5d':period==='rebuilding'?'#d8b779':period==='pombaline'?'#d8b98b':period==='modernized'?'#b69b7e':'#c7b49b';
+  features.push({type:'Feature',properties:{height,base:0,block:n+1,period,color},geometry:{type:'Polygon',coordinates:[coords]}});
+ }
+ return{type:'FeatureCollection',features};
+}
+// Deliberately bounded study area: the schematic Baixa model must never spill into
+// neighbouring areas. Coordinates are approximate and should later be georeferenced.
+const pombalineBounds=[[-9.152,38.702],[-9.130,38.721]];
+function pombalineAreaMaskFeature(){
+ const b=map.getBounds(),sw=b.getSouthWest(),ne=b.getNorthEast();
+ const padLng=Math.max(ne.lng-sw.lng,.08),padLat=Math.max(ne.lat-sw.lat,.06);
+ const outer=[[sw.lng-padLng,sw.lat-padLat],[ne.lng+padLng,sw.lat-padLat],[ne.lng+padLng,ne.lat+padLat],[sw.lng-padLng,ne.lat+padLat],[sw.lng-padLng,sw.lat-padLat]];
+ const [[west,south],[east,north]]=pombalineBounds;
+ const hole=[[west,south],[west,north],[east,north],[east,south],[west,south]];
+ return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[outer,hole]}};
+}
+function pombalineBoundsFeature(){
+ const [[west,south],[east,north]]=pombalineBounds;
+ return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[[west,south],[east,south],[east,north],[west,north],[west,south]]]}};
+}
+function addPombaline3DLayer(){
+ map.addSource('pombaline-blocks',{type:'geojson',data:pombalineBlocksFeature(selectedYear)});
+ map.addLayer({id:'pombaline-blocks-3d',type:'fill-extrusion',source:'pombaline-blocks',minzoom:12.2,layout:{visibility:'none'},paint:{'fill-extrusion-color':['get','color'],'fill-extrusion-height':['get','height'],'fill-extrusion-base':['get','base'],'fill-extrusion-opacity':.88}});
+ map.addSource('pombaline-area-mask',{type:'geojson',data:pombalineAreaMaskFeature()});
+ map.addLayer({id:'pombaline-area-mask-fill',type:'fill',source:'pombaline-area-mask',layout:{visibility:'none'},paint:{'fill-color':'#07121a','fill-opacity':1}});
+ map.addSource('pombaline-bounds',{type:'geojson',data:pombalineBoundsFeature()});
+ map.addLayer({id:'pombaline-bounds-line',type:'line',source:'pombaline-bounds',layout:{visibility:'none'},paint:{'line-color':'#f5bd65','line-width':3,'line-opacity':1,'line-dasharray':[2,1]}});
+}
+function updatePombalineAreaMask(active){
+ const visible=!!active&&selectedYear>=1500;
+ // Do not render the schematic grid of rectangular blocks; the highlighted boundary is the study-area cue.
+ if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData({type:'FeatureCollection',features:[]});
+ if(map.getSource('pombaline-area-mask'))map.getSource('pombaline-area-mask').setData(pombalineAreaMaskFeature());
+ if(map.getLayer('pombaline-area-mask-fill'))map.setLayoutProperty('pombaline-area-mask-fill','visibility','none');
+ if(map.getLayer('pombaline-bounds-line'))map.setLayoutProperty('pombaline-bounds-line','visibility','none');
+ // Use a screen-space SVG mask so labels, satellite tiles, raster overlays and 3D are hidden reliably outside the study polygon.
+ if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',visible?'none':((selectedYear>=2020||currentMapView==='satellite')?'visible':'none'));
+ if(visible&&map.getLayer('pombaline-bounds-line'))map.moveLayer('pombaline-bounds-line');
+ updateStudyMaskOverlay(visible);
+}
+function updateStudyMaskOverlay(active){
+ const overlay=document.getElementById('studyMaskOverlay'),path=document.getElementById('studyMaskPath');
+ if(!overlay||!path)return;
+ const visible=false;
+ // A hard-edged SVG cutout made the satellite imagery look like a floating square.
+ // Keep the historic study area as contextual metadata and a soft boundary, not a clipped basemap.
+ overlay.style.display='none';
+ if(!visible)return;
+ const container=map.getContainer(),width=container.clientWidth,height=container.clientHeight;
+ if(!width||!height)return;
+ const [[west,south],[east,north]]=pombalineBounds;
+ const corners=[[west,south],[west,north],[east,north],[east,south]].map(c=>map.project(c));
+ const inner='M'+corners.map(p=>p.x.toFixed(2)+' '+p.y.toFixed(2)).join(' L')+' Z';
+ path.setAttribute('d','M0 0 H'+width+' V'+height+' H0 Z '+inner);
+}
+function historical3DStageLabel(year){
+ const stages={
+  pt:['Sem modelo 3D antes de 1500','Baixa pré-terramoto · quarteirões irregulares','Ruínas após o terramoto','Reconstrução planeada · volumes baixos','Baixa Pombalina · quarteirões regulares','Cidade modernizada · edifícios mais altos','Lisboa contemporânea · volumes urbanos atuais (esquemáticos)'],
+  en:['No 3D model before 1500','Pre-earthquake Baixa · irregular blocks','Earthquake ruins','Planned rebuilding · low volumes','Pombaline Baixa · regular blocks','Modernized city · taller buildings','Contemporary Lisbon · schematic urban volumes'],
+  es:['Sin modelo 3D antes de 1500','Baixa anterior al terremoto · manzanas irregulares','Ruinas tras el terremoto','Reconstrucción planificada · volúmenes bajos','Baixa pombalina · manzanas regulares','Ciudad modernizada · edificios más altos','Lisboa contemporánea · volúmenes urbanos esquemáticos'],
+  fr:['Pas de modèle 3D avant 1500','Baixa avant le séisme · îlots irréguliers','Ruines après le séisme','Reconstruction planifiée · volumes bas','Baixa pombaline · îlots réguliers','Ville modernisée · bâtiments plus hauts','Lisbonne contemporaine · volumes urbains schématiques']
+ }[language];
+ if(year<1500)return stages[0];if(year<1755)return stages[1];if(year===1755)return stages[2];if(year<1775)return stages[3];if(year<1900)return stages[4];if(year<1990)return stages[5];return stages[6];
+}
+function updateHistorical3DLabel(){const el=$('pombaline3DLabel');if(!el)return;const titles={pt:'Reconstrução urbana 3D',en:'Historical 3D city model',es:'Reconstrucción urbana 3D',fr:'Reconstitution urbaine 3D'};el.innerHTML=titles[language]+' <small>'+historical3DStageLabel(selectedYear)+'</small>'}
+function updateHistoricalLayers(){
+ const year=selectedYear,wallsOn=$('toggleWalls')?.checked,shoreOn=$('toggleWaterfront')?.checked,extentOn=$('toggleUrbanExtent')?.checked!==false,blocksOn=$('togglePombaline3D')?.checked;
+ updateHistorical3DLabel();
+ const opacity=Number($('historicalMapOpacity')?.value||0.78);
+ if(map.getLayer('historical-map-1650')){map.setPaintProperty('historical-map-1650','raster-opacity',opacity);map.setLayoutProperty('historical-map-1650','visibility',$('toggleMap1650')?.checked&&year>=1500&&year<=1755?'visible':'none')}
+ if(map.getLayer('historical-map-1756')){map.setPaintProperty('historical-map-1756','raster-opacity',opacity);map.setLayoutProperty('historical-map-1756','visibility',$('toggleMap1756')?.checked&&year>=1755&&year<=1800?'visible':'none')}
+ if(map.getLayer('pombaline-blocks-3d'))map.setLayoutProperty('pombaline-blocks-3d','visibility',blocksOn&&year>=1500?'visible':'none');
+ if(map.getLayer('historic-extent-fill'))map.setLayoutProperty('historic-extent-fill','visibility',extentOn?'visible':'none');
+ if(map.getLayer('historic-extent-line'))map.setLayoutProperty('historic-extent-line','visibility',extentOn?'visible':'none');
+ const wallVisible=!!wallsOn&&year>=1100&&year<=1600;
+ for(const id of ['historic-walls-old','historic-walls-fernandina'])if(map.getLayer(id))map.setLayoutProperty(id,'visibility',wallVisible?'visible':'none');
+ if(map.getLayer('historic-waterfront-before'))map.setLayoutProperty('historic-waterfront-before','visibility',shoreOn&&year<=1754?'visible':'none');
+ if(map.getLayer('historic-waterfront-after'))map.setLayoutProperty('historic-waterfront-after','visibility',shoreOn&&year>=1755?'visible':'none');
+ updatePombalineAreaMask(blocksOn);
+}
+function bindHistoricalLayerControls(){
+ $('historicalLayersToggle').addEventListener('click',()=>{const panel=$('historicalLayerPanel'),open=!panel.classList.contains('open');panel.classList.toggle('open',open);$('historicalLayersToggle').setAttribute('aria-expanded',String(open))});
+ ['toggleUrbanExtent','toggleWalls','toggleWaterfront','togglePombaline3D'].forEach(id=>$(id).addEventListener('change',updateHistoricalLayers));
+ $('togglePombaline3D').addEventListener('change',()=>{updateHistoricalLayers();if(selectedId&&isPombalineStudyActive()&&!isWithinPombalineBounds(places.find(p=>p.id===selectedId)||{coords:[0,0]}))hideDetail();renderPlaces();renderMarkers();setMapView(currentMapView,false)});
+ $('toggleMap1650').addEventListener('change',()=>{if($('toggleMap1650').checked){$('toggleMap1756').checked=false;setHistoricalYear(1650)}updateHistoricalLayers()});
+ $('toggleMap1756').addEventListener('change',()=>{if($('toggleMap1756').checked){$('toggleMap1650').checked=false;setHistoricalYear(1756)}updateHistoricalLayers()});
+ $('historicalMapOpacity').addEventListener('input',()=>{const opacity=Number($('historicalMapOpacity').value);for(const id of ['historical-map-1650','historical-map-1756'])if(map.getLayer(id))map.setPaintProperty(id,'raster-opacity',opacity)});
+}
+function addSatelliteLayer(){
+ // Esri World Imagery is an aerial/satellite basemap, not a live feed.
+ map.addSource('satellite-imagery-source',{type:'raster',tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],tileSize:256,minzoom:0,maxzoom:19,attribution:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'});
+ const beforeId=(map.getStyle().layers||[]).find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
+ map.addLayer({id:'satellite-imagery-layer',type:'raster',source:'satellite-imagery-source',layout:{visibility:'none'},paint:{'raster-opacity':1,'raster-fade-duration':180}},beforeId);
+}
+function updateMapViewLabels(){
+ const labels={pt:['Histórico','Satélite 3D'],en:['Historical','3D satellite'],es:['Histórico','Satélite 3D'],fr:['Historique','Satellite 3D']}[language]||['Historical','3D satellite'];
+ $('viewHistorical').textContent=labels[0];$('viewSatellite').textContent=labels[1];
+ $('viewHistorical').setAttribute('aria-label',labels[0]);$('viewSatellite').setAttribute('aria-label',labels[1]);
+}
+function setMapView(mode,animate=true){
+ currentMapView=mode==='satellite'?'satellite':'historical';
+ const satellite=currentMapView==='satellite';
+ $('viewHistorical').classList.toggle('active',!satellite);$('viewSatellite').classList.toggle('active',satellite);
+ $('viewHistorical').setAttribute('aria-pressed',String(!satellite));$('viewSatellite').setAttribute('aria-pressed',String(satellite));
+ document.querySelector('.app').classList.toggle('satellite-mode',satellite);
+ if(map.getLayer('satellite-imagery-layer'))map.setLayoutProperty('satellite-imagery-layer','visibility',satellite?'visible':'none');
+ if(map.getLayer('3d-buildings'))map.setLayoutProperty('3d-buildings','visibility',isPombalineStudyActive()?'none':((selectedYear>=2020||satellite)?'visible':'none'));
+ updateMapViewLabels();
+ if(animate&&mapReady)map.easeTo({pitch:satellite?Math.max(map.getPitch(),62):(isPombalineStudyActive()?Math.max(map.getPitch(),42):38),bearing:satellite?-16:-10,duration:850,essential:true});
+}
+function addJourneyRouteLayer(){
+ map.addSource('journey-route-source',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+ const beforeId=(map.getStyle().layers||[]).find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
+ map.addLayer({id:'journey-route-line',type:'line',source:'journey-route-source',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#78dbc3','line-width':3,'line-opacity':0.92,'line-dasharray':[2,1]}},beforeId);
+}
+function updateJourneyRoute(){const source=map.getSource('journey-route-source');if(!source||!activeJourney)return;const coords=journeys[activeJourney].steps.map(step=>places.find(p=>p.id===step.id)?.coords).filter(Boolean);source.setData({type:'FeatureCollection',features:coords.length>1?[{type:'Feature',properties:{journey:activeJourney},geometry:{type:'LineString',coordinates:coords}}]:[]})}
+function clearJourneyRoute(){const source=map.getSource('journey-route-source');if(source)source.setData({type:'FeatureCollection',features:[]})}
+function addHistoricalMapLayers(){
+ const attribution='Cartografia Histórica de Lisboa · Câmara Municipal de Lisboa (2017) · Lisboa Aberta';
+ map.addSource('historical-map-1650-source',{type:'raster',tiles:['https://tiles.arcgis.com/tiles/1dSrzEWVQn5kHHyK/arcgis/rest/services/web_tiles_t1/MapServer/tile/{z}/{y}/{x}'],tileSize:256,minzoom:0,maxzoom:19,attribution});
+ map.addSource('historical-map-1756-source',{type:'raster',tiles:['https://tiles.arcgis.com/tiles/1dSrzEWVQn5kHHyK/arcgis/rest/services/CartografiaHistoricaCarlosMardel1756/MapServer/tile/{z}/{y}/{x}'],tileSize:256,minzoom:0,maxzoom:19,attribution});
+ const beforeId=(map.getStyle().layers||[]).find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
+ const opacity=Number($('historicalMapOpacity')?.value||0.78);
+ map.addLayer({id:'historical-map-1650',type:'raster',source:'historical-map-1650-source',layout:{visibility:'none'},paint:{'raster-opacity':opacity,'raster-fade-duration':180}},beforeId);
+ map.addLayer({id:'historical-map-1756',type:'raster',source:'historical-map-1756-source',layout:{visibility:'none'},paint:{'raster-opacity':opacity,'raster-fade-duration':180}},beforeId);
+ updateHistoricalLayers();
+}
+function addHistoricalExtent(){map.addSource('historic-extent',{type:'geojson',data:historicalExtentFeature(selectedYear)});map.addLayer({id:'historic-extent-fill',type:'fill',source:'historic-extent',paint:{'fill-color':'#f5bd65','fill-opacity':.075}});map.addLayer({id:'historic-extent-line',type:'line',source:'historic-extent',paint:{'line-color':'#f5bd65','line-width':2,'line-opacity':.8,'line-dasharray':[2,2]}});const quake={type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[[-9.144,38.704],[-9.129,38.704],[-9.129,38.713],[-9.141,38.714],[-9.144,38.704]]]}};map.addSource('earthquake-zone',{type:'geojson',data:quake});map.addLayer({id:'earthquake-zone-fill',type:'fill',source:'earthquake-zone',paint:{'fill-color':'#f0785e','fill-opacity':selectedYear===1755 ? 0.28 : 0}});map.addLayer({id:'earthquake-zone-line',type:'line',source:'earthquake-zone',paint:{'line-color':'#f0785e','line-width':2,'line-opacity':selectedYear>=1755&&selectedYear<=1760 ? 0.9 : 0,'line-dasharray':[2,1]}});setHistoricalYear(selectedYear)}
+
+
+const historicStates={
+ commerce:[
+ {until:1754,name:'Terreiro do Paço',date:'Século XVI–1754',description:'Antes do terramoto, este local era conhecido como Terreiro do Paço. O Paço Real ocupava a margem do Tejo desde o início do século XVI, depois de D. Manuel I ter transferido a corte do Castelo de São Jorge. O conjunto incluía edifícios administrativos, a Casa da Índia e a zona portuária.',timeline:[['Início do século XVI','D. Manuel I transferiu a residência régia para junto do Tejo.'],['1580','Foi ordenada a construção de um novo Paço Real.'],['1 de novembro de 1755','O terramoto, os incêndios e o tsunami destruíram o conjunto.']]},
+ {from:1755,until:1758,name:'Terreiro do Paço após o terramoto',date:'1 de novembro de 1755',description:'O terramoto de 1755 destruiu o Paço Real e grande parte do conjunto que ocupava esta zona. A paisagem junto ao rio entrou numa fase de emergência e reconstrução, antes de surgir a praça regular que hoje conhecemos.',timeline:[['1 de novembro de 1755','O sismo, os incêndios e o tsunami devastaram esta área.'],['1756 em diante','Começaram a ser executadas medidas de reconstrução e reorganização urbana.'],['1759','O nome Praça do Comércio aparece num alvará, refletindo a nova orientação comercial.']]},
+ {from:1759,name:'Praça do Comércio',date:'1759–hoje',description:'A Praça do Comércio nasceu da reconstrução pombalina sobre o antigo Terreiro do Paço. A praça aberta ao Tejo e os edifícios com arcadas simbolizaram uma nova organização urbana e a importância atribuída ao comércio após a catástrofe de 1755.',timeline:[['1755','O terramoto destruiu o antigo Paço Real e os edifícios envolventes.'],['1759','A designação Praça do Comércio surge num alvará.'],['1775','A estátua equestre de D. José foi concluída no centro da praça.']]}
+ ],
+ carmo:[
+ {until:1754,name:'Convento do Carmo',date:'1389–1754',description:'O Convento do Carmo foi fundado por Nuno Álvares Pereira e a construção da igreja gótica começou em 1389. Antes do terramoto, o conjunto era uma das grandes estruturas religiosas medievais de Lisboa, implantada na colina oposta à do Castelo de São Jorge.',timeline:[['1389','Começou a construção da igreja, segundo o plano de Gomes Martins.'],['Séculos seguintes','O convento tornou-se um importante conjunto religioso gótico.'],['1 de novembro de 1755','O terramoto causou graves danos; um incêndio agravou a destruição.']]},
+ {from:1755,name:'Ruínas do Convento do Carmo',date:'1755–hoje',description:'O terramoto de 1755 provocou graves danos no Convento do Carmo, agravados por um incêndio posterior. A reconstrução iniciada em 1756 foi interrompida em 1834. No século XIX decidiu-se conservar a nave da igreja a céu aberto, transformando as ruínas num memorial material da catástrofe.',timeline:[['1755','O terramoto danificou gravemente a igreja e o convento.'],['1756','Começou uma reconstrução que viria a ser interrompida.'],['1834 em diante','A reconstrução foi abandonada e as ruínas foram preservadas.']]}
+ ]
+};
+function historicalState(p){const states=historicStates[p.id];if(!states)return null;return states.find(s=>(s.from===undefined||selectedYear>=s.from)&&(s.until===undefined||selectedYear<=s.until))||states[states.length-1]}
+function placeNameAtDate(p){const s=historicalState(p);return s?s.name:p.name}
+function placeShortAtDate(p){const s=historicalState(p);if(!s)return p.short;return s.name.length>23?s.name.slice(0,21)+'…':s.name}
+
+function matchesSearch(p){const q=($('placeSearch')?.value||'').trim().toLocaleLowerCase(language);return !q||[p.name,p.short,p.category,p.description,placeNameAtDate(p)].join(' ').toLocaleLowerCase(language).includes(q)}
+function isPombalineStudyActive(){return !!$('togglePombaline3D')?.checked&&selectedYear>=1500}
+function isWithinPombalineBounds(p){return p.coords[0]>=pombalineBounds[0][0]&&p.coords[0]<=pombalineBounds[1][0]&&p.coords[1]>=pombalineBounds[0][1]&&p.coords[1]<=pombalineBounds[1][1]}
+function renderPlaces(){const bounded3D=isPombalineStudyActive();const list=places.filter(p=>(currentEra==='all'||p.era===currentEra)&&isVisibleInYear(p)&&matchesSearch(p)&&(!bounded3D||isWithinPombalineBounds(p)));$('placeCount').textContent=String(list.length).padStart(2,'0');$('placeList').innerHTML=list.map(p=>'<button class="place '+(p.id===selectedId?'selected':'')+'" data-id="'+p.id+'"><span class="place-icon" style="color:'+p.color+'">'+p.icon+'</span><span class="place-copy"><span class="place-title">'+placeNameAtDate(p)+'</span><span class="place-meta">'+p.year+' · '+p.category+'</span></span><span class="place-arrow">↗</span></button>').join('');document.querySelectorAll('.place').forEach(b=>b.addEventListener('click',()=>focusPlace(b.dataset.id)))}
+function renderMarkers(){
+ labelMarkers.forEach(m=>m.remove());labelMarkers=[];
+ const bounded3D=isPombalineStudyActive(),zoom=map.getZoom(),showNames=zoom>=12.8;
+ const visible=places.filter(p=>(currentEra==='all'||p.era===currentEra)&&isVisibleInYear(p)&&matchesSearch(p)&&(!bounded3D||isWithinPombalineBounds(p)));
+ const occupied=[];
+ visible.sort((a,b)=>(b.id===selectedId?1:0)-(a.id===selectedId?1:0));
+ visible.forEach(p=>{
+  const name=placeShortAtDate(p),point=map.project(p.coords);
+  if(showNames){
+   const width=Math.min(220,Math.max(68,name.length*6.6+24)),height=32;
+   const box={left:point.x-width/2,right:point.x+width/2,top:point.y-height,bottom:point.y};
+   if(occupied.some(r=>box.left<r.right+5&&box.right>r.left-5&&box.top<r.bottom+4&&box.bottom>r.top-4)&&p.id!==selectedId)return;
+   occupied.push(box);
+  }
+  const el=document.createElement('button');
+  el.className=(showNames?'map-label':'map-point-dot')+(p.id===selectedId?' active':'');
+  el.dataset.era=p.era;el.setAttribute('aria-label',placeNameAtDate(p));el.title=placeNameAtDate(p);
+  if(showNames)el.textContent=name;
+  el.type='button';el.onclick=()=>focusPlace(p.id);
+  const marker=new maplibregl.Marker({element:el,anchor:showNames?'bottom':'center',pitchAlignment:'viewport',rotationAlignment:'viewport',subpixelPositioning:true}).setLngLat(p.coords).addTo(map);
+  labelMarkers.push(marker);
+ });
+}
+function renderDetailContent(p){const state=historicalState(p);const shownName=state?state.name:p.name;const shownDate=state?state.date:p.year;const shownDescription=state?state.description:p.description;const shownTimeline=state?state.timeline:p.timeline;$('detailContent').innerHTML=(p.coverSource?'<div class="sources" style="margin:0 0 12px;font-size:9px">Fotografia: <a class="source-link" href="'+p.coverSource+'" target="_blank" rel="noopener noreferrer">'+p.coverCredit+'</a></div>':'')+'<div class="detail-date">✦ '+shownDate+'</div><h2>'+shownName+'</h2><div class="detail-location">⌖ Lisboa, Portugal · '+p.category+'</div><div class="story-tag">'+tr('detailTag')+'</div>'+(language==='pt'?'':'<div class="sources" style="margin:0 0 12px;color:#e0bd83">'+tr('contentNote')+'</div>')+'<div class="confidence-tag">◈ '+(language==='pt'?'Cronologia indicativa · localização atual do ponto':language==='en'?'Indicative chronology · current point location':language==='es'?'Cronología orientativa · ubicación actual del punto':'Chronologie indicative · position actuelle du point')+'</div><p>'+shownDescription+'</p><h3>'+tr('timeline')+'</h3><div class="timeline">'+shownTimeline.map(t=>'<div class="timeline-item"><strong style="color:#f5bd65">'+t[0]+'</strong><br>'+t[1]+'</div>').join('')+'</div><h3>'+tr('explore')+'</h3><div class="sources">'+tr('source')+'<br><a class="source-link" href="'+p.source+'" target="_blank" rel="noopener noreferrer">'+tr('sourceLink')+'</a></div>'}
+// Resolve location-specific photographs from Wikimedia Commons instead of reusing a generic cover.
+const placePhotoCache=new Map();
+const usedPlacePhotoFiles=new Set(places.filter(p=>p.coverSource).map(p=>p.coverSource));
+let activePhotoRequest=0;
+function photoText(value){return String(value||'').replace(/<[^>]*>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim()}
+function photoTokens(value){return photoText(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>3&&!['lisboa','lisbon','bairro','historic','district','church','museum','palace','national','square','bridge','park','igreja','museu','nacional','palacio','mosteiro','convento','jardim','praça','praca','miradouro','estacao','estação','de','dos','das','the'].includes(w))}
+async function findPlacePhoto(place){
+ if(place.coverSource&&place.cover)return {url:place.cover,source:place.coverSource,credit:place.coverCredit||'Wikimedia Commons'};
+ if(placePhotoCache.has(place.id))return placePhotoCache.get(place.id);
+ const task=(async()=>{
+  const aliases={
+   alfama:'Alfama Lisbon historic district',se:'Lisbon Cathedral Sé',muralha:'Cerca Velha Lisbon medieval wall', 'sao-vicente':'São Vicente de Fora Lisbon monastery',panteao:'National Pantheon Lisbon',graca:'Miradouro da Graça Lisbon viewpoint','santo-antonio':'Saint Anthony Church Lisbon','rossio':'Rossio Square Lisbon','santa-justa':'Santa Justa Lift Lisbon','cais-colunas':'Cais das Colunas Lisbon','casa-bicos':'Casa dos Bicos Lisbon','museu-fado':'Fado Museum Lisbon',chiado:'Chiado Lisbon district','sao-roque':'São Roque Church Lisbon','sao-bento':'São Bento Palace Lisbon parliament',aqueduto:'Águas Livres Aqueduct Lisbon','marques-pombal':'Marquês de Pombal Square Lisbon','parque-eduardo':'Eduardo VII Park Lisbon',avenida:'Avenida da Liberdade Lisbon','estufa-fria':'Estufa Fria Lisbon','gulbenkian':'Calouste Gulbenkian Museum Lisbon','campo-pequeno':'Campo Pequeno bullring Lisbon','mercado-campo-ourique':'Mercado de Campo de Ourique Lisbon',prazeres:'Prazeres Cemetery Lisbon',ajuda:'Ajuda National Palace Lisbon',padrao:'Padrão dos Descobrimentos Lisbon','palacio-belem':'Belém Palace Lisbon',coches:'National Coach Museum Lisbon',maat:'MAAT Lisbon museum','central-tejo':'Central Tejo power station Lisbon',docas:'Docas de Santo Amaro Lisbon','lxfactory':'LX Factory Lisbon','ponte-25-abril':'25 de Abril Bridge Lisbon','palacio-baldaya':'Palácio Baldaya Benfica Lisbon',monsanto:'Monsanto Forest Park Lisbon','parque-nacoes':'Parque das Nações Lisbon','oceanario':'Lisbon Oceanarium','oriente':'Gare do Oriente Lisbon','cidade-universitaria':'University of Lisbon campus','campo-grande':'Campo Grande garden Lisbon',martires:'Igreja dos Mártires Lisbon','sao-domingos':'São Domingos Church Lisbon','teatro-dmaria':'Teatro Nacional D Maria II Lisbon','teatro-romano':'Roman Theatre Museum Lisbon','rua-correeiros':'Núcleo Arqueológico Rua dos Correeiros Lisbon','santa-apolonia':'Santa Apolónia Station Lisbon','estrelabasilica':'Estrela Basilica Lisbon','assembleia-antiga':'Palácio de São Bento Lisbon','museu-azulejo':'National Tile Museum Lisbon','convento-beato':'Convento do Beato Lisbon','igreja-campo-grande':'Igreja do Campo Grande Lisbon','museu-cidade':'Museu de Lisboa Palácio Pimenta'
+  };
+  const query=aliases[place.id]||((place.name||'')+' Lisbon');
+  const params=new URLSearchParams({action:'query',format:'json',origin:'*',generator:'search',gsrsearch:'filetype:bitmap '+query,gsrnamespace:'6',gsrlimit:'12',prop:'imageinfo',iiprop:'url|mime|extmetadata',iiurlwidth:'1200',iiextmetadatafilter:'Artist|Credit|LicenseShortName|ImageDescription'});
+  const response=await fetch('https://commons.wikimedia.org/w/api.php?'+params.toString());
+  if(!response.ok)throw new Error('Wikimedia Commons request failed');
+  const data=await response.json(),pages=Object.values(data.query?.pages||{});
+  const wanted=[...new Set(photoTokens((place.name||'')+' '+query))];
+  const candidates=pages.map(page=>{
+   const info=page.imageinfo?.[0];if(!info||!info.thumburl||!/^image\/(jpeg|png|webp)$/.test(info.mime||''))return null;
+   const title=page.title.replace(/^File:/,'').replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+   const desc=photoText(info.extmetadata?.ImageDescription?.value||'');
+   const text=(title+' '+desc).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+   const score=wanted.reduce((sum,word)=>sum+(text.includes(word)?1:0),0);
+   if(score<Math.min(2,wanted.length)||usedPlacePhotoFiles.has(info.descriptionurl))return null;
+   if(/logo|mapa de localiza|coat of arms|bras[aã]o|flag of|bandeira/i.test(title))return null;
+   return {url:info.thumburl,source:info.descriptionurl,credit:photoText(info.extmetadata?.Credit?.value||info.extmetadata?.Artist?.value||title),title,score};
+  }).filter(Boolean).sort((a,b)=>b.score-a.score);
+  const best=candidates[0];if(!best)return null;
+  usedPlacePhotoFiles.add(best.source);
+  return best;
+ })().catch(error=>{console.warn('Não foi possível obter fotografia para '+place.name,error);return null});
+ placePhotoCache.set(place.id,task);return task;
+}
+function setPlacePhotoStatus(hasPhoto){
+ const el=$('detailImage');el.classList.toggle('no-cover',!hasPhoto);
+ const labels={pt:'Fotografia específica não encontrada',en:'No matching photo found',es:'No se encontró una foto específica',fr:'Aucune photo correspondante'};
+ el.setAttribute('data-photo-label',hasPhoto?'':(labels[language]||labels.pt));
+ el.setAttribute('aria-label',hasPhoto?'Fotografia do local':(labels[language]||labels.pt));
+}
+async function updatePlacePhoto(place,requestId){
+ const result=await findPlacePhoto(place);
+ if(requestId!==activePhotoRequest||selectedId!==place.id)return;
+ if(result){place.cover=result.url;place.coverSource=result.source;place.coverCredit='Wikimedia Commons — '+result.credit;$('detailImage').style.setProperty('--cover','url("'+result.url.replace(/["\\]/g,'')+'")');}
+ else {$('detailImage').style.setProperty('--cover','none');}
+ setPlacePhotoStatus(!!result);renderDetailContent(place);
+}
+function focusPlace(id){const p=places.find(x=>x.id===id);if(!p)return;if(isPombalineStudyActive()&&!isWithinPombalineBounds(p)){toast(({pt:'Este local fica fora da zona de estudo 3D.',en:'This place is outside the 3D study area.',es:'Este lugar está fuera de la zona de estudio 3D.',fr:'Ce lieu se trouve hors de la zone d’étude 3D.'})[language]);return}selectedId=id;const photoRequest=++activePhotoRequest;renderPlaces();renderMarkers();map.flyTo({center:p.coords,zoom:p.zoom,pitch:currentMapView==='satellite'?Math.max(p.pitch,66):p.pitch,bearing:currentMapView==='satellite'?(p.id==='belem'?-24:-16):(p.id==='belem'?-17:p.id==='jeronimos'?-12:0),duration:1800,essential:true});$('coords').textContent=p.coords[1].toFixed(4)+'° N, '+Math.abs(p.coords[0]).toFixed(4)+'° W';$('detailImage').style.setProperty('--cover',p.cover?'url("'+p.cover.replace(/["\\]/g,'')+'")':'none');setPlacePhotoStatus(!!p.cover);renderDetailContent(p);$('detail').classList.add('open');if(!p.coverSource)updatePlacePhoto(p,photoRequest)}
+function hideDetail(){$('detail').classList.remove('open');selectedId=null;renderPlaces();renderMarkers()}
+(function bindJourneyGestures(){
+ const detail=$('detail');let startX=0,startY=0,tracking=false;
+ detail.addEventListener('touchstart',e=>{if(!activeJourney||!e.touches||e.touches.length!==1)return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;tracking=true},{passive:true});
+ detail.addEventListener('touchend',e=>{
+  if(!tracking||!activeJourney||!e.changedTouches||!e.changedTouches.length){tracking=false;return}
+  const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;tracking=false;
+  if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.25)return;
+  if(dx<0){if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep()}else toast(journeyLabels().finished)}
+  else if(journeyStep>0){journeyStep--;showJourneyStep()}
+ },{passive:true});
+})();
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{currentEra=b.dataset.era;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderPlaces();renderMarkers();if(selectedId&&!places.some(p=>p.id===selectedId&&(currentEra==='all'||p.era===currentEra)))hideDetail()});
+$('closeDetail').onclick=hideDetail;
+bindHistoricalLayerControls();
+const map = new maplibregl.Map({container:'map',style:'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',center:[-9.141,38.7115],zoom:13.25,minZoom:12.2,maxZoom:18,pitch:38,bearing:-10,antialias:true,attributionControl:true,cooperativeGestures:true});
+map.addControl(new maplibregl.NavigationControl({showCompass:true,showZoom:false,visualizePitch:true}),'bottom-right');
+map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
+map.on('move',()=>{if(mapReady)updateStudyMaskOverlay(isPombalineStudyActive())});
+map.on('moveend',()=>{if(mapReady&&isPombalineStudyActive())updatePombalineAreaMask(true)});
+map.on('resize',()=>{if(mapReady){if(isPombalineStudyActive())updatePombalineAreaMask(true);else updateStudyMaskOverlay(false)}});
+map.on('load',()=>{
+ mapReady=true;
+ // Start with a real, full-colour basemap focused on central Lisbon; keep the study boundary without the schematic blocks.
+ $('togglePombaline3D').checked=true;
+ map.jumpTo({center:[-9.141,38.7115],zoom:12.7,pitch:48,bearing:-10});
+ // Keep optional visual layers isolated: one unsupported layer must not block the whole app.
+ try{addSatelliteLayer()}catch(e){console.warn('Satellite imagery unavailable',e)}
+ try{addCoverageLayer()}catch(e){console.warn('Coverage layer unavailable',e)}
+ try{addDesertMask()}catch(e){console.warn('Desert mask unavailable',e)}
+ try{addHistoricalExtent()}catch(e){console.warn('Historical extent unavailable',e)}
+ try{add1755ReconstructionLayer()}catch(e){console.warn('1755 reconstruction overlay unavailable',e)}
+ try{addHistoricalContextLayers()}catch(e){console.warn('Historical context layers unavailable',e)}
+ try{addHistoricalMapLayers()}catch(e){console.warn('Historical map tiles unavailable',e)}
+ try{addJourneyRouteLayer()}catch(e){console.warn('Journey route unavailable',e)}
+ try{addPombaline3DLayer()}catch(e){console.warn('Pombaline 3D reconstruction unavailable',e)}
+ // Hide the schematic rectangular block overlay entirely; retain the study boundary and real basemap.
+ if(map.getLayer('pombaline-blocks-3d'))map.setLayoutProperty('pombaline-blocks-3d','visibility','none');
+ if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData({type:'FeatureCollection',features:[]});
+ try{setMapView('satellite',false)}catch(e){console.warn('Satellite default unavailable',e)}
+ updateStudyMaskOverlay(isPombalineStudyActive());
+ try{
+  const layers=map.getStyle().layers||[];
+  const labelLayerId=layers.find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
+  const styleLayers=map.getStyle().layers||[];
+  const buildingLayer=styleLayers.find(l=>l['source-layer']==='building'&&l.type==='fill');
+  if(buildingLayer&&!map.getLayer('3d-buildings'))map.addLayer({id:'3d-buildings',source:buildingLayer.source,'source-layer':buildingLayer['source-layer'],filter:['!=',['get','hide_3d'],'true'],type:'fill-extrusion',minzoom:13,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','render_height'],0,'#263d48',30,'#52626b',80,'#8b8c82'],'fill-extrusion-height':['coalesce',['get','render_height'],['get','height'],8],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.84}},labelLayerId);
+ }catch(e){console.warn('3D buildings unavailable',e)}
+ try{renderPlaces();renderMarkers();setHistoricalYear(selectedYear)}catch(e){console.error('Initial rendering failed',e)}
+ // Always dismiss the splash once the map style has loaded, even if an enhancement failed.
+ setTimeout(()=>$('loading').classList.add('hide'),350);
+});
+map.on('error',e=>{
+ console.warn('Map warning',e.error||e);
+ // A failed tile/source should not leave the app permanently covered by the loading screen.
+ if(!mapReady)setTimeout(()=>$('loading').classList.add('hide'),2500);
+});
+// Failsafe for blocked or very slow third-party map styles.
+setTimeout(()=>{if(!$('loading').classList.contains('hide')){$('loading').classList.add('hide');$('loaderText').textContent='A cidade está a demorar a carregar';$('loaderSub').textContent='Podes explorar os controlos; verifica a ligação se o mapa não aparecer.'}},12000);
+map.on('zoomend',()=>{if(mapReady)renderMarkers()});
+map.on('moveend',()=>{if(mapReady)renderMarkers();updateDesertMask();if($('togglePombaline3D')?.checked&&selectedYear>=1775)updatePombalineAreaMask(true);const c=map.getCenter();if(!selectedId)$('coords').textContent=c.lat.toFixed(4)+'° N, '+Math.abs(c.lng).toFixed(4)+'° W'});
+$('zoomIn').onclick=()=>map.zoomTo(map.getZoom()+1,{duration:450});
+$('zoomOut').onclick=()=>map.zoomTo(map.getZoom()-1,{duration:450});
+$('tilt').onclick=()=>{currentPitch=currentPitch>30?15:60;map.easeTo({pitch:currentPitch,duration:650})};
+$('locate').onclick=$('resetView').onclick=()=>{hideDetail();$('togglePombaline3D').checked=true;setHistoricalYear(selectedYear);setMapView('satellite',false);map.flyTo({center:[-9.141,38.7115],zoom:12.7,pitch:48,bearing:-10,duration:1500})};
+window.addEventListener('keydown',e=>{if(e.key==='Escape')hideDetail();if(e.key==='+'||e.key==='=')map.zoomIn();if(e.key==='-')map.zoomOut()});
+renderPlaces();
+$('placeSearch').addEventListener('input',()=>{renderPlaces();renderMarkers()});
+bindJourneyControls();
+const mobileExploreToggle=$('mobileExploreToggle');
+if(mobileExploreToggle){
+ const appRoot=document.querySelector('.app');
+ let wasMobile=window.matchMedia('(max-width:720px)').matches;
+ if(wasMobile){appRoot.classList.add('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','false');mobileExploreToggle.innerHTML='☰ Explorar';}
+ const syncMobileExplore=()=>{
+  const mobile=window.matchMedia('(max-width:720px)').matches;
+  mobileExploreToggle.style.display=mobile?'flex':'none';
+  if(!mobile){appRoot.classList.remove('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','true');mobileExploreToggle.innerHTML='✕ Fechar';}
+  else if(!wasMobile){appRoot.classList.add('mobile-explore-closed');mobileExploreToggle.setAttribute('aria-expanded','false');mobileExploreToggle.innerHTML='☰ Explorar';}
+  wasMobile=mobile;
+ };
+ mobileExploreToggle.addEventListener('click',()=>{
+  const closed=appRoot.classList.toggle('mobile-explore-closed');
+  mobileExploreToggle.setAttribute('aria-expanded',String(!closed));
+  mobileExploreToggle.innerHTML=closed?'☰ Explorar':'✕ Fechar';
+ });
+ syncMobileExplore();
+ window.addEventListener('resize',syncMobileExplore,{passive:true});
+}
+const timelineToggle=$('timebarExpand');
+if(timelineToggle){
+ const timebar=$('timebar');
+ timelineToggle.addEventListener('click',()=>{
+  const expanded=timebar.classList.toggle('timeline-expanded');
+  timelineToggle.setAttribute('aria-expanded',String(expanded));
+  timelineToggle.setAttribute('aria-label',expanded?'Recolher linha temporal':'Expandir linha temporal');
+  timelineToggle.textContent=expanded?'⌃':'⌄';
+ });
+}
+$('languageSelect').addEventListener('change',e=>{applyLanguage(e.target.value);updateMapViewLabels()});
+$('viewHistorical').addEventListener('click',()=>setMapView('historical'));
+updateMapViewLabels();
+$('viewSatellite').addEventListener('click',()=>setMapView('satellite'));
+$('yearSlider').addEventListener('input',e=>setHistoricalYear(Number(e.target.value)));
+document.querySelectorAll('.recon-tab').forEach(b=>b.addEventListener('click',()=>setHistoricalYear(Number(b.dataset.reconYear))));
+$('timeBack').addEventListener('click',()=>setHistoricalYear(selectedYear-(selectedYear<1500?25:10)));
+$('timeForward').addEventListener('click',()=>setHistoricalYear(selectedYear+(selectedYear<1500?25:10)));
+$('timeNow').addEventListener('click',()=>setHistoricalYear(2026));
+$('coverageToggle').addEventListener('click',()=>{const vis=map.getLayoutProperty('coverage-circles-fill','visibility')!=='none';['coverage-circles-fill','coverage-circles-line','coverage-gap-fill','coverage-gap-line'].forEach(id=>{if(map.getLayer(id))map.setLayoutProperty(id,'visibility',vis?'none':'visible')});$('coverageToggle').setAttribute('aria-pressed',String(!vis));$('coverageKey').style.opacity=vis?'.35':'1';toast(tr('toast'))});
+function circleFeature(center,radiusKm,steps=64){const coords=[];const lat=center[1],lng=center[0];for(let i=0;i<=steps;i++){const a=i/steps*Math.PI*2;const dy=radiusKm/111.32*Math.sin(a),dx=radiusKm/(111.32*Math.cos(lat*Math.PI/180))*Math.cos(a);coords.push([lng+dx,lat+dy])}return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[coords]}}}
+function addCoverageLayer(){const centers=[{c:[-9.216,38.695],r:1.55},{c:[-9.184,38.702],r:1.1},{c:[-9.151,38.716],r:1.35},{c:[-9.132,38.713],r:1.05},{c:[-9.153,38.739],r:1.0},{c:[-9.190,38.728],r:1.15},{c:[-9.098,38.764],r:1.1},{c:[-9.204,38.751],r:.65}];const circles=centers.map(x=>circleFeature(x.c,x.r).geometry.coordinates[0]);const outer=[[-9.24,38.67],[-9.06,38.67],[-9.06,38.80],[-9.24,38.80],[-9.24,38.67]];const holes=circles.map(r=>r.slice().reverse());map.addSource('coverage-gaps',{type:'geojson',data:{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[outer,...holes]}}});map.addLayer({id:'coverage-gap-fill',type:'fill',source:'coverage-gaps',paint:{'fill-color':'#8998a0','fill-opacity':.18}});map.addLayer({id:'coverage-gap-line',type:'line',source:'coverage-gaps',paint:{'line-color':'#8998a0','line-width':1,'line-opacity':.55,'line-dasharray':[2,2]}});const fc={type:'FeatureCollection',features:centers.map(x=>circleFeature(x.c,x.r))};map.addSource('historic-coverage',{type:'geojson',data:fc});map.addLayer({id:'coverage-circles-fill',type:'fill',source:'historic-coverage',paint:{'fill-color':'#78dbc3','fill-opacity':.24}});map.addLayer({id:'coverage-circles-line',type:'line',source:'historic-coverage',paint:{'line-color':'#78dbc3','line-width':1.8,'line-opacity':.95,'line-dasharray':[2,1]}});}
+applyLanguage(chooseLanguage());
+</script>
+</body>
+</html>
