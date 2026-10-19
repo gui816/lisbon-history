@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101d28">
-<meta name="description" content="Explora Lisboa em 3D e viaja pelos acontecimentos que marcaram a cidade.">
+<meta name="description" content="Descobre Lisboa através do tempo: lugares, histórias, imagens e mapas históricos desde Olisipo até à cidade contemporânea.">
 <title>Lisboa no Tempo — Explore a história</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,6 +47,63 @@
 @media(max-width:720px){.timebar{left:8px;right:8px;bottom:8px;transform:none;width:auto;min-width:0;padding:10px 11px;border-radius:14px}.timebar-date{font-size:22px}.timebar-era{font-size:10px;max-width:48%}.timebar-kicker{font-size:8px}.time-event{font-size:8px;padding:5px 6px}.history-note{font-size:8px;margin-top:6px}.left-panel{max-height:calc(100% - 310px)}.bottom-left{bottom:190px}.bottom-right{bottom:190px}.detail{bottom:175px;max-height:calc(100% - 260px)}}
 
 @media(max-width:720px){.topbar{height:70px;padding:13px}.brand-mark{width:36px;height:36px}.brand-name{font-size:14px}.brand-sub{font-size:8px;letter-spacing:1.5px}.top-actions .chip{display:none}.left-panel{left:12px;top:82px;width:min(270px,calc(100% - 24px));max-height:calc(100% - 165px);gap:9px}.intro h1{font-size:29px}.intro p{font-size:11px;max-width:240px}.filter-box{padding:10px}.places{padding:9px;max-height:29vh}.place{padding:7px}.place-icon{width:31px;height:31px}.bottom-left{left:12px;bottom:12px}.coverage-key{max-width:210px}@media(max-width:720px){.bottom-left{flex-direction:column;align-items:flex-start;gap:6px}.coverage-key{max-width:175px;font-size:8px;padding:6px 8px}.small-note{max-width:calc(100vw - 24px)}}.bottom-right{right:12px;bottom:12px}.small-note{max-width:190px;font-size:9px}.detail{top:auto;left:8px;right:8px;bottom:8px;width:auto;max-height:74%;transform:translateY(calc(100% + 25px));}.detail.open{transform:translateY(0)}.detail-image{height:125px}.detail-content{padding:16px}.detail h2{font-size:23px}.maplibregl-ctrl-bottom-right{bottom:57px!important}.maplibregl-ctrl-bottom-left{display:none}.bottom-right .location-tag{display:none}.map-label{font-size:10px;padding:6px 7px}}
+
+/* Product UX refresh: clearer hierarchy, readable map context, responsive controls */
+:root{--panel:rgba(10,24,33,.94);--line:rgba(226,239,242,.16);--muted:#a9bac2}
+:focus-visible{outline:2px solid var(--gold)!important;outline-offset:3px}
+button,input,select{touch-action:manipulation}
+.topbar{padding:16px 22px;background:linear-gradient(180deg,rgba(5,14,21,.96),rgba(5,14,21,.55),transparent)}
+.brand-mark{box-shadow:0 0 28px rgba(245,189,101,.08)}
+.left-panel{left:20px;top:94px;width:320px;max-height:calc(100% - 145px);gap:11px}
+.intro{padding:15px 16px 14px;border-radius:18px;background:linear-gradient(135deg,rgba(9,23,32,.91),rgba(9,23,32,.62));border:1px solid rgba(226,239,242,.12);box-shadow:0 18px 55px rgba(0,0,0,.18);backdrop-filter:blur(16px)}
+.intro h1{font-size:clamp(28px,2.35vw,36px);line-height:1.06;letter-spacing:-1.4px;margin:11px 0 9px;max-width:290px}
+.intro p{font-size:12px;line-height:1.7;max-width:285px;color:#d0dadd}
+.intro-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.intro-stat{font-size:10px;color:#aebfc6;border:1px solid rgba(226,239,242,.13);background:rgba(255,255,255,.035);padding:7px 9px;border-radius:9px}
+.intro-stat strong{color:var(--gold);font:700 13px 'Space Grotesk';margin-right:3px}
+.glass{background:rgba(10,24,33,.94);border-color:rgba(226,239,242,.15);box-shadow:0 16px 45px rgba(0,0,0,.24)}
+.filter-box,.journey-box,.places{border-radius:16px}
+.filter-box{padding:13px 14px}
+.section-label,.journey-title{letter-spacing:1.35px}
+.filter{padding:8px 11px;border-radius:10px;font-size:11px;transition:background .18s,border-color .18s,color .18s}
+.filter:hover{border-color:rgba(245,189,101,.5);color:#fff0d3}
+.journey-box{padding:13px 14px}
+.journey-select,.place-search{min-height:38px;font-size:11px;background:#10232d}
+.journey-btn{min-height:34px;font-size:10px;transition:background .18s,border-color .18s}
+.journey-btn:hover{border-color:rgba(120,219,195,.65)}
+.places{min-height:130px}
+.place{min-height:58px}
+.place-title{font-size:12px}
+.detail{width:360px}
+.detail p{font-size:13px;line-height:1.8}
+.timebar{width:min(760px,calc(100% - 700px));min-width:410px;padding:14px 17px 13px;background:rgba(8,20,29,.96);box-shadow:0 18px 60px rgba(0,0,0,.34)}
+.timebar-date{font-size:27px}
+.time-event{font-size:10px;padding:6px 8px}
+.view-switch{padding:5px;border-radius:13px}
+.view-switch button{font-size:11px;padding:10px 12px}
+.historical-layer-panel{width:260px}
+.bottom-left{left:20px;bottom:18px}
+.bottom-right{right:20px;bottom:18px}
+.coverage-key{font-size:10px;line-height:1.35}
+.map-label{font-size:11px;padding:8px 10px}
+.maplibregl-ctrl-bottom-right{z-index:4}
+@media(max-width:1100px){.left-panel{width:285px}.timebar{width:calc(100% - 350px);min-width:350px}.intro h1{font-size:30px}.intro-meta{gap:5px}}
+@media(max-width:720px){
+ .topbar{height:66px;padding:10px 12px}.brand{gap:8px}.brand-mark{width:34px;height:34px;border-radius:10px}.brand-name{font-size:12px}.brand-sub{font-size:7px}
+ .left-panel{left:10px;top:74px;width:min(290px,calc(100% - 20px));max-height:calc(100% - 205px);gap:7px}
+ .intro{padding:10px 12px;border-radius:14px}.intro h1{font-size:25px;margin:7px 0}.intro p{font-size:10px;line-height:1.5}.intro-meta{margin-top:8px}.intro-stat{font-size:9px;padding:5px 7px}
+ .filter-box{padding:9px 10px}.section-label{margin-bottom:7px;font-size:9px}.filter{padding:6px 8px;font-size:9px}
+ .journey-box{padding:9px 10px}.journey-select,.place-search{min-height:34px;padding:7px 8px}.journey-btn{min-height:30px;padding:6px 4px}
+ .places{max-height:24vh;min-height:80px;padding:8px}.place{min-height:48px;padding:6px}.place-icon{width:30px;height:30px}
+ .timebar{left:8px;right:8px;bottom:8px;width:auto;min-width:0;padding:9px 10px}.timebar-date{font-size:21px}.timebar-kicker{font-size:7px}.timebar-era{font-size:9px}.time-events{margin-top:6px}.time-event{font-size:8px;padding:5px 6px}
+ .bottom-left{left:10px;bottom:145px;gap:5px}.coverage-key{max-width:180px;padding:6px 8px;font-size:8px}.small-note{font-size:8px;padding:7px 8px}
+ .bottom-right{right:10px;bottom:145px;gap:5px}.view-switch button{font-size:9px;padding:7px 8px}.map-tool{width:35px;height:35px}
+ .detail{left:6px;right:6px;bottom:6px;max-height:72%;width:auto}.detail-image{height:115px}.detail-content{padding:13px}.detail h2{font-size:22px}
+ .reconstruction-panel{top:74px;right:8px;width:min(250px,calc(100% - 16px))}
+ .maplibregl-ctrl-bottom-right{bottom:54px!important}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
@@ -59,7 +116,7 @@
   <div class="top-actions"><div class="chip" id="modeChip">MODO EXPLORAÇÃO <strong>● ATIVO</strong></div><select id="languageSelect" aria-label="Idioma" title="Idioma" class="language-select"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option><option value="fr">FR</option></select><button class="icon-btn" id="resetView" aria-label="Vista inicial" title="Vista inicial">⌂</button></div>
  </header>
  <aside class="left-panel">
-  <div class="intro"><div class="eyebrow" id="eyebrow">◆ Uma cidade. Muitas eras.</div><h1 id="heroTitle">Viaja pela<br>história de <span style="color:var(--gold)">Lisboa.</span></h1><p id="heroText">Explora ruas, monumentos e acontecimentos que moldaram a cidade. Escolhe um ponto no mapa para desbloquear uma história.</p></div>
+  <div class="intro"><div class="eyebrow" id="eyebrow">◆ Uma cidade. Muitas eras.</div><h1 id="heroTitle">Descobre Lisboa<br><span style="color:var(--gold)">através do tempo.</span></h1><p id="heroText">Explora lugares, compara épocas e descobre as histórias por trás da cidade. Seleciona um ponto ou inicia um percurso guiado.</p><div class="intro-meta"><span class="intro-stat"><strong>58</strong> locais históricos</span><span class="intro-stat"><strong>2.000+</strong> anos de história</span></div></div>
   <div class="glass filter-box"><div class="section-label" id="eraLabel">Explorar por época</div><div class="filters" id="filters"><button class="filter active" data-era="all" data-i18n="all">Todas</button><button class="filter" data-era="medieval" data-i18n="medieval">Medieval</button><button class="filter" data-era="1500" data-i18n="discoveries">Descobrimentos</button><button class="filter" data-era="1755" data-i18n="quake">1755</button><button class="filter" data-era="1900" data-i18n="century">Século XX</button></div></div>
   <div class="glass journey-box"><div class="journey-title" id="journeyTitle">Percursos guiados</div><select class="journey-select" id="journeySelect" aria-label="Selecionar percurso"><option value="medieval">Lisboa medieval</option><option value="quake">O terramoto de 1755</option><option value="pombaline">A reconstrução pombalina</option></select><div class="journey-actions"><button class="journey-btn primary" id="journeyStart">Iniciar percurso</button><button class="journey-btn" id="journeyExit" hidden>Terminar</button></div><div class="journey-status" id="journeyStatus" aria-live="polite">Explora uma história através de vários locais.</div><div class="journey-actions" id="journeyNav" hidden><button class="journey-btn" id="journeyPrev">← Anterior</button><button class="journey-btn primary" id="journeyNext">Seguinte →</button></div></div>
   <div class="glass places"><div class="section-label" id="pointsLabel">Pontos históricos <span id="placeCount" style="float:right;color:var(--gold)">58</span></div><div class="places-search"><input class="place-search" id="placeSearch" type="search" placeholder="Pesquisar locais históricos…" aria-label="Pesquisar locais históricos"></div><div class="place-list" id="placeList"></div></div>
@@ -82,7 +139,7 @@
   <label class="layer-option"><input type="checkbox" id="toggleUrbanExtent" checked><span id="urbanExtentLabel">Extensão urbana <small>Limite indicativo por época</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleWalls"><span id="wallsLabel">Muralhas históricas <small>Traçados esquemáticos das cercas</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleWaterfront"><span id="waterfrontLabel">Frente ribeirinha <small>Margem indicativa antes/depois de 1755</small></span></label>
-  <label class="layer-option"><input type="checkbox" id="togglePombaline3D"><span id="pombaline3DLabel">Reconstrução urbana 3D <small>Modelo esquemático que muda por época, a partir de 1500</small></span></label>
+  <label class="layer-option"><input type="checkbox" id="togglePombaline3D"><span id="pombaline3DLabel">Destacar zona histórica <small>Realçar a Baixa Pombalina no mapa</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleMap1650"><span id="map1650Label">Planta de Tinoco · 1650 <small>Cartografia histórica georreferenciada · CML</small></span></label>
   <label class="layer-option"><input type="checkbox" id="toggleMap1756"><span id="map1756Label">Planta de Mardel · 1756 <small>Plano de reconstrução georreferenciado · CML</small></span></label>
   <label class="history-map-opacity"><span id="mapOpacityLabel">Opacidade</span><input type="range" id="historicalMapOpacity" min="0.15" max="1" step="0.05" value="0.78" aria-label="Opacidade da planta histórica"></label>
@@ -185,8 +242,8 @@ function applyHistoricalLayerLanguage(){
  $('urbanExtentLabel').innerHTML=labels.extent+' <small>'+labels.extentSub+'</small>';
  $('wallsLabel').innerHTML=labels.walls+' <small>'+labels.wallsSub+'</small>';
  $('waterfrontLabel').innerHTML=labels.shore+' <small>'+labels.shoreSub+'</small>';
- const blockLabels={pt:['Reconstrução urbana 3D','Modelo esquemático que muda por época'],en:['Historical 3D city model','Schematic model changes by period'],es:['Reconstrucción urbana 3D','Modelo esquemático que cambia por época'],fr:['Reconstitution urbaine 3D','Modèle schématique selon l’époque']}[language];
- $('pombaline3DLabel').innerHTML=blockLabels[0]+' <small>'+historical3DStageLabel(selectedYear)+'</small>';
+ const blockLabels={pt:['Destacar zona histórica','Realçar a Baixa Pombalina no mapa'],en:['Highlight historic area','Highlight Pombaline Baixa on the map'],es:['Destacar zona histórica','Resaltar la Baixa Pombalina en el mapa'],fr:['Mettre en évidence la zone','Souligner la Baixa pombaline sur la carte']}[language];
+ $('pombaline3DLabel').innerHTML=blockLabels[0]+' <small>'+blockLabels[1]+'</small>';
  $('layerSources').innerHTML=labels.sources;
  $('historicalLayersToggle').title=labels.toggle;
  $('historicalLayersToggle').setAttribute('aria-label',labels.toggle);
