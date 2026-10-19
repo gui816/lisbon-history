@@ -169,8 +169,8 @@ function applyHistoricalLayerLanguage(){
  $('urbanExtentLabel').innerHTML=labels.extent+' <small>'+labels.extentSub+'</small>';
  $('wallsLabel').innerHTML=labels.walls+' <small>'+labels.wallsSub+'</small>';
  $('waterfrontLabel').innerHTML=labels.shore+' <small>'+labels.shoreSub+'</small>';
- const blockLabels={pt:['Baixa Pombalina 3D','Volumes ilustrativos, a partir de 1775'],en:['3D Pombaline Baixa','Illustrative volumes, from 1775'],es:['Baixa pombalina 3D','Volúmenes ilustrativos, desde 1775'],fr:['Baixa pombaline 3D','Volumes illustratifs, à partir de 1775']}[language];
- $('pombaline3DLabel').innerHTML=blockLabels[0]+' <small>'+blockLabels[1]+'</small>';
+ const blockLabels={pt:['Reconstrução urbana 3D','Modelo esquemático que muda por época'],en:['Historical 3D city model','Schematic model changes by period'],es:['Reconstrucción urbana 3D','Modelo esquemático que cambia por época'],fr:['Reconstitution urbaine 3D','Modèle schématique selon l’époque']}[language];
+ $('pombaline3DLabel').innerHTML=blockLabels[0]+' <small>'+historical3DStageLabel(selectedYear)+'</small>';
  $('layerSources').innerHTML=labels.sources;
  $('historicalLayersToggle').title=labels.toggle;
  $('historicalLayersToggle').setAttribute('aria-label',labels.toggle);
@@ -360,8 +360,19 @@ function updatePombalineAreaMask(active){
   map.moveLayer('pombaline-bounds-line');
  }
 }
+function historical3DStageLabel(year){
+ const stages={
+  pt:['Sem modelo 3D antes de 1500','Baixa pré-terramoto · quarteirões irregulares','Ruínas após o terramoto','Reconstrução planeada · volumes baixos','Baixa Pombalina · quarteirões regulares','Cidade modernizada · edifícios mais altos','Lisboa contemporânea · volumes urbanos atuais (esquemáticos)'],
+  en:['No 3D model before 1500','Pre-earthquake Baixa · irregular blocks','Earthquake ruins','Planned rebuilding · low volumes','Pombaline Baixa · regular blocks','Modernized city · taller buildings','Contemporary Lisbon · schematic urban volumes'],
+  es:['Sin modelo 3D antes de 1500','Baixa anterior al terremoto · manzanas irregulares','Ruinas tras el terremoto','Reconstrucción planificada · volúmenes bajos','Baixa pombalina · manzanas regulares','Ciudad modernizada · edificios más altos','Lisboa contemporánea · volúmenes urbanos esquemáticos'],
+  fr:['Pas de modèle 3D avant 1500','Baixa avant le séisme · îlots irréguliers','Ruines après le séisme','Reconstruction planifiée · volumes bas','Baixa pombaline · îlots réguliers','Ville modernisée · bâtiments plus hauts','Lisbonne contemporaine · volumes urbains schématiques']
+ }[language];
+ if(year<1500)return stages[0];if(year<1755)return stages[1];if(year===1755)return stages[2];if(year<1775)return stages[3];if(year<1900)return stages[4];if(year<1990)return stages[5];return stages[6];
+}
+function updateHistorical3DLabel(){const el=$('pombaline3DLabel');if(!el)return;const titles={pt:'Reconstrução urbana 3D',en:'Historical 3D city model',es:'Reconstrucción urbana 3D',fr:'Reconstitution urbaine 3D'};el.innerHTML=titles[language]+' <small>'+historical3DStageLabel(selectedYear)+'</small>'}
 function updateHistoricalLayers(){
  const year=selectedYear,wallsOn=$('toggleWalls')?.checked,shoreOn=$('toggleWaterfront')?.checked,extentOn=$('toggleUrbanExtent')?.checked!==false,blocksOn=$('togglePombaline3D')?.checked;
+ updateHistorical3DLabel();
  const opacity=Number($('historicalMapOpacity')?.value||0.78);
  if(map.getLayer('historical-map-1650')){map.setPaintProperty('historical-map-1650','raster-opacity',opacity);map.setLayoutProperty('historical-map-1650','visibility',$('toggleMap1650')?.checked&&year>=1500&&year<=1755?'visible':'none')}
  if(map.getLayer('historical-map-1756')){map.setPaintProperty('historical-map-1756','raster-opacity',opacity);map.setLayoutProperty('historical-map-1756','visibility',$('toggleMap1756')?.checked&&year>=1755&&year<=1800?'visible':'none')}
