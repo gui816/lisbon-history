@@ -334,6 +334,42 @@ button,input,select{touch-action:manipulation}
  .app.mobile-explore-closed .study-area-chip{display:block}
 }
 
+
+/* Guided journey UX: one clear primary action, explicit progress, and a map-first mobile step view. */
+.journey-progress{height:3px;overflow:hidden;border-radius:99px;background:rgba(220,235,240,.1);margin-top:-2px}
+.journey-progress span{display:block;width:0;height:100%;background:var(--mint);border-radius:99px;transition:width .22s ease}
+.journey-box.journey-active .journey-progress{height:4px}
+.journey-box.journey-active .journey-select{border-color:rgba(120,219,195,.38)}
+.journey-box.journey-active .journey-status{padding:10px 11px;border:1px solid rgba(120,219,195,.18);border-radius:11px;background:rgba(120,219,195,.055);font-size:11px;line-height:1.5;min-height:0}
+.journey-box.journey-active .journey-actions{gap:8px}
+.journey-box.journey-active .journey-btn{min-height:42px;font-size:11px}
+#journeyExit{flex:0 0 auto}
+@media(max-width:720px){
+ .left-panel.journey-mode{top:116px!important;bottom:calc(265px + env(safe-area-inset-bottom))!important;max-height:none!important;overflow:visible!important}
+ .left-panel.journey-mode>.intro,.left-panel.journey-mode>.filter-box,.left-panel.journey-mode>.places{display:none!important}
+ .left-panel.journey-mode>.journey-box{padding:12px!important;gap:8px!important;border-color:rgba(120,219,195,.35);box-shadow:0 18px 45px rgba(0,0,0,.35)}
+ .left-panel.journey-mode .journey-title{font-size:10px;letter-spacing:1.6px}
+ .left-panel.journey-mode .journey-select{min-height:42px;font-size:13px;padding:10px 12px}
+ .left-panel.journey-mode .journey-status{font-size:11px!important;line-height:1.5!important;overflow-wrap:anywhere}
+ .left-panel.journey-mode .journey-actions{display:flex;gap:7px}
+ .left-panel.journey-mode .journey-btn{min-height:42px;padding:9px 8px;font-size:11px}
+ .left-panel.journey-mode .journey-actions[hidden],.left-panel.journey-mode [hidden]{display:none!important}
+ .left-panel.journey-mode #journeyNav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:7px}
+ .left-panel.journey-mode #journeyNav #journeyNext{font-weight:700}
+ .left-panel.journey-mode #journeyExit{width:100%;background:transparent;border-color:rgba(220,235,240,.14);color:#9fb2ba;min-height:34px}
+ .left-panel.journey-mode .journey-progress{margin:1px 0 3px}
+ .app.mobile-explore-closed .left-panel.journey-mode{display:flex!important}
+}
+@media(max-width:390px){
+ .left-panel.journey-mode{left:7px!important;right:7px!important}
+ .left-panel.journey-mode .journey-box{padding:10px!important}
+ .left-panel.journey-mode .journey-btn{font-size:10px;padding:8px 5px}
+}
+@media(orientation:landscape) and (max-width:900px){
+ .left-panel.journey-mode{top:106px!important;bottom:145px!important;width:min(360px,52vw)!important}
+ .left-panel.journey-mode .journey-box{max-height:100%;overflow-y:auto}
+}
+
 </style>
 </head>
 <body>
@@ -350,7 +386,7 @@ button,input,select{touch-action:manipulation}
  <aside class="left-panel" id="mobileExplorePanel">
   <div class="intro"><div class="eyebrow" id="eyebrow">◆ Uma cidade. Muitas eras.</div><h1 id="heroTitle">Descobre Lisboa<br><span style="color:var(--gold)">através do tempo.</span></h1><p id="heroText">Explora lugares, compara épocas e descobre as histórias por trás da cidade. Seleciona um ponto ou inicia um percurso guiado.</p><div class="intro-meta"><span class="intro-stat" id="introStatPlaces"><strong>58</strong> locais históricos</span><span class="intro-stat" id="introStatYears"><strong>2.000+</strong> anos de história</span></div></div>
   <div class="glass filter-box"><div class="section-label" id="eraLabel">Explorar por época</div><div class="filters" id="filters"><button class="filter active" data-era="all" data-i18n="all">Todas</button><button class="filter" data-era="medieval" data-i18n="medieval">Medieval</button><button class="filter" data-era="1500" data-i18n="discoveries">Descobrimentos</button><button class="filter" data-era="1755" data-i18n="quake">1755</button><button class="filter" data-era="1900" data-i18n="century">Século XX</button></div></div>
-  <div class="glass journey-box"><div class="journey-title" id="journeyTitle">Percursos guiados</div><select class="journey-select" id="journeySelect" aria-label="Selecionar percurso"><option value="medieval">Lisboa medieval</option><option value="quake">O terramoto de 1755</option><option value="pombaline">A reconstrução pombalina</option></select><div class="journey-actions"><button class="journey-btn primary" id="journeyStart">Iniciar percurso</button><button class="journey-btn" id="journeyExit" hidden>Terminar</button></div><div class="journey-status" id="journeyStatus" aria-live="polite">Explora uma história através de vários locais.</div><div class="journey-actions" id="journeyNav" hidden><button class="journey-btn" id="journeyPrev">← Anterior</button><button class="journey-btn primary" id="journeyNext">Seguinte →</button></div></div>
+  <div class="glass journey-box"><div class="journey-title" id="journeyTitle">Percursos guiados</div><div class="journey-progress" id="journeyProgress" aria-hidden="true"><span id="journeyProgressFill"></span></div><select class="journey-select" id="journeySelect" aria-label="Selecionar percurso"><option value="medieval">Lisboa medieval</option><option value="quake">O terramoto de 1755</option><option value="pombaline">A reconstrução pombalina</option></select><div class="journey-actions"><button class="journey-btn primary" id="journeyStart">Iniciar percurso</button><button class="journey-btn" id="journeyExit" hidden>Terminar</button></div><div class="journey-status" id="journeyStatus" aria-live="polite">Explora uma história através de vários locais.</div><div class="journey-actions" id="journeyNav" hidden><button class="journey-btn" id="journeyPrev">← Anterior</button><button class="journey-btn primary" id="journeyNext">Seguinte →</button></div></div>
   <div class="glass places"><div class="section-label" id="pointsLabel">Pontos históricos <span id="placeCount" style="float:right;color:var(--gold)">58</span></div><div class="places-search"><input class="place-search" id="placeSearch" type="search" placeholder="Pesquisar locais históricos…" aria-label="Pesquisar locais históricos"></div><div class="place-list" id="placeList"></div></div>
  </aside>
  <section class="reconstruction-panel" id="reconstructionPanel" aria-live="polite">
@@ -491,14 +527,46 @@ const journeys={
 };
 let activeJourney=null,journeyStep=0;
 function journeyLabels(){return {
- pt:{title:'Percursos guiados',start:'Iniciar percurso',exit:'Terminar',prev:'← Anterior',next:'Seguinte →',idle:'Explora uma história através de vários locais.',step:(n,total,name,year)=>'Paragem '+n+' de '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Percurso concluído. Podes continuar a explorar livremente.',search:'Pesquisar locais históricos…',opacity:'Opacidade',map1650:'Planta de Tinoco · 1650',map1756:'Planta de Mardel · 1756',medieval:'Lisboa medieval',quake:'O terramoto de 1755',pombaline:'A reconstrução pombalina',georef:'Cartografia CML georreferenciada'},
- en:{title:'Guided journeys',start:'Start journey',exit:'Finish',prev:'← Previous',next:'Next →',idle:'Explore a story through several places.',step:(n,total,name,year)=>'Stop '+n+' of '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Journey complete. Keep exploring freely.',search:'Search historic places…',opacity:'Opacity',map1650:'Tinoco map · 1650',map1756:'Mardel map · 1756',medieval:'Medieval Lisbon',quake:'The 1755 earthquake',pombaline:'The Pombaline rebuilding',georef:'Georeferenced CML cartography'},
- es:{title:'Recorridos guiados',start:'Iniciar recorrido',exit:'Terminar',prev:'← Anterior',next:'Siguiente →',idle:'Explora una historia a través de varios lugares.',step:(n,total,name,year)=>'Parada '+n+' de '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Recorrido completado. Sigue explorando libremente.',search:'Buscar lugares históricos…',opacity:'Opacidad',map1650:'Plano de Tinoco · 1650',map1756:'Plano de Mardel · 1756',medieval:'Lisboa medieval',quake:'El terremoto de 1755',pombaline:'La reconstrucción pombalina',georef:'Cartografía CML georreferenciada'},
- fr:{title:'Parcours guidés',start:'Commencer',exit:'Terminer',prev:'← Précédent',next:'Suivant →',idle:'Explorez une histoire à travers plusieurs lieux.',step:(n,total,name,year)=>'Étape '+n+' sur '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Parcours terminé. Continuez à explorer librement.',search:'Rechercher des lieux historiques…',opacity:'Opacité',map1650:'Plan de Tinoco · 1650',map1756:'Plan de Mardel · 1756',medieval:'Lisbonne médiévale',quake:'Le séisme de 1755',pombaline:'La reconstruction pombaline',georef:'Cartographie CML géoréférencée'}
+ pt:{title:'Percursos guiados',start:'Iniciar percurso',exit:'Terminar percurso',finishStep:'Concluir percurso →',prev:'← Anterior',next:'Seguinte →',idle:'Explora uma história através de vários locais.',step:(n,total,name,year)=>'Paragem '+n+' de '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Percurso concluído. Podes continuar a explorar livremente.',search:'Pesquisar locais históricos…',opacity:'Opacidade',map1650:'Planta de Tinoco · 1650',map1756:'Planta de Mardel · 1756',medieval:'Lisboa medieval',quake:'O terramoto de 1755',pombaline:'A reconstrução pombalina',georef:'Cartografia CML georreferenciada'},
+ en:{title:'Guided journeys',start:'Start journey',exit:'End journey',finishStep:'Finish journey →',prev:'← Previous',next:'Next →',idle:'Explore a story through several places.',step:(n,total,name,year)=>'Stop '+n+' of '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Journey complete. Keep exploring freely.',search:'Search historic places…',opacity:'Opacity',map1650:'Tinoco map · 1650',map1756:'Mardel map · 1756',medieval:'Medieval Lisbon',quake:'The 1755 earthquake',pombaline:'The Pombaline rebuilding',georef:'Georeferenced CML cartography'},
+ es:{title:'Recorridos guiados',start:'Iniciar recorrido',exit:'Terminar recorrido',finishStep:'Finalizar recorrido →',prev:'← Anterior',next:'Siguiente →',idle:'Explora una historia a través de varios lugares.',step:(n,total,name,year)=>'Parada '+n+' de '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Recorrido completado. Sigue explorando libremente.',search:'Buscar lugares históricos…',opacity:'Opacidad',map1650:'Plano de Tinoco · 1650',map1756:'Plano de Mardel · 1756',medieval:'Lisboa medieval',quake:'El terremoto de 1755',pombaline:'La reconstrucción pombalina',georef:'Cartografía CML georreferenciada'},
+ fr:{title:'Parcours guidés',start:'Commencer',exit:'Terminer le parcours',finishStep:'Terminer le parcours →',prev:'← Précédent',next:'Suivant →',idle:'Explorez une histoire à travers plusieurs lieux.',step:(n,total,name,year)=>'Étape '+n+' sur '+total+' · '+name+' · '+formatHistoricalYear(year),finished:'Parcours terminé. Continuez à explorer librement.',search:'Rechercher des lieux historiques…',opacity:'Opacité',map1650:'Plan de Tinoco · 1650',map1756:'Plan de Mardel · 1756',medieval:'Lisbonne médiévale',quake:'Le séisme de 1755',pombaline:'La reconstruction pombaline',georef:'Cartographie CML géoréférencée'}
 }[language]}
 function updateJourneyLanguage(){if(!$('journeyTitle'))return;const t=journeyLabels();$('journeyTitle').textContent=t.title;$('journeyStart').textContent=t.start;$('journeyExit').textContent=t.exit;$('journeyPrev').textContent=t.prev;$('journeyNext').textContent=t.next;$('placeSearch').placeholder=t.search;$('mapOpacityLabel').textContent=t.opacity;$('map1650Label').innerHTML=t.map1650+' <small>'+t.georef+'</small>';$('map1756Label').innerHTML=t.map1756+' <small>'+t.georef+'</small>';const opts=$('journeySelect').options;opts[0].textContent=t.medieval;opts[1].textContent=t.quake;opts[2].textContent=t.pombaline;if(!activeJourney)$('journeyStatus').textContent=t.idle}
-function bindJourneyControls(){$('journeyStart').addEventListener('click',()=>{activeJourney=$('journeySelect').value;journeyStep=0;$('journeyExit').hidden=false;$('journeyNav').hidden=false;showJourneyStep()});$('journeyNext').addEventListener('click',()=>{if(!activeJourney)return;if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep()}else{$('journeyStatus').textContent=journeyLabels().finished;$('journeyNav').hidden=true;$('journeyExit').hidden=true;activeJourney=null;clearJourneyRoute()}});$('journeyPrev').addEventListener('click',()=>{if(!activeJourney)return;journeyStep=Math.max(0,journeyStep-1);showJourneyStep()});$('journeyExit').addEventListener('click',()=>{activeJourney=null;$('journeyNav').hidden=true;$('journeyExit').hidden=true;$('journeyStatus').textContent=journeyLabels().idle;clearJourneyRoute()})}
-function showJourneyStep(){const journey=journeys[activeJourney],step=journey.steps[journeyStep],p=places.find(x=>x.id===step.id);if(!p){$('journeyStatus').textContent='';return}currentEra='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.era==='all'));$('placeSearch').value='';setHistoricalYear(step.year);$('journeyStatus').textContent=journeyLabels().step(journeyStep+1,journey.steps.length,placeNameAtDate(p),step.year)+'\n'+step.note;updateJourneyRoute();$('journeyNext').textContent=journeyStep===journey.steps.length-1?journeyLabels().exit:journeyLabels().next;focusPlace(p.id)}
+function syncJourneyPresentation(){
+ const panel=document.querySelector('.left-panel'),box=document.querySelector('.journey-box'),active=!!activeJourney;
+ panel?.classList.toggle('journey-mode',active);
+ box?.classList.toggle('journey-active',active);
+ $('journeyStart').hidden=active;
+ $('journeySelect').disabled=active;
+ $('journeyProgress').style.display=active?'block':'none';
+ const steps=active?journeys[activeJourney].steps:[];
+ $('journeyProgressFill').style.width=active?(((journeyStep+1)/steps.length)*100)+'%':'0%';
+ if(active){
+  $('journeyNav').hidden=false;$('journeyExit').hidden=false;
+  $('journeyNext').textContent=journeyStep===steps.length-1?journeyLabels().finishStep:journeyLabels().next;
+  $('journeyPrev').disabled=journeyStep===0;
+ }else{
+  $('journeyNav').hidden=true;$('journeyExit').hidden=true;$('journeySelect').disabled=false;
+  $('journeyNext').textContent=journeyLabels().next;$('journeyPrev').disabled=false;
+ }
+}
+function bindJourneyControls(){
+ $('journeyStart').addEventListener('click',()=>{
+  activeJourney=$('journeySelect').value;journeyStep=0;syncJourneyPresentation();showJourneyStep();
+  if(window.matchMedia('(max-width:720px)').matches){document.querySelector('.left-panel')?.scrollTo({top:0,behavior:'smooth'});}
+ });
+ $('journeyNext').addEventListener('click',()=>{
+  if(!activeJourney)return;
+  if(journeyStep<journeys[activeJourney].steps.length-1){journeyStep++;showJourneyStep();}
+  else{$('journeyStatus').textContent=journeyLabels().finished;activeJourney=null;clearJourneyRoute();syncJourneyPresentation();}
+ });
+ $('journeyPrev').addEventListener('click',()=>{if(!activeJourney)return;journeyStep=Math.max(0,journeyStep-1);showJourneyStep()});
+ $('journeyExit').addEventListener('click',()=>{activeJourney=null;$('journeyStatus').textContent=journeyLabels().idle;clearJourneyRoute();syncJourneyPresentation()});
+ $('journeySelect').addEventListener('change',()=>{if(activeJourney){activeJourney=null;journeyStep=0;clearJourneyRoute();syncJourneyPresentation()}});
+ syncJourneyPresentation();
+}
+function showJourneyStep(){const journey=journeys[activeJourney],step=journey.steps[journeyStep],p=places.find(x=>x.id===step.id);if(!p){$('journeyStatus').textContent='';return}currentEra='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.era==='all'));$('placeSearch').value='';setHistoricalYear(step.year);$('journeyStatus').textContent=journeyLabels().step(journeyStep+1,journey.steps.length,placeNameAtDate(p),step.year)+'\n'+step.note;updateJourneyRoute();syncJourneyPresentation();focusPlace(p.id)}
 
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2800)}
 
