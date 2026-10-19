@@ -290,7 +290,7 @@ button,input,select{touch-action:manipulation}
  .timebar:not(.timeline-expanded) .timebar-details{display:none}
  .timebar:not(.timeline-expanded) .timebar-top{margin-bottom:0!important}
  .timebar:not(.timeline-expanded) .timebar-date{font-size:20px!important}
- .timebar:not(.timeline-expanded) .timebar-expand{transform:rotate(180deg)}
+ .timebar:not(.timeline-expanded) .timebar-expand{transform:none}
  .timebar.timeline-expanded .timebar-details{padding-top:7px}
  .app.mobile-explore-closed .timebar{z-index:7}
  .app.mobile-explore-closed .mobile-map-toggle{top:76px}
@@ -368,7 +368,7 @@ button,input,select{touch-action:manipulation}
  </div><div class="map-tools"><button class="map-tool" id="historicalLayersToggle" title="Camadas históricas" aria-label="Camadas históricas" aria-expanded="false">▤</button><button class="map-tool" id="coverageToggle" title="Mostrar cobertura" aria-pressed="true">◌</button><button class="map-tool" id="zoomIn" title="Aproximar">＋</button><button class="map-tool" id="zoomOut" title="Afastar">－</button><button class="map-tool" id="tilt" title="Alternar inclinação">◢</button><button class="map-tool" id="locate" title="Centro de Lisboa">⌖</button></div><div class="location-tag">◈ EXPLORAÇÃO 3D · LISBOA</div></div>
 
  <section class="timebar" id="timebar" aria-label="Linha temporal histórica">
-  <div class="timebar-top"><div><div class="timebar-kicker" id="timeKicker">VIAJA NO TEMPO</div><div class="timebar-date" id="timeYear">2026</div></div><div class="timebar-era" id="timeEra">Lisboa contemporânea</div><button class="timebar-expand" id="timebarExpand" type="button" aria-expanded="false" aria-controls="timebarDetails" aria-label="Expandir linha temporal">⌃</button></div>
+  <div class="timebar-top"><div><div class="timebar-kicker" id="timeKicker">VIAJA NO TEMPO</div><div class="timebar-date" id="timeYear">2026</div></div><div class="timebar-era" id="timeEra">Lisboa contemporânea</div><button class="timebar-expand" id="timebarExpand" type="button" aria-expanded="false" aria-controls="timebarDetails" aria-label="Expandir linha temporal">⌄</button></div>
   <div class="timebar-controls"><button class="time-control" id="timeBack" aria-label="Recuar no tempo" title="Recuar">‹</button><input class="year-slider" id="yearSlider" type="range" min="-100" max="2026" step="1" value="2026" aria-label="Selecionar ano histórico"><button class="time-control" id="timeForward" aria-label="Avançar no tempo" title="Avançar">›</button><button class="time-control" id="timeNow" aria-label="Voltar ao presente" title="Hoje">↺</button></div>
   <div class="timebar-details" id="timebarDetails"><div class="timebar-bottom"><span class="timebar-hint" id="timeStart">100 a.C.</span><span class="timebar-hint" id="timeHint">Arrasta para mudar a cidade</span><span class="timebar-hint" id="timeEnd">Hoje</span></div>
   <div class="time-events" id="timeEvents"></div>
@@ -918,7 +918,7 @@ if(timelineToggle){
   const expanded=timebar.classList.toggle('timeline-expanded');
   timelineToggle.setAttribute('aria-expanded',String(expanded));
   timelineToggle.setAttribute('aria-label',expanded?'Recolher linha temporal':'Expandir linha temporal');
-  timelineToggle.textContent=expanded?'⌄':'⌃';
+  timelineToggle.textContent=expanded?'⌃':'⌄';
  });
 }
 $('languageSelect').addEventListener('change',e=>{applyLanguage(e.target.value);updateMapViewLabels()});
