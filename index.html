@@ -566,7 +566,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape')hideDetail();if(e.key=
 renderPlaces();
 $('placeSearch').addEventListener('input',()=>{renderPlaces();renderMarkers()});
 bindJourneyControls();
-$('languageSelect').addEventListener('change',e=>applyLanguage(e.target.value));
+$('languageSelect').addEventListener('change',e=>{applyLanguage(e.target.value);updateMapViewLabels()});
 $('viewHistorical').addEventListener('click',()=>setMapView('historical'));
 updateMapViewLabels();
 $('viewSatellite').addEventListener('click',()=>setMapView('satellite'));
