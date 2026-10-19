@@ -365,7 +365,8 @@ function addPombaline3DLayer(){
 }
 function updatePombalineAreaMask(active){
  const visible=!!active&&selectedYear>=1500;
- if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData(pombalineBlocksFeature(selectedYear));
+ // Do not render the schematic grid of rectangular blocks; the highlighted boundary is the study-area cue.
+ if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData({type:'FeatureCollection',features:[]});
  if(map.getSource('pombaline-area-mask'))map.getSource('pombaline-area-mask').setData(pombalineAreaMaskFeature());
  if(map.getLayer('pombaline-area-mask-fill'))map.setLayoutProperty('pombaline-area-mask-fill','visibility','none');
  if(map.getLayer('pombaline-bounds-line'))map.setLayoutProperty('pombaline-bounds-line','visibility',visible?'visible':'none');
@@ -579,8 +580,9 @@ map.on('load',()=>{
  try{addHistoricalMapLayers()}catch(e){console.warn('Historical map tiles unavailable',e)}
  try{addJourneyRouteLayer()}catch(e){console.warn('Journey route unavailable',e)}
  try{addPombaline3DLayer()}catch(e){console.warn('Pombaline 3D reconstruction unavailable',e)}
- // The schematic block model is optional; keep it off on first load so the real map remains legible.
+ // Hide the schematic rectangular block overlay entirely; retain the study boundary and real basemap.
  if(map.getLayer('pombaline-blocks-3d'))map.setLayoutProperty('pombaline-blocks-3d','visibility','none');
+ if(map.getSource('pombaline-blocks'))map.getSource('pombaline-blocks').setData({type:'FeatureCollection',features:[]});
  try{setMapView('satellite',false)}catch(e){console.warn('Satellite default unavailable',e)}
  updateStudyMaskOverlay(isPombalineStudyActive());
  try{
