@@ -177,17 +177,28 @@ map.addControl(new maplibregl.NavigationControl({showCompass:true,showZoom:false
 map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
 map.on('load',()=>{
  mapReady=true;
- addCoverageLayer();
- addDesertMask();
- addHistoricalExtent();
- const layers=map.getStyle().layers||[];let labelLayerId;for(const layer of layers){if(layer.type==='symbol'&&layer.layout&&layer.layout['text-field']){labelLayerId=layer.id;break}}
- try{map.addSource('openmaptiles',{url:'https://demotiles.maplibre.org/tiles/tiles.json',type:'vector'});if(labelLayerId){/* Keep basemap labels native. */}}catch(e){}
- // Extrude building polygons when the basemap provides building geometry.
- const styleLayers=map.getStyle().layers||[];const buildingLayer=styleLayers.find(l=>l['source-layer']==='building'&&l.type==='fill');
- if(buildingLayer){map.addLayer({id:'3d-buildings',source:buildingLayer.source,'source-layer':buildingLayer['source-layer'],filter:['!=',['get','hide_3d'],'true'],type:'fill-extrusion',minzoom:13,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','render_height'],0,'#263d48',30,'#52626b',80,'#8b8c82'],'fill-extrusion-height':['coalesce',['get','render_height'],['get','height'],8],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.84}},labelLayerId)}
- renderPlaces();renderMarkers();setTimeout(()=>$('loading').classList.add('hide'),650);
+ // Keep optional visual layers isolated: one unsupported layer must not block the whole app.
+ try{addCoverageLayer()}catch(e){console.warn('Coverage layer unavailable',e)}
+ try{addDesertMask()}catch(e){console.warn('Desert mask unavailable',e)}
+ try{addHistoricalExtent()}catch(e){console.warn('Historical extent unavailable',e)}
+ try{
+  const layers=map.getStyle().layers||[];
+  const labelLayerId=layers.find(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field'])?.id;
+  const styleLayers=map.getStyle().layers||[];
+  const buildingLayer=styleLayers.find(l=>l['source-layer']==='building'&&l.type==='fill');
+  if(buildingLayer&&!map.getLayer('3d-buildings'))map.addLayer({id:'3d-buildings',source:buildingLayer.source,'source-layer':buildingLayer['source-layer'],filter:['!=',['get','hide_3d'],'true'],type:'fill-extrusion',minzoom:13,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','render_height'],0,'#263d48',30,'#52626b',80,'#8b8c82'],'fill-extrusion-height':['coalesce',['get','render_height'],['get','height'],8],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.84}},labelLayerId);
+ }catch(e){console.warn('3D buildings unavailable',e)}
+ try{renderPlaces();renderMarkers();setHistoricalYear(selectedYear)}catch(e){console.error('Initial rendering failed',e)}
+ // Always dismiss the splash once the map style has loaded, even if an enhancement failed.
+ setTimeout(()=>$('loading').classList.add('hide'),350);
 });
-map.on('error',e=>{console.warn('Map warning',e.error||e);});
+map.on('error',e=>{
+ console.warn('Map warning',e.error||e);
+ // A failed tile/source should not leave the app permanently covered by the loading screen.
+ if(!mapReady)setTimeout(()=>$('loading').classList.add('hide'),2500);
+});
+// Failsafe for blocked or very slow third-party map styles.
+setTimeout(()=>{if(!$('loading').classList.contains('hide')){$('loading').classList.add('hide');$('loaderText').textContent='A cidade está a demorar a carregar';$('loaderSub').textContent='Podes explorar os controlos; verifica a ligação se o mapa não aparecer.'}},12000);
 map.on('moveend',()=>{updateDesertMask();const c=map.getCenter();if(!selectedId)$('coords').textContent=c.lat.toFixed(4)+'° N, '+Math.abs(c.lng).toFixed(4)+'° W'});
 $('zoomIn').onclick=()=>map.zoomTo(map.getZoom()+1,{duration:450});
 $('zoomOut').onclick=()=>map.zoomTo(map.getZoom()-1,{duration:450});
