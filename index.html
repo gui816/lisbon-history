@@ -558,7 +558,7 @@ function hideDetail(){$('detail').classList.remove('open');selectedId=null;rende
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{currentEra=b.dataset.era;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderPlaces();renderMarkers();if(selectedId&&!places.some(p=>p.id===selectedId&&(currentEra==='all'||p.era===currentEra)))hideDetail()});
 $('closeDetail').onclick=hideDetail;
 bindHistoricalLayerControls();
-const map = new maplibregl.Map({container:'map',style:'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',center:[-9.157,38.726],zoom:11.65,pitch:38,bearing:-10,antialias:true,attributionControl:true,cooperativeGestures:true});
+const map = new maplibregl.Map({container:'map',style:'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',center:[-9.141,38.7115],zoom:13.25,minZoom:12.2,maxZoom:18,pitch:38,bearing:-10,antialias:true,attributionControl:true,cooperativeGestures:true});
 map.addControl(new maplibregl.NavigationControl({showCompass:true,showZoom:false,visualizePitch:true}),'bottom-right');
 map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
 map.on('move',()=>{if(mapReady)updateStudyMaskOverlay(isPombalineStudyActive())});
@@ -566,6 +566,9 @@ map.on('moveend',()=>{if(mapReady&&isPombalineStudyActive())updatePombalineAreaM
 map.on('resize',()=>{if(mapReady){if(isPombalineStudyActive())updatePombalineAreaMask(true);else updateStudyMaskOverlay(false)}});
 map.on('load',()=>{
  mapReady=true;
+ // Start inside the intended historic study area; keep the bounded reconstruction visible by default.
+ $('togglePombaline3D').checked=true;
+ map.jumpTo({center:[-9.141,38.7115],zoom:13.25,pitch:38,bearing:-10});
  // Keep optional visual layers isolated: one unsupported layer must not block the whole app.
  try{addSatelliteLayer()}catch(e){console.warn('Satellite imagery unavailable',e)}
  try{addCoverageLayer()}catch(e){console.warn('Coverage layer unavailable',e)}
@@ -600,7 +603,7 @@ map.on('moveend',()=>{if(mapReady)renderMarkers();updateDesertMask();if($('toggl
 $('zoomIn').onclick=()=>map.zoomTo(map.getZoom()+1,{duration:450});
 $('zoomOut').onclick=()=>map.zoomTo(map.getZoom()-1,{duration:450});
 $('tilt').onclick=()=>{currentPitch=currentPitch>30?15:60;map.easeTo({pitch:currentPitch,duration:650})};
-$('locate').onclick=$('resetView').onclick=()=>{hideDetail();map.flyTo({center:[-9.157,38.726],zoom:11.65,pitch:38,bearing:-10,duration:1500})};
+$('locate').onclick=$('resetView').onclick=()=>{hideDetail();$('togglePombaline3D').checked=true;setHistoricalYear(selectedYear);map.flyTo({center:[-9.141,38.7115],zoom:13.25,pitch:38,bearing:-10,duration:1500})};
 window.addEventListener('keydown',e=>{if(e.key==='Escape')hideDetail();if(e.key==='+'||e.key==='=')map.zoomIn();if(e.key==='-')map.zoomOut()});
 renderPlaces();
 $('placeSearch').addEventListener('input',()=>{renderPlaces();renderMarkers()});
